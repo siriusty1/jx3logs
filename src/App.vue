@@ -1,12 +1,9 @@
-<script setup>
-import { ElConfigProvider } from 'element-plus'
-import zhCn from 'element-plus/lib/locale/lang/zh-cn'
-</script>
-
 <template>
   <el-config-provider :locale="zhCn">
       <el-container>
         <el-header class="header">
+          <img :src="getImageUrl('logo')" alt="logo" style="height: 48px; width: 48px">
+          <div style="margin-left: 10px;font-size: 26px; font-family: 'Microsoft YaHei';">JX3 Logs</div>
         </el-header>
         <el-main>
           <router-view></router-view>
@@ -14,6 +11,15 @@ import zhCn from 'element-plus/lib/locale/lang/zh-cn'
       </el-container>
   </el-config-provider>
 </template>
+
+<script setup>
+import { ElConfigProvider } from 'element-plus'
+import zhCn from 'element-plus/lib/locale/lang/zh-cn'
+
+const getImageUrl = (name) => {
+  return new URL(`./assets/${name}.png`, import.meta.url).href
+}
+</script>
 
 <style>
 body{
@@ -24,6 +30,8 @@ body{
   height: 64px;
   background-color: #141414;
   border-bottom: 1px solid #555;
+  display: flex;
+  align-items: center;
 }
 .grey{
   color:#666666

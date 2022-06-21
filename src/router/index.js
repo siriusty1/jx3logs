@@ -1,7 +1,8 @@
 import {createRouter,createWebHashHistory} from 'vue-router';
 const Index = () => import('../pages/Index.vue')
 const Character = () => import('../pages/Character.vue')
-const Test = () => import('../pages/Test.vue')
+const LingSu = () => import('../pages/LingSu.vue')
+const XiangZhi = () => import('../pages/XiangZhi.vue')
 
 const router = createRouter({
     history: createWebHashHistory(),
@@ -15,11 +16,14 @@ const router = createRouter({
             component: Character
         },
         {
-            path:"/test",
-            component: Test
+            path:"/lingsu",
+            component: LingSu
+        },
+        {
+            path:"/xiangzhi",
+            component: XiangZhi
         }
     ]
 });
-
 
 export default router;

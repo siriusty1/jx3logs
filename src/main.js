@@ -16,7 +16,8 @@ import {
     GridComponent,
     TooltipComponent,
     DatasetComponent,
-    VisualMapComponent
+    VisualMapComponent,
+
 } from 'echarts/components'
 
 use([

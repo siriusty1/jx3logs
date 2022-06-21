@@ -1,6 +1,6 @@
 <template>
   <div class="banner" style="text-align: center;color: white">
-    BANNER AREA
+
   </div>
   <div style="padding-top:104px; display: flex; flex-direction: column; align-items: center">
     <div class="instruction">
