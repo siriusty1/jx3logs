@@ -178,7 +178,7 @@ for (let item of resObj['replay']['normal']){
     timeflow_without_channelling.push(item)
   }
 }
-let firstHit = [timeflow_channelling[0]]
+let firstHit = [{...timeflow_channelling[0]}]
 firstHit[0]['hits'] = 1
 for (let i = 1; i < timeflow_channelling.length; i++){
   if (timeflow_channelling[i]['start'] - timeflow_channelling[i - 1]['start'] < 1000){
@@ -187,7 +187,7 @@ for (let i = 1; i < timeflow_channelling.length; i++){
     firstHit[firstHit.length - 1]['healeff'] = firstHit[firstHit.length - 1]['healeff'] + ' / ' + timeflow_channelling[i]['healeff']
     firstHit[firstHit.length - 1]['targetName'] = firstHit[firstHit.length - 1]['targetName'] + '<br>' + timeflow_channelling[i]['targetName']
   }else{
-    firstHit.push(timeflow_channelling[i])
+    firstHit.push({...timeflow_channelling[i]})
     firstHit[firstHit.length - 1]['hits'] = 1
   }
 }
@@ -201,7 +201,7 @@ for (let i = 1;i < qingchuan.length; i = i + 2){
   qingchuan_active.push([qingchuan[i-1][0],qingchuan[i][0] - qingchuan[i - 1][0]])
 }
 const xPosition = (time) => {
-  return Math.floor((time - resObj['replay']['startTime']) / 1000 * 40) + 'px'
+  return (time - resObj['replay']['startTime']) / 1000 * 40 + 'px'
 }
 
 const popUpShow = ref(false)
@@ -272,7 +272,12 @@ const yaoxing_chart_option = {
     axisPointer:{
       show:true,
       label:{
-        show:false
+        show:true,
+        backgroundColor:'transparent',
+        formatter:(params)=>{
+          let toTime = (params.value - resObj['replay']['startTime']) / 1000
+          return toTime.toFixed(1) + 's'
+        }
       }
     },
   },

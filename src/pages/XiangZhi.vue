@@ -13,7 +13,7 @@
     <div style="display:flex;flex-direction:row; width: 1600px; border: 1px solid #555;background-color: #141414;position: relative">
       <div style="display:flex;flex-direction:column; width: 150px;border-right: 1px solid #555">
         <div style="display:flex; flex-direction:column; justify-content:center; height: 100px; padding-left:10px; background-color:#201020; border-bottom: 1px solid #555;">
-          <div>全团梅花盾</div>
+          <div>DPS梅花盾</div>
           <div>实时覆盖率</div>
         </div>
         <div class="label">GCD技能</div>
@@ -28,17 +28,17 @@
           </div>
           <div class="GCD">
             <div v-for="i in timeScale" style="height: 100%; width: 199px;border-right: 1px solid rgba(85,85,85,0.5)"></div>
-            <img v-for="(item, index) in firstHit"
-                 @mouseenter="enterImg($event,item)"
-                 @mouseleave="leaveImg($event,item)"
-                 :src="getImageUrl('15412_' + item.hits,'skills_logo')"
-                 alt="icon"
-                 class="GCD_skill_icon"
-                 :style="{
-                           left:xPosition(item.start),
-                           height:Math.floor(GCD / 1000 * 40)+'px',
-                           width:Math.floor(item.duration * item.hits / 1000 * 40)+'px'
-                          }">
+<!--            <img v-for="(item, index) in firstHit"-->
+<!--                 @mouseenter="enterImg($event,item)"-->
+<!--                 @mouseleave="leaveImg($event,item)"-->
+<!--                 :src="getImageUrl('15412_' + item.hits,'skills_logo')"-->
+<!--                 alt="icon"-->
+<!--                 class="GCD_skill_icon"-->
+<!--                 :style="{-->
+<!--                           left:xPosition(item.start),-->
+<!--                           height:Math.floor(GCD / 1000 * 40)+'px',-->
+<!--                           width:Math.floor(item.duration * item.hits / 1000 * 40)+'px'-->
+<!--                          }">-->
             <img v-for="(item, index) in timeflow_without_channelling"
                  :src="getImageUrl(item.iconid,'skills_logo')"
                  alt="icon"
@@ -65,9 +65,16 @@
                width:Math.floor(GCD / 1000 * 40)+'px'
              }">
           </div>
-          <div class="flowerBuff">
+          <div class="songStatus">
             <div v-for="i in timeScale" style="height: 100%; width: 199px;border-right: 1px solid rgba(85,85,85,0.5)"></div>
-
+            <div v-for="item in songChange" :class="item.skillname" :style="{
+                position:'absolute',
+                borderRadius:'3px',
+                left:xPosition(item.start),
+                height: Math.floor(GCD / 1000 * 40)+'px',
+                width: item.lasts / 1000 * 40 + 'px'
+            }">
+            </div>
           </div>
           <div class="bossPhase">
             <div v-for="i in timeScale" style="height: 100%; width: 199px;border-right: 1px solid rgba(85,85,85,0.5)"></div>
@@ -138,7 +145,6 @@ const calcGCD = (haste,talent) =>{
 }
 let GCD = calcGCD(resObj['overall']['hasteReal'],occ)
 let timeFlowWidth = (resObj['replay']['finalTime'] - resObj['replay']['startTime']) / 1000 * 40
-console.log(timeFlowWidth)
 let timeScale = Math.floor(timeFlowWidth / 200)
 let timeflow_without_channelling = []
 let timeflow_channelling = []
@@ -149,6 +155,7 @@ for (let item of resObj['replay']['normal']){
     timeflow_without_channelling.push(item)
   }
 }
+console.log(timeflow_channelling)
 let firstHit = [timeflow_channelling[0]]
 firstHit[0]['hits'] = 1
 for (let i = 1; i < timeflow_channelling.length; i++){
@@ -164,7 +171,7 @@ for (let i = 1; i < timeflow_channelling.length; i++){
 }
 
 const xPosition = (time) => {
-  return Math.floor((time - resObj['replay']['startTime']) / 1000 * 40) + 'px'
+  return (time - resObj['replay']['startTime']) / 1000 * 40 + 'px'
 }
 
 const popUpShow = ref(false)
@@ -213,9 +220,6 @@ const coverage_chart_option = {
     type:'category',
     data:chart_xAxis,
     boundaryGap: false,
-    axisPointer:{
-      show:true
-    },
   },
   yAxis:{
     max:100,
@@ -225,6 +229,11 @@ const coverage_chart_option = {
         color:'rgba(85,85,85,0.5)'
       }
     }
+  },
+  tooltip:{
+    trigger:'axis',
+    confine:true,
+    valueFormatter: (value) => value + '%'
   },
   series:[{
     type: 'line',
@@ -240,6 +249,24 @@ const coverage_chart_option = {
   }
 }
 
+let songChange = []
+songChange.push({
+  'skillname':'梅花三弄·切换',
+  'start':resObj['replay']['startTime']
+})
+for (let item of resObj['replay']['special']){
+  if(item['skillname'] === '高山流水·切换' || item['skillname'] === '阳春白雪·切换' || item['skillname'] === '梅花三弄·切换'){
+    songChange.push(item)
+  }
+}
+for (let i = 0; i < songChange.length; i++){
+  if (i < songChange.length - 1){
+    songChange[i]['lasts'] = songChange[i + 1]['start'] - songChange[i]['start']
+  }else{
+    songChange[i]['lasts'] = resObj['replay']['finalTime'] - songChange[i]['start']
+  }
+}
+console.log(songChange)
 onBeforeUnmount(()=>{
   this.chart.dispose()
 })
@@ -286,7 +313,7 @@ onBeforeUnmount(()=>{
   border-bottom: 1px solid #555;
   height: v-bind("Math.floor(GCD / 1000 * 40)+'px'");
 }
-.flowerBuff{
+.songStatus{
   display: flex;
   flex-direction: row;
   height: v-bind("Math.floor(GCD / 1000 * 40)+'px'");
@@ -332,5 +359,20 @@ onBeforeUnmount(()=>{
   top: v-bind("popUpPos[1] + 'px'");
   left: v-bind("popUpPos[0] + 'px'");
   background-color: #201020;
+}
+.阳春白雪·切换{
+  background-image: url("../assets/skills_logo/ycbx.png");
+  background-color: rgba(0, 255, 170, 0.2);
+  background-repeat: no-repeat;
+}
+.高山流水·切换{
+   background-image: url("../assets/skills_logo/gsls.png");
+   background-color: rgba(0, 170, 255,0.2);
+   background-repeat: no-repeat;
+ }
+.梅花三弄·切换{
+  background-image: url("../assets/skills_logo/mhsn.png");
+  background-color: rgba(221, 170, 255,0.2);
+  background-repeat: no-repeat;
 }
 </style>

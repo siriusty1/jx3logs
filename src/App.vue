@@ -2,7 +2,7 @@
   <el-config-provider :locale="zhCn">
       <el-container>
         <el-header class="header">
-          <img :src="getImageUrl('logo')" alt="logo" style="height: 48px; width: 48px">
+          <img :src="getImageUrl('logo')" alt="logo" style="height: 40px; width: 40px">
           <div style="margin-left: 10px;font-size: 26px; font-family: 'Microsoft YaHei';">JX3 Logs</div>
         </el-header>
         <el-main>
