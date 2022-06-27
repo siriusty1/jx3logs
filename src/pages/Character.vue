@@ -188,6 +188,7 @@ const color = (score) =>{
     return 'gold'
   }
 }
+
 const bestPerf = ref(100)
 
 const medPerf = ref(95.6)

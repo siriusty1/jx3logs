@@ -10,7 +10,7 @@
     <div class="statisticBox">
 
     </div>
-    <div style="display:flex;flex-direction:row; width: 1600px; border: 1px solid #555;background-color: #141414;position: relative">
+    <div style="display:flex;flex-direction:row; width: 1400px; border: 1px solid #555;background-color: #141414;position: relative">
       <div style="display:flex;flex-direction:column; width: 150px;border-right: 1px solid #555">
         <div style="height: 100px; padding-left:10px; line-height:100px; background-color:#201020; border-bottom: 1px solid #555;">资源（药性）</div>
         <div class="label">GCD技能</div>
@@ -19,7 +19,7 @@
         <div class="label">千枝绽蕊</div>
         <div class="label">BOSS机制</div>
       </div>
-      <el-scrollbar style="width: 1450px;position: relative" ref="scrollBar" @wheel.prevent="handleScroll">
+      <el-scrollbar style="width: 1250px;position: relative" ref="scrollBar" @wheel.prevent="handleScroll">
         <div class="timeFlow">
           <div style="height: 100px;width: 100%;border-bottom: 1px solid #555">
             <v-chart class="yaoxing_chart" :option="yaoxing_chart_option"></v-chart>
@@ -380,7 +380,7 @@ const yaoxing_chart_option = {
   margin-bottom: 20px;
 }
 .statisticBox{
-  width: 1600px;
+  width: 1400px;
   height: 200px;
   background-color: #141414;
   border: 1px solid #555;
