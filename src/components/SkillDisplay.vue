@@ -6,16 +6,15 @@
     </div>
     <div style="display:flex;flex-direction: row">
       <div class="skill_details">
-        <slot name="details">
-        </slot>
+        <div v-for="item in sortList['value']">{{item}}</div>
       </div>
       <div class="skill_details">
-        <el-tooltip v-for="(val, key, index) in skill" placement="right" effect="light">
+        <el-tooltip v-for="key in sortList['key']" placement="right" effect="light">
           <template #content>
-            排名：<text :class="color(val[1]['percent'])">{{val['percent']}}%</text><br>
-            样本：<text :class="color(val[1]['percent'])">{{val['num']}}</text>
+            排名：<text :class="color(skill[key][1]['percent'])">{{skill[key][1]['percent']}}%</text><br>
+            样本：<text :class="color(skill[key][1]['percent'])">{{skill[key][1]['num']}}</text>
           </template>
-          <text :class="color(val[1]['percent'])">{{formatter(val[0])}}</text>
+          <text style="margin-left: 10px;width: 40px" :class="color(skill[key][1]['percent'])">{{formatter(skill[key][0])}}</text>
         </el-tooltip>
       </div>
     </div>
@@ -64,16 +63,15 @@ const formatter = (value) => {
   }
 }
 
-const props = defineProps(['skill'])
-
-const fontSize = Object.keys(props.skill).length < 6 ? '14px' : '12px'
+const props = defineProps(['skill','sortList'])
 
 </script>
 
 <style scoped>
 .skill_statistic{
-  margin: 20px;
+  margin: 20px 40px;
   height: 100px;
+  width: 220px;
   display: flex;
   flex-direction: row;
 }
@@ -85,12 +83,8 @@ const fontSize = Object.keys(props.skill).length < 6 ? '14px' : '12px'
   align-items: center;
   margin-right: 20px;
 }
-.skill_statistic_icon{
-  height: 60px;
-  width: 60px;
-}
 .skill_details{
-  font-size: v-bind("fontSize");
+  font-size: 12px;
   display: flex;
   flex-direction: column;
   justify-content: center;

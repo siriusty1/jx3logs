@@ -1,29 +1,241 @@
 <template>
   <div style="display:flex;flex-direction:column;align-items: center">
     <div class="infoBox">
-      <div style="margin-right: 20px" class="infoBox_inner">
-        {{ resObj.overall.edition }}
-      </div>
-      <div style="margin-right: 20px" class="infoBox_inner">B</div>
-      <div class="infoBox_inner">C</div>
+      奶歌复盘Beta
+    </div>
+    <div class="reviewBox">
+      <el-collapse>
+        <el-collapse-item name="1" v-if="resObj['review']['content'][0]['status']">
+          <template #title>
+            <el-icon :size="18" style="margin-left: 10px; color: rgb(219, 40, 40)"><CloseBold /></el-icon>
+            <div class="reviewTitle">不要死</div>
+          </template>
+          <div class="reviewDetails">
+            所有的重伤都可以避免，请尝试躲避技能，正确处理机制。重伤会产生非常大的影响，不仅会极大程度降低你的团队贡献，而且增加了战斗失败的可能。
+          </div>
+          <div class="reviewDetails">
+            你在本场战斗中重伤了：0次，期间浪费了：{{resObj['review']['content'][0]['duration']}}秒的时间。
+          </div>
+        </el-collapse-item>
+        <el-collapse-item name="2" v-if="resObj['review']['content'][5]['status']">
+          <template #title>
+            <el-icon :size="18" style="margin-left: 10px; color: rgb(219, 40, 40)"><CloseBold /></el-icon>
+            <div class="reviewTitle">不要玩血歌</div>
+          </template>
+          <div class="reviewDetails">
+            只要不是全程持续伤害类型的副本，血歌的作用就永远比盾歌低。梅花三弄附带的化解和减伤同样可以减少团队血量的压力，并且还能带来输出增益，“团血崩了”绝不是你切血歌的理由。
+          </div>
+        </el-collapse-item>
+        <el-collapse-item name="3" v-if="resObj['review']['content'][1]['status']">
+          <template #title>
+            <el-icon :size="18" style="margin-left: 10px; color: rgb(219, 40, 40)"><CloseBold /></el-icon>
+            <div class="reviewTitle">不要放生队友</div>
+          </template>
+          <div class="reviewDetails">
+            如果你的队友没有受到不可挽救的伤害，你就应当对其进行治疗以避免重伤。请记住，治疗职业的第一优先级永远是保证团队成员的存活，不要为了刷治疗量放弃队友。有时拯救队友需要快速的反应或者预判，这取决于你对副本的理解。
+          </div>
+          <div class="reviewDetails">
+            你在本场战斗中你放生了num次队友：time，id，damage。
+          </div>
+        </el-collapse-item>
+        <el-collapse-item name="4">
+          <template #title>
+            <el-icon v-if="resObj['review']['content'][2]['status'] === 3" :size="18" style="margin-left: 10px; color: rgb(219, 40, 40)"><CircleCloseFilled /></el-icon>
+            <el-icon v-if="resObj['review']['content'][2]['status'] === 2" :size="18" style="margin-left: 10px; color: rgb(242, 113, 28)"><CirclePlusFilled /></el-icon>
+            <el-icon v-if="resObj['review']['content'][2]['status'] === 1" :size="18" style="margin-left: 10px; color: rgb(235, 199, 0)"><CirclePlusFilled /></el-icon>
+            <el-icon v-if="resObj['review']['content'][2]['status'] === 0" :size="18" style="margin-left: 10px; color: rgb(33, 186, 69)"><CircleCheckFilled /></el-icon>
+            <div class="reviewTitle">保持GCD不要空转</div>
+          </template>
+          <div class="reviewDetails">
+            保持使用技能是战斗的基础。只要你持续处于读条或者转GCD的状态，就一定比站在原地发呆好。记得为可能产生的移动做好准备，在移动时也可以使用瞬发技能。
+          </div>
+          <div class="reviewDetails">
+            你在本场战斗中战斗效率为{{(100 * resObj['review']['content'][2]['cover']).toFixed(2)}}%，超过了{{resObj['review']['content'][2]['rank']}}%的玩家。
+          </div>
+        </el-collapse-item>
+        <el-collapse-item name="5">
+          <template #title>
+            <el-icon v-if="resObj['review']['content'][3]['status'] === 3" :size="18" style="margin-left: 10px; color: rgb(219, 40, 40)"><CircleCloseFilled /></el-icon>
+            <el-icon v-if="resObj['review']['content'][3]['status'] === 2" :size="18" style="margin-left: 10px; color: rgb(242, 113, 28)"><CirclePlusFilled /></el-icon>
+            <el-icon v-if="resObj['review']['content'][3]['status'] === 1" :size="18" style="margin-left: 10px; color: rgb(235, 199, 0)"><CirclePlusFilled /></el-icon>
+            <el-icon v-if="resObj['review']['content'][3]['status'] === 0" :size="18" style="margin-left: 10px; color: rgb(33, 186, 69)"><CircleCheckFilled /></el-icon>
+            <div class="reviewTitle">提高HPS或虚条HPS</div>
+          </template>
+          <div class="reviewDetails">
+            HPS仍然是副本中评价治疗职业的公认标准，保证充足的HPS可以为团队提供更高的容错。在副本环境中，很多时候你需要用溢出治疗来保证血量健康，因此虚条HPS也可以是指标的一部分。
+          </div>
+          <div class="reviewDetails">
+            你在本场战斗中的HPS为：{{resObj['review']['content'][3]['hps']}}，超过了{{resObj['review']['content'][3]['hpsRank']}}%的玩家；虚条HPS为：{{resObj['review']['content'][3]['ohps']}}，超过了{{resObj['review']['content'][3]['ohpsRank']}}%的玩家。
+          </div>
+        </el-collapse-item>
+        <el-collapse-item name="6">
+          <template #title>
+            <el-icon v-if="resObj['review']['content'][4]['status'] === 3" :size="18" style="margin-left: 10px; color: rgb(219, 40, 40)"><CircleCloseFilled /></el-icon>
+            <el-icon v-if="resObj['review']['content'][4]['status'] === 2" :size="18" style="margin-left: 10px; color: rgb(242, 113, 28)"><CirclePlusFilled /></el-icon>
+            <el-icon v-if="resObj['review']['content'][4]['status'] === 1" :size="18" style="margin-left: 10px; color: rgb(235, 199, 0)"><CirclePlusFilled /></el-icon>
+            <el-icon v-if="resObj['review']['content'][4]['status'] === 0" :size="18" style="margin-left: 10px; color: rgb(33, 186, 69)"><CircleCheckFilled /></el-icon>
+            <div class="reviewTitle">使用有CD的技能</div>
+          </template>
+          <div class="reviewDetails">
+            有CD的技能大多都是十分强力的。虽然说有时这些技能应当用来救急，但是如果战斗中它们空转了过长的时间，或许你应该去重新安排它们。
+          </div>
+          <div class="reviewDetails">
+            <div style="display: flex; align-items: center">
+              <img style="height: 24px" :src="getImageUrl('7052','skills_logo')" alt="孤影化双">
+              <text style="margin-left: 5px">
+                孤影化双：{{ resObj['review']['content'][4]['num'][0] }} / {{ resObj['review']['content'][4]['sum'][0] }}
+              </text>
+            </div>
+            <div style="display: flex; align-items: center">
+              <img style="height: 24px" :src="getImageUrl('7066','skills_logo')" alt="疏影横斜">
+              <text style="margin-left: 5px">
+                疏影横斜：{{ resObj['review']['content'][4]['num'][1] }} / {{ resObj['review']['content'][4]['sum'][1] }}
+              </text>
+            </div>
+          </div>
+        </el-collapse-item>
+        <el-collapse-item name="7">
+          <template #title>
+            <el-icon v-if="resObj['review']['content'][6]['status'] === 3" :size="18" style="margin-left: 10px; color: rgb(219, 40, 40)"><CircleCloseFilled /></el-icon>
+            <el-icon v-if="resObj['review']['content'][6]['status'] === 2" :size="18" style="margin-left: 10px; color: rgb(242, 113, 28)"><CirclePlusFilled /></el-icon>
+            <el-icon v-if="resObj['review']['content'][6]['status'] === 1" :size="18" style="margin-left: 10px; color: rgb(235, 199, 0)"><CirclePlusFilled /></el-icon>
+            <el-icon v-if="resObj['review']['content'][6]['status'] === 0" :size="18" style="margin-left: 10px; color: rgb(33, 186, 69)"><CircleCheckFilled /></el-icon>
+            <div class="reviewTitle">保证梅花三弄的覆盖率</div>
+          </template>
+          <div class="reviewDetails">
+            梅花三弄的覆盖率是奶歌最重要的指标，保证覆盖率可以增加团队输出，同时也为团队血量提供保障。多数时候，即使面对血量不满的目标也应当贴盾，让其它治疗来奶满。
+          </div>
+          <div class="reviewDetails">
+            你在本场战斗中梅花三弄的覆盖率为：{{ (100 * resObj['review']['content'][6]['cover']).toFixed(2) }}%，超过了{{ resObj['review']['content'][6]['rank'] }}%的玩家。
+          </div>
+        </el-collapse-item>
+        <el-collapse-item name="8">
+          <template #title>
+            <el-icon v-if="resObj['review']['content'][7]['status'] === 3" :size="18" style="margin-left: 10px; color: rgb(219, 40, 40)"><CircleCloseFilled /></el-icon>
+            <el-icon v-if="resObj['review']['content'][7]['status'] === 2" :size="18" style="margin-left: 10px; color: rgb(242, 113, 28)"><CirclePlusFilled /></el-icon>
+            <el-icon v-if="resObj['review']['content'][7]['status'] === 1" :size="18" style="margin-left: 10px; color: rgb(235, 199, 0)"><CirclePlusFilled /></el-icon>
+            <el-icon v-if="resObj['review']['content'][7]['status'] === 0" :size="18" style="margin-left: 10px; color: rgb(33, 186, 69)"><CircleCheckFilled /></el-icon>
+            <div class="reviewTitle">中断徵的倒读条</div>
+          </template>
+          <div class="reviewDetails">
+            `徵`应当在读条过半时中断（带有`争簇`时为第3跳，无`争簇`时为第2跳），这样可以最大化利用`弄梅`；特别是当点出`谪仙`时，不中断会导致损失徵的跳数。
+          </div>
+          <div class="reviewDetails">
+            你在本场战斗中总共运功了{{ resObj['review']['content'][7]['time'] }}次徵，但只正确中断了{{ resObj['review']['content'][7]['perfectTime'] }}次，其中{{ resObj['review']['content'][7]['fullTime'] }}次完全没有中断。
+          </div>
+        </el-collapse-item>
+        <el-collapse-item name="9">
+          <template #title>
+            <el-icon v-if="resObj['review']['content'][8]['status'] === 3" :size="18" style="margin-left: 10px; color: rgb(219, 40, 40)"><CircleCloseFilled /></el-icon>
+            <el-icon v-if="resObj['review']['content'][8]['status'] === 2" :size="18" style="margin-left: 10px; color: rgb(242, 113, 28)"><CirclePlusFilled /></el-icon>
+            <el-icon v-if="resObj['review']['content'][8]['status'] === 1" :size="18" style="margin-left: 10px; color: rgb(235, 199, 0)"><CirclePlusFilled /></el-icon>
+            <el-icon v-if="resObj['review']['content'][8]['status'] === 0" :size="18" style="margin-left: 10px; color: rgb(33, 186, 69)"><CircleCheckFilled /></el-icon>
+            <div class="reviewTitle">选择合适的徵目标</div>
+          </template>
+          <div class="reviewDetails">
+            徵会以当前目标中心进行20尺扩散，因此选择正确的目标可以让更多队友受到治疗效果。 使用茗伊团队面板的扩散辅助可以精准地找到最适合的目标。
+          </div>
+          <div class="reviewDetails">
+            你在本场战斗中总共有{{ resObj['review']['content'][8]['time'] }}跳徵，其中{{ resObj['review']['content'][8]['coverTime'] }}跳覆盖了4个或更多的目标。
+          </div>
+        </el-collapse-item>
+        <el-collapse-item name="10">
+          <template #title>
+            <el-icon v-if="resObj['review']['content'][9]['status'] === 3" :size="18" style="margin-left: 10px; color: rgb(219, 40, 40)"><CircleCloseFilled /></el-icon>
+            <el-icon v-if="resObj['review']['content'][9]['status'] === 2" :size="18" style="margin-left: 10px; color: rgb(242, 113, 28)"><CirclePlusFilled /></el-icon>
+            <el-icon v-if="resObj['review']['content'][9]['status'] === 1" :size="18" style="margin-left: 10px; color: rgb(235, 199, 0)"><CirclePlusFilled /></el-icon>
+            <el-icon v-if="resObj['review']['content'][9]['status'] === 0" :size="18" style="margin-left: 10px; color: rgb(33, 186, 69)"><CircleCheckFilled /></el-icon>
+            <div class="reviewTitle">使用移形换影</div>
+          </template>
+          <div class="reviewDetails">
+            记得使用`移形换影`去回收影子以维持健康的内力，从而弥补贴盾的大量消耗。
+          </div>
+          <div class="reviewDetails">
+            你在本场战斗中一共浪费了{{ resObj['review']['content'][9]['wasteTime'] }}次影子提供的回蓝。
+          </div>
+        </el-collapse-item>
+        <el-collapse-item name="11">
+          <template #title>
+            <el-icon v-if="resObj['review']['content'][10]['status'] === 3" :size="18" style="margin-left: 10px; color: rgb(219, 40, 40)"><CircleCloseFilled /></el-icon>
+            <el-icon v-if="resObj['review']['content'][10]['status'] === 2" :size="18" style="margin-left: 10px; color: rgb(242, 113, 28)"><CirclePlusFilled /></el-icon>
+            <el-icon v-if="resObj['review']['content'][10]['status'] === 1" :size="18" style="margin-left: 10px; color: rgb(235, 199, 0)"><CirclePlusFilled /></el-icon>
+            <el-icon v-if="resObj['review']['content'][10]['status'] === 0" :size="18" style="margin-left: 10px; color: rgb(33, 186, 69)"><CircleCheckFilled /></el-icon>
+            <div class="reviewTitle">使用角</div>
+          </template>
+          <div class="reviewDetails">
+            记得保持`角`的覆盖以维持健康的内力，从而弥补贴盾的大量消耗。角的持续治疗效果对主T的血量也是可观的支持。
+          </div>
+          <div class="reviewDetails">
+            你在本场战斗中角的覆盖率为：{{ resObj['review']['content'][10]['cover'] }}%。
+          </div>
+        </el-collapse-item>
+      </el-collapse>
     </div>
     <div class="statisticBox">
-      <SkillDisplay :skill="realTimeRank['meihua']">
+      <SkillDisplay :skill="realTimeRank['meihua']" :sortList="{
+        'key':['num','numPerSec','cover','delay','youxiangHPS','pingyinHPS'],
+        'value':['数量：','每秒数量：','覆盖率：','延迟：','犹香HPS：','平吟HPS：']}">
         <template #icon>
           <img class="skill_statistic_icon" :src="getImageUrl('meihua','skills_logo')" alt="梅花三弄">
           <text style="margin-top: 5px; font-weight: bold;font-size: 16px">梅花三弄</text>
         </template>
-        <template #details>
-          <div>数量：</div>
-          <div>每秒盾数：</div>
-          <div>覆盖率：</div>
-          <div>延迟：</div>
-          <div>犹香HPS：</div>
-          <div>平吟HPS：</div>
-        </template>
-        <template></template>
       </SkillDisplay>
-
+      <SkillDisplay :skill="realTimeRank['gong']" :sort-list="{
+        'key':['num','numPerSec','delay','HPS','effRate','zhenliuHPS'],
+        'value':['数量：','每秒数量：','延迟：','HPS：','有效比率：','枕流HPS：']}">
+        <template #icon>
+          <img class="skill_statistic_icon" :src="getImageUrl('gong','skills_logo')" alt="宫">
+          <text style="margin-top: 5px; font-weight: bold;font-size: 16px">宫</text>
+        </template>
+      </SkillDisplay>
+      <SkillDisplay :skill="realTimeRank['shang']" :sort-list="{
+        'key':['num','numPerSec','cover','delay','HPS'],
+        'value':['数量：','每秒数量：','覆盖率：','延迟：','HPS：']}">
+        <template #icon>
+          <img class="skill_statistic_icon" :src="getImageUrl('shang','skills_logo')" alt="商">
+          <text style="margin-top: 5px; font-weight: bold;font-size: 16px">商</text>
+        </template>
+      </SkillDisplay>
+      <SkillDisplay :skill="realTimeRank['yu']" :sort-list="{
+        'key':['num','numPerSec','effRate','delay','HPS'],
+        'value':['数量：','每秒数量：','有效比率：','延迟：','HPS：']}">
+        <template #icon>
+          <img class="skill_statistic_icon" :src="getImageUrl('yu','skills_logo')" alt="羽">
+          <text style="margin-top: 5px; font-weight: bold;font-size: 16px">羽</text>
+        </template>
+      </SkillDisplay>
+      <SkillDisplay :skill="realTimeRank['zhi']" :sort-list="{
+        'key':['num','numPerSec','delay','HPS','effRate','gudaoHPS'],
+        'value':['数量：','每秒数量：','延迟：','HPS：','有效比率：','古道HPS：']}">
+        <template #icon>
+          <img class="skill_statistic_icon" :src="getImageUrl('zhi','skills_logo')" alt="徵">
+          <text style="margin-top: 5px; font-weight: bold;font-size: 16px">徵</text>
+        </template>
+      </SkillDisplay>
+      <SkillDisplay :skill="realTimeRank['jue']" :sort-list="{
+        'key':['num','numPerSec','cover','delay','HPS'],
+        'value':['数量：','每秒数量：','覆盖率：','延迟：','HPS：']}">
+        <template #icon>
+          <img class="skill_statistic_icon" :src="getImageUrl('jue','skills_logo')" alt="角">
+          <text style="margin-top: 5px; font-weight: bold;font-size: 16px">角</text>
+        </template>
+      </SkillDisplay>
+      <SkillDisplay :skill="realTimeRank['xiangyi']" :sort-list="{
+        'key':['num','HPS','effRate'],
+        'value':['数量：','HPS：','有效比率：']}">
+        <template #icon>
+          <img class="skill_statistic_icon" :src="getImageUrl('xiangyi','skills_logo')" alt="相依">
+          <text style="margin-top: 5px; font-weight: bold;font-size: 16px">相依</text>
+        </template>
+      </SkillDisplay>
+      <SkillDisplay :skill="realTimeRank['general']" :sort-list="{
+        'key':['APS','SangrouDPS','ZhuangzhouDPS','YujianDPS','efficiency'],
+        'value':['APS：','桑柔DPS：','庄周梦DPS：','玉简DPS：','战斗效率：']}">
+        <template #icon>
+          <img class="skill_statistic_icon" :src="getImageUrl('tuanfu','skills_logo')" alt="团辅">
+          <text style="margin-top: 5px; font-weight: bold;font-size: 16px">团队辅助</text>
+        </template>
+      </SkillDisplay>
     </div>
     <div style="display:flex;flex-direction:row; width: 1400px; border: 1px solid #555;background-color: #141414;position: relative">
       <div style="display:flex;flex-direction:column; width: 150px;border-right: 1px solid #555">
@@ -322,41 +534,32 @@ for (let i = 0; i < songChange.length; i++){
 </script>
 
 <style scoped>
-.skill_statistic{
-  margin: 20px;
-  height: 100px;
-  display: flex;
-  flex-direction: row;
+.reviewTitle{
+  font-size: 16px;
+  margin-left: 10px;
 }
-.skill_icon_box{
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  margin-right: 20px;
+.reviewDetails{
+  margin-left: 20px;
 }
 .skill_statistic_icon{
   height: 60px;
   width: 60px;
 }
-.skill_details{
-  font-size: 14px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
 .infoBox{
-  display: flex;
-  flex-direction: row;
   margin-bottom: 20px;
+  width: 1400px;
+}
+.reviewBox{
+  width: 1400px;
+  border: 1px solid #555;
+  margin-bottom: 20px ;
 }
 .statisticBox{
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+  justify-content: space-between;
   width: 1400px;
-  height: 200px;
   background-color: #141414;
   border: 1px solid #555;
   margin-bottom: 20px;
