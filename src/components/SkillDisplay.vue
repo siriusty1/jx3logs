@@ -56,7 +56,7 @@ const formatter = (value) => {
   if (x > 0){
     y = String(value).length - x; //小数点的位数
   }
-  if (y > 3){
+  if (y >= 3){
     return (100 * value).toFixed(2) + '%'
   }else{
     return value
