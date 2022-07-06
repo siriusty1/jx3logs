@@ -337,7 +337,7 @@ const xfColor = {
 
 axios({
   method:'get',
-  url: `http://139.199.102.41:8009/getReplayPro?id=${route.params.replay_id}`
+  url: `http://120.48.95.56:8009/getReplayPro?id=${route.params.replay_id}`
 }).then((res)=>{
   console.log(res)
   let repl = res.data['raw'].replace(/'/g, '"').replace(/&#39;/g, '"').replace(/\n/g, '\\n').replace(/\t/g, '\\t');

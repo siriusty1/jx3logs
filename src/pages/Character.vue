@@ -55,7 +55,7 @@
             <el-table-column align="center" label="击杀次数" />
             <el-table-column align="center" label="最快击杀" />
             <el-table-column align="center" label="最佳%" />
-            <el-table-column align="center" label="中位数%" />
+            <el-table-column align="center" label="平均数%" />
             <el-table-column align="center" label="最高nDPS" />
             <el-table-column align="center" label="最高rDPS" />
             <el-table-column align="center" label="最高aDPS" />
@@ -82,8 +82,8 @@ const instance = ref('25人英雄河阳之战')
 const sect = ref()
 
 const occToSect = {
-  'xiangzhi':['cg',2],
-  'mowen':['cg',1]
+  'xiangzhi':['cg',2,'h'],
+  'mowen':['cg',1,'d']
 }
 
 const loaded = ref(false)
