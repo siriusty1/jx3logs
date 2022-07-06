@@ -1,20 +1,25 @@
-import {createRouter,createWebHashHistory} from 'vue-router';
+import {createRouter,createWebHistory} from 'vue-router';
 const Index = () => import('../pages/Index.vue')
 const Character = () => import('../pages/Character.vue')
+const Ranking = () => import('../pages/Ranking.vue')
 const LingSu = () => import('../pages/LingSu.vue')
 const XiangZhi = () => import('../pages/XiangZhi.vue')
 const LiJingYiDao = () => import('../pages/LiJingYiDao.vue')
 
 const router = createRouter({
-    history: createWebHashHistory(),
+    history: createWebHistory(),
     routes:[
         {
             path: "/",
             component: Index
         },
         {
-            path:"/character",
+            path:"/character/:server/:name",
             component: Character
+        },
+        {
+            path:"/ranking/",
+            component: Ranking
         },
         {
             path:"/lingsu",

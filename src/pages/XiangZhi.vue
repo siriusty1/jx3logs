@@ -231,7 +231,7 @@ import axios from "axios";
 import { useRoute } from 'vue-router'
 
 const loaded = ref(false)
-const router = useRoute()
+const route = useRoute()
 const resObj = ref()
 const rankObj = ref()
 const timeFlowData = ref()
@@ -246,7 +246,7 @@ const xfColor = {
 
 axios({
   method:'get',
-  url: `http://139.199.102.41:8009/getReplayPro?id=${router.params.replay_id}`
+  url: `http://139.199.102.41:8009/getReplayPro?id=${route.params.replay_id}`
 }).then((res)=>{
   console.log(res)
   let repl = res.data['raw'].replace(/'/g, '"').replace(/&#39;/g, '"').replace(/\n/g, '\\n').replace(/\t/g, '\\t');
@@ -329,6 +329,7 @@ axios({
   }
   loaded.value = true
 })
+
 
 const color = (score) =>{
   if (score < 25){
@@ -516,6 +517,7 @@ const healer_chart = computed(()=>{
           name: '有效HPS',
           type: 'bar',
           stack: 'total',
+          barMaxWidth:'30px',
           label:{
             show:true,
             offset:[10,0],

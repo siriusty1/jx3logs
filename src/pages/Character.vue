@@ -66,16 +66,21 @@
 
 <script setup>
 import {watch,reactive,ref} from "vue";
+import { useRoute } from "vue-router";
+import axios from "axios";
+
+const route = useRoute()
+
+const server = route.params.server
+const name = route.params.name
 
 const season = ref('110-4')
-
 const instance = ref('hyzz_yx')
-
 const job = ref('mj')
 
 const jobsTable = {
   'bd':['baj'],
-  'cg':['mw','xz'],
+  'cg':['mw','xiangzhi'],
   'cj':['sjjy'],
   'cy':['fsj','tgy'],
   'cyg':['zxg','txjy'],
@@ -86,11 +91,20 @@ const jobsTable = {
   'sl':['yjj','xsj'],
   'tc':['axzy','tll'],
   'tm':['jyj','tlgd'],
-  'wd':['dj','btj'],
+  'wd':['dj','butianjue'],
   'wh':['hjy','ljyd'],
   'ytz':['txj'],
-  'yz':['wf','ls']
+  'yz':['wf','lingsu']
 }
+
+axios({
+  method:'get',
+  url: `http://139.199.102.41:8009/getSinglePlayer?id=%E6%B3%A1%E6%B3%A1%E5%82%BB%E4%B8%8D%E5%82%BB&server=%E4%B9%BE%E5%9D%A4%E4%B8%80%E6%8E%B7&map=25%E4%BA%BA%E8%8B%B1%E9%9B%84%E6%B2%B3%E9%98%B3%E4%B9%8B%E6%88%98`
+}).then((res)=>{
+  console.log(res)
+})
+
+
 
 const getImgUrl = (folder,name) => {
   return new URL(`../assets/${folder}/${name}.png`, import.meta.url).href
