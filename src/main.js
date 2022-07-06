@@ -10,7 +10,8 @@ import {
     CanvasRenderer
 } from 'echarts/renderers'
 import {
-    LineChart
+    LineChart,
+    BarChart
 } from 'echarts/charts'
 import {
     GridComponent,
@@ -23,6 +24,7 @@ import {
 use([
     CanvasRenderer,
     LineChart,
+    BarChart,
     GridComponent,
     TooltipComponent,
     DatasetComponent,

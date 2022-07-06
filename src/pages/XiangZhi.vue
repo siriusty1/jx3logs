@@ -1,24 +1,48 @@
 <template>
   <template v-if="loaded">
     <div style="display:flex;flex-direction:column;align-items: center">
-      <div style="font-size: 20px; font-weight: bold">相知复盘 7.10.0 Dev</div>
+      <div style="text-align: left; font-size: 20px; font-weight: bold; width: 1400px;margin-bottom: 20px">相知复盘 7.10.0 Dev</div>
       <div class="infoBox">
-        <div style="border: 1px solid #555">
-          <div><text>角色名称：</text><text>{{ resObj.overall['name'] }}</text></div>
-          <div><text>服务器：</text><text>{{ resObj.overall['server'] }}</text></div>
-          <div><text>战斗时间：</text><text>{{ resObj.overall['battleTimePrint'] }}</text></div>
-          <div><text>生成时间：</text><text>{{ resObj.overall['generateTimePrint'] }}</text></div>
-          <div><text>副本：</text><text>{{ resObj.overall['map'] }}</text></div>
-          <div><text>首领：</text><text>{{ resObj.overall['boss'] }}</text></div>
-          <div><text>有效人数：</text><text>{{ resObj.overall['numPlayer'] }}</text></div>
-          <div><text>战斗时长：</text><text>{{ resObj.overall['sumTimePrint'] }}</text></div>
-          <div><text>数据种类：</text><text>{{ resObj.overall['dataType'] }}</text></div>
+        <div style="display:flex; flex-direction:row;justify-content: space-around; border: 1px solid #555; font-size: 14px;width: 300px">
+          <div>
+            <div style="margin: 10px 10px 5px">玩家名称：</div>
+            <div style="margin: 5px 10px 5px;">服务器：</div>
+            <div style="margin: 5px 10px 5px;">战斗时间：</div>
+            <div style="margin: 5px 10px 5px;">生成时间：</div>
+            <div style="margin: 5px 10px 5px;">副本：</div>
+            <div style="margin: 5px 10px 5px;">首领：</div>
+            <div style="margin: 5px 10px 5px;">有效人数：</div>
+            <div style="margin: 5px 10px 5px;">战斗时长：</div>
+            <div style="margin: 5px 10px 10px;">数据种类：</div>
+          </div>
+          <div>
+            <div style="margin: 10px 10px 5px">{{ resObj.overall['name'] }}</div>
+            <div style="margin: 5px 10px 5px;">{{ resObj.overall['server'] }}</div>
+            <div style="margin: 5px 10px 5px;">{{ resObj.overall['battleTimePrint'] }}</div>
+            <div style="margin: 5px 10px 5px;">{{ resObj.overall['generateTimePrint'] }}</div>
+            <div style="margin: 5px 10px 5px;">{{ resObj.overall['map'] }}</div>
+            <div style="margin: 5px 10px 5px;">{{ resObj.overall['boss'] }}</div>
+            <div style="margin: 5px 10px 5px;">{{ resObj.overall['numPlayer'] }}</div>
+            <div style="margin: 5px 10px 5px;">{{ resObj.overall['sumTimePrint'] }}</div>
+            <div style="margin: 5px 10px 10px;">{{ resObj.overall['dataType'] }}</div>
+          </div>
         </div>
-        <div>
-
+        <div style="display:flex;flex-direction:column;justify-content: space-between; width: 600px; border: 1px solid #555;margin-left: 20px;margin-right: 20px">
+          <div style="margin: 10px">
+            <div style="font-size: 18px;font-weight: bold;margin-bottom: 10px">装备</div>
+            <div v-if="!resObj.equip['available']" style="color: #555">
+              装备信息获取失败。在进入战斗后打开团队装分面板即可获取。如果是第一视角也可以自动获取。
+            </div>
+          </div>
+          <div style="margin: 10px">
+            <div style="font-size: 18px;font-weight: bold;margin-bottom: 10px">奇穴</div>
+            <div v-if="!resObj.equip['qixue']" style="color: #555">
+              奇穴信息获取失败。在进入战斗后打开团队装分面板即可获取。如果是第一视角也可以自动获取。
+            </div>
+          </div>
         </div>
-        <div>
-
+        <div style="display: flex; border: 1px solid #555; width: 500px">
+          <v-chart :option="healer_chart" style="height: 100%;width: 100%"></v-chart>
         </div>
       </div>
       <!--      统计面板       -->
@@ -81,7 +105,7 @@
         </SkillDisplay>
         <SkillDisplay :skill="timeFlowData.realTimeRank['general']" :sort-list="{
         'key':['APS','SangrouDPS','ZhuangzhouDPS','YujianDPS','efficiency'],
-        'value':['APS：','桑柔DPS：','庄周梦DPS：','玉简DPS：','战斗效率：']}">
+        'value':['APS估算：','桑柔DPS：','庄周梦DPS：','玉简DPS：','战斗效率：']}">
           <template #icon>
             <img class="skill_statistic_icon" :src="getImageUrl('tuanfu','skills_logo')" alt="团辅">
             <text style="margin-top: 5px; font-weight: bold;font-size: 16px">团队辅助</text>
@@ -211,6 +235,14 @@ const router = useRoute()
 const resObj = ref()
 const rankObj = ref()
 const timeFlowData = ref()
+
+const xfColor = {
+  2:['rgb(127, 31, 223)','rgba(127, 31, 223, 0.4)'],
+  5:['rgb(255, 127, 255)', 'rgba(255, 127, 255, 0.4)'],
+  6:['rgb(63, 31, 159)', 'rgba(63, 31, 159, 0.4)'],
+  22:['rgb(100, 250, 180)','rgba(100, 250, 180, 0.4)'],
+  212:['rgb(0, 172, 153)','rgba(0, 172, 153, 0.4)']
+}
 
 axios({
   method:'get',
@@ -441,6 +473,91 @@ const coverage_chart_option = computed(()=>{
     return {}
 })
 
+const healer_chart = computed(()=>{
+  if(loaded.value){
+    let healer = []
+    let hps = []
+    let effHps = []
+    let occ = []
+    for(let item of resObj.value['healer']['table']){
+      healer.push(item['name'])
+      hps.push(item['heal'] - item['healEff'])
+      effHps.push(item['healEff'])
+      occ.push(item['occ'])
+    }
+    return {
+      xAxis: {
+        type: 'value',
+        splitLine:{
+          lineStyle:{
+            color:'#555'
+          }
+        }
+      },
+      yAxis: {
+        type: 'category',
+        data: healer,
+        axisLine:{
+          show:false
+        },
+        axisLabel:{
+          color:'white',
+          formatter:(value)=>{
+            if (value.length > 6){
+              let str = value.slice(0,6) + '\n' + value.slice(6)
+              return str
+            }
+            return value
+          }
+        }
+      },
+      series: [
+        {
+          name: '有效HPS',
+          type: 'bar',
+          stack: 'total',
+          label:{
+            show:true,
+            offset:[10,0],
+          },
+          itemStyle:{
+            color:function(params){
+              return xfColor[occ[params.dataIndex]][0]
+            }
+          },
+          data: effHps
+        },
+        {
+          name: '虚条HPS',
+          type: 'bar',
+          stack: 'total',
+          label:{
+            show:true,
+            position:'right',
+            color:'white',
+            formatter:function(params){
+              return params.value + effHps[params.dataIndex]
+            }
+          },
+          itemStyle:{
+            color:function(params){
+              return xfColor[occ[params.dataIndex]][1]
+            }
+          },
+          data: hps
+        }
+      ],
+      grid:{
+        width:'400px',
+        top:'0px',
+        bottom:'0px',
+        right:'0px'
+      }
+    }
+  }else{
+    return {}
+  }
+})
 </script>
 
 <style scoped>
@@ -451,6 +568,8 @@ const coverage_chart_option = computed(()=>{
 .infoBox{
   margin-bottom: 20px;
   width: 1400px;
+  display: flex;
+  flex-direction: row;
 }
 .statisticBox{
   display: flex;
@@ -552,4 +671,5 @@ const coverage_chart_option = computed(()=>{
   background-color: rgba(221, 170, 255,0.2);
   background-repeat: no-repeat;
 }
+
 </style>
