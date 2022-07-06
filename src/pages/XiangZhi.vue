@@ -1,9 +1,9 @@
 <template>
   <template v-if="loaded">
     <div style="display:flex;flex-direction:column;align-items: center">
-      <div style="text-align: left; font-size: 20px; font-weight: bold; width: 1400px;margin-bottom: 20px">相知复盘 7.10.0 Dev</div>
+      <div style="text-align: left; font-size: 20px; font-weight: bold; width: 1400px;margin-bottom: 20px">相知复盘 8.0.0 Dev</div>
       <div class="infoBox">
-        <div style="display:flex; flex-direction:row;justify-content: space-around; border: 1px solid #555; font-size: 14px;width: 300px">
+        <div style="display:flex; flex-direction:row;justify-content: space-around; border: 1px solid #555; font-size: 14px;width: 300px;background-color: #141414">
           <div>
             <div style="margin: 10px 10px 5px">玩家名称：</div>
             <div style="margin: 5px 10px 5px;">服务器：</div>
@@ -27,91 +27,174 @@
             <div style="margin: 5px 10px 10px;">{{ resObj.overall['dataType'] }}</div>
           </div>
         </div>
-        <div style="display:flex;flex-direction:column;justify-content: space-between; width: 600px; border: 1px solid #555;margin-left: 20px;margin-right: 20px">
+        <div style="display:flex;flex-direction:column;justify-content: space-between; width: 600px; border: 1px solid #555;margin-left: 20px;margin-right: 20px; background-color: #141414">
           <div style="margin: 10px">
             <div style="font-size: 18px;font-weight: bold;margin-bottom: 10px">装备</div>
-            <div v-if="!resObj.equip['available']" style="color: #555">
+            <div v-if="resObj.equip['available']" style="font-size: 14px">
+              装备信息获取失败。在进入战斗后打开团队装分面板即可获取。如果是第一视角也可以自动获取。
+
+            </div>
+            <div v-if="!resObj.equip['available']" style="font-size: 14px">
               装备信息获取失败。在进入战斗后打开团队装分面板即可获取。如果是第一视角也可以自动获取。
             </div>
           </div>
           <div style="margin: 10px">
             <div style="font-size: 18px;font-weight: bold;margin-bottom: 10px">奇穴</div>
-            <div v-if="!resObj.equip['qixue']" style="color: #555">
+            <div v-if="!resObj.equip['qixue']" style="font-size: 14px">
               奇穴信息获取失败。在进入战斗后打开团队装分面板即可获取。如果是第一视角也可以自动获取。
             </div>
           </div>
         </div>
-        <div style="display: flex; border: 1px solid #555; width: 500px">
+        <div style="display: flex; border: 1px solid #555; width: 500px; background-color: #141414">
           <v-chart :option="healer_chart" style="height: 100%;width: 100%"></v-chart>
         </div>
       </div>
       <!--      统计面板       -->
-      <div class="statisticBox">
-        <SkillDisplay :skill="timeFlowData.realTimeRank['meihua']" :sortList="{
+      <el-tabs type="border-card"  class="statisticBox">
+        <el-tab-pane label="即时排名">
+          <div class="statisticBoxInner">
+            <SkillDisplay :skill="timeFlowData.realTimeRank['meihua']" :sortList="{
         'key':['num','numPerSec','cover','delay','youxiangHPS','pingyinHPS'],
         'value':['数量：','每秒数量：','覆盖率：','延迟：','犹香HPS：','平吟HPS：']}">
-          <template #icon>
-            <img class="skill_statistic_icon" :src="getImageUrl('meihua','skills_logo')" alt="梅花三弄">
-            <text style="margin-top: 5px; font-weight: bold;font-size: 16px">梅花三弄</text>
-          </template>
-        </SkillDisplay>
-        <SkillDisplay :skill="timeFlowData.realTimeRank['gong']" :sort-list="{
+              <template #icon>
+                <img class="skill_statistic_icon" :src="getImageUrl('meihua','skills_logo')" alt="梅花三弄">
+                <text style="margin-top: 5px; font-weight: bold;font-size: 16px">梅花三弄</text>
+              </template>
+            </SkillDisplay>
+            <SkillDisplay :skill="timeFlowData.realTimeRank['gong']" :sort-list="{
         'key':['num','numPerSec','delay','HPS','effRate','zhenliuHPS'],
         'value':['数量：','每秒数量：','延迟：','HPS：','有效比率：','枕流HPS：']}">
-          <template #icon>
-            <img class="skill_statistic_icon" :src="getImageUrl('gong','skills_logo')" alt="宫">
-            <text style="margin-top: 5px; font-weight: bold;font-size: 16px">宫</text>
-          </template>
-        </SkillDisplay>
-        <SkillDisplay :skill="timeFlowData.realTimeRank['shang']" :sort-list="{
+              <template #icon>
+                <img class="skill_statistic_icon" :src="getImageUrl('gong','skills_logo')" alt="宫">
+                <text style="margin-top: 5px; font-weight: bold;font-size: 16px">宫</text>
+              </template>
+            </SkillDisplay>
+            <SkillDisplay :skill="timeFlowData.realTimeRank['shang']" :sort-list="{
         'key':['num','numPerSec','cover','delay','HPS'],
         'value':['数量：','每秒数量：','覆盖率：','延迟：','HPS：']}">
-          <template #icon>
-            <img class="skill_statistic_icon" :src="getImageUrl('shang','skills_logo')" alt="商">
-            <text style="margin-top: 5px; font-weight: bold;font-size: 16px">商</text>
-          </template>
-        </SkillDisplay>
-        <SkillDisplay :skill="timeFlowData.realTimeRank['yu']" :sort-list="{
-        'key':['num','numPerSec','effRate','delay','HPS'],
-        'value':['数量：','每秒数量：','有效比率：','延迟：','HPS：']}">
-          <template #icon>
-            <img class="skill_statistic_icon" :src="getImageUrl('yu','skills_logo')" alt="羽">
-            <text style="margin-top: 5px; font-weight: bold;font-size: 16px">羽</text>
-          </template>
-        </SkillDisplay>
-        <SkillDisplay :skill="timeFlowData.realTimeRank['zhi']" :sort-list="{
+              <template #icon>
+                <img class="skill_statistic_icon" :src="getImageUrl('shang','skills_logo')" alt="商">
+                <text style="margin-top: 5px; font-weight: bold;font-size: 16px">商</text>
+              </template>
+            </SkillDisplay>
+            <!--        7.9.1兼容性-->
+            <SkillDisplay :skill="timeFlowData.realTimeRank['yu']" :sort-list="resObj.overall['edition'] === '奶歌复盘pro v7.9.1' ?
+        {'key':['num','effRate','delay','HPS'], 'value':['数量：','有效比率：','延迟：','HPS：']} :
+        {'key':['num','numPerSec','effRate','delay','HPS'], 'value':['数量：','每秒数量：','有效比率：','延迟：','HPS：']}
+        ">
+              <!--                  -->
+              <template #icon>
+                <img class="skill_statistic_icon" :src="getImageUrl('yu','skills_logo')" alt="羽">
+                <text style="margin-top: 5px; font-weight: bold;font-size: 16px">羽</text>
+              </template>
+            </SkillDisplay>
+            <SkillDisplay :skill="timeFlowData.realTimeRank['zhi']" :sort-list="{
         'key':['num','numPerSec','delay','HPS','effRate','gudaoHPS'],
         'value':['数量：','每秒数量：','延迟：','HPS：','有效比率：','古道HPS：']}">
-          <template #icon>
-            <img class="skill_statistic_icon" :src="getImageUrl('zhi','skills_logo')" alt="徵">
-            <text style="margin-top: 5px; font-weight: bold;font-size: 16px">徵</text>
-          </template>
-        </SkillDisplay>
-        <SkillDisplay :skill="timeFlowData.realTimeRank['jue']" :sort-list="{
+              <template #icon>
+                <img class="skill_statistic_icon" :src="getImageUrl('zhi','skills_logo')" alt="徵">
+                <text style="margin-top: 5px; font-weight: bold;font-size: 16px">徵</text>
+              </template>
+            </SkillDisplay>
+            <SkillDisplay :skill="timeFlowData.realTimeRank['jue']" :sort-list="{
         'key':['num','numPerSec','cover','delay','HPS'],
         'value':['数量：','每秒数量：','覆盖率：','延迟：','HPS：']}">
-          <template #icon>
-            <img class="skill_statistic_icon" :src="getImageUrl('jue','skills_logo')" alt="角">
-            <text style="margin-top: 5px; font-weight: bold;font-size: 16px">角</text>
-          </template>
-        </SkillDisplay>
-        <SkillDisplay :skill="timeFlowData.realTimeRank['xiangyi']" :sort-list="{
+              <template #icon>
+                <img class="skill_statistic_icon" :src="getImageUrl('jue','skills_logo')" alt="角">
+                <text style="margin-top: 5px; font-weight: bold;font-size: 16px">角</text>
+              </template>
+            </SkillDisplay>
+            <SkillDisplay :skill="timeFlowData.realTimeRank['xiangyi']" :sort-list="{
         'key':['num','HPS','effRate'],
         'value':['数量：','HPS：','有效比率：']}">
-          <template #icon>
-            <img class="skill_statistic_icon" :src="getImageUrl('xiangyi','skills_logo')" alt="相依">
-            <text style="margin-top: 5px; font-weight: bold;font-size: 16px">相依</text>
-          </template>
-        </SkillDisplay>
-        <SkillDisplay :skill="timeFlowData.realTimeRank['general']" :sort-list="{
+              <template #icon>
+                <img class="skill_statistic_icon" :src="getImageUrl('xiangyi','skills_logo')" alt="相依">
+                <text style="margin-top: 5px; font-weight: bold;font-size: 16px">相依</text>
+              </template>
+            </SkillDisplay>
+            <SkillDisplay :skill="timeFlowData.realTimeRank['general']" :sort-list="{
         'key':['APS','SangrouDPS','ZhuangzhouDPS','YujianDPS','efficiency'],
         'value':['APS估算：','桑柔DPS：','庄周梦DPS：','玉简DPS：','战斗效率：']}">
-          <template #icon>
-            <img class="skill_statistic_icon" :src="getImageUrl('tuanfu','skills_logo')" alt="团辅">
-            <text style="margin-top: 5px; font-weight: bold;font-size: 16px">团队辅助</text>
-          </template>
-        </SkillDisplay>
-      </div>
+              <template #icon>
+                <img class="skill_statistic_icon" :src="getImageUrl('tuanfu','skills_logo')" alt="团辅">
+                <text style="margin-top: 5px; font-weight: bold;font-size: 16px">团队辅助</text>
+              </template>
+            </SkillDisplay>
+          </div>
+        </el-tab-pane>
+        <el-tab-pane label="全时刻排名">
+          <div class="statisticBoxInner">
+            <SkillDisplay :skill="timeFlowData.allTimeRank['meihua']" :sortList="{
+        'key':['num','numPerSec','cover','delay','youxiangHPS','pingyinHPS'],
+        'value':['数量：','每秒数量：','覆盖率：','延迟：','犹香HPS：','平吟HPS：']}">
+              <template #icon>
+                <img class="skill_statistic_icon" :src="getImageUrl('meihua','skills_logo')" alt="梅花三弄">
+                <text style="margin-top: 5px; font-weight: bold;font-size: 16px">梅花三弄</text>
+              </template>
+            </SkillDisplay>
+            <SkillDisplay :skill="timeFlowData.allTimeRank['gong']" :sort-list="{
+        'key':['num','numPerSec','delay','HPS','effRate','zhenliuHPS'],
+        'value':['数量：','每秒数量：','延迟：','HPS：','有效比率：','枕流HPS：']}">
+              <template #icon>
+                <img class="skill_statistic_icon" :src="getImageUrl('gong','skills_logo')" alt="宫">
+                <text style="margin-top: 5px; font-weight: bold;font-size: 16px">宫</text>
+              </template>
+            </SkillDisplay>
+            <SkillDisplay :skill="timeFlowData.allTimeRank['shang']" :sort-list="{
+        'key':['num','numPerSec','cover','delay','HPS'],
+        'value':['数量：','每秒数量：','覆盖率：','延迟：','HPS：']}">
+              <template #icon>
+                <img class="skill_statistic_icon" :src="getImageUrl('shang','skills_logo')" alt="商">
+                <text style="margin-top: 5px; font-weight: bold;font-size: 16px">商</text>
+              </template>
+            </SkillDisplay>
+            <!--        7.9.1兼容性-->
+            <SkillDisplay :skill="timeFlowData.allTimeRank['yu']" :sort-list="resObj.overall['edition'] === '奶歌复盘pro v7.9.1' ?
+        {'key':['num','effRate','delay','HPS'], 'value':['数量：','有效比率：','延迟：','HPS：']} :
+        {'key':['num','numPerSec','effRate','delay','HPS'], 'value':['数量：','每秒数量：','有效比率：','延迟：','HPS：']}
+        ">
+              <!--                  -->
+              <template #icon>
+                <img class="skill_statistic_icon" :src="getImageUrl('yu','skills_logo')" alt="羽">
+                <text style="margin-top: 5px; font-weight: bold;font-size: 16px">羽</text>
+              </template>
+            </SkillDisplay>
+            <SkillDisplay :skill="timeFlowData.allTimeRank['zhi']" :sort-list="{
+        'key':['num','numPerSec','delay','HPS','effRate','gudaoHPS'],
+        'value':['数量：','每秒数量：','延迟：','HPS：','有效比率：','古道HPS：']}">
+              <template #icon>
+                <img class="skill_statistic_icon" :src="getImageUrl('zhi','skills_logo')" alt="徵">
+                <text style="margin-top: 5px; font-weight: bold;font-size: 16px">徵</text>
+              </template>
+            </SkillDisplay>
+            <SkillDisplay :skill="timeFlowData.allTimeRank['jue']" :sort-list="{
+        'key':['num','numPerSec','cover','delay','HPS'],
+        'value':['数量：','每秒数量：','覆盖率：','延迟：','HPS：']}">
+              <template #icon>
+                <img class="skill_statistic_icon" :src="getImageUrl('jue','skills_logo')" alt="角">
+                <text style="margin-top: 5px; font-weight: bold;font-size: 16px">角</text>
+              </template>
+            </SkillDisplay>
+            <SkillDisplay :skill="timeFlowData.allTimeRank['xiangyi']" :sort-list="{
+        'key':['num','HPS','effRate'],
+        'value':['数量：','HPS：','有效比率：']}">
+              <template #icon>
+                <img class="skill_statistic_icon" :src="getImageUrl('xiangyi','skills_logo')" alt="相依">
+                <text style="margin-top: 5px; font-weight: bold;font-size: 16px">相依</text>
+              </template>
+            </SkillDisplay>
+            <SkillDisplay :skill="timeFlowData.allTimeRank['general']" :sort-list="{
+        'key':['APS','SangrouDPS','ZhuangzhouDPS','YujianDPS','efficiency'],
+        'value':['APS估算：','桑柔DPS：','庄周梦DPS：','玉简DPS：','战斗效率：']}">
+              <template #icon>
+                <img class="skill_statistic_icon" :src="getImageUrl('tuanfu','skills_logo')" alt="团辅">
+                <text style="margin-top: 5px; font-weight: bold;font-size: 16px">团队辅助</text>
+              </template>
+            </SkillDisplay>
+          </div>
+        </el-tab-pane>
+      </el-tabs>
+
       <!--      时间轴        -->
       <div style="display:flex;flex-direction:row; width: 1400px; border: 1px solid #555;background-color: #141414;position: relative;margin-bottom: 20px">
         <div style="display:flex;flex-direction:column; width: 150px;border-right: 1px solid #555">
@@ -150,8 +233,8 @@
                    @mouseleave="leaveImg($event,item)"
                    :style="{
                            left:xPosition(item.start),
-                           height:timeFlowData.icon_length,
-                           width:timeFlowData.icon_length
+                           height: icon_length,
+                           width: icon_length
                           }">
             </div>
             <div class="noGCD">
@@ -176,7 +259,7 @@
                 left:xPosition(item.start),
                 height: icon_length,
                 width: item.lasts / 1000 * 40 + 'px',
-                top:'197px'
+                top:(101 + 2 * icon_length) + 'px'
             }">
               </div>
             </div>
@@ -211,7 +294,15 @@
         </el-scrollbar>
       </div>
       <!--      手法警察       -->
-      <Review :review="resObj.review[['content']]"></Review>
+      <template v-if="'review' in resObj">
+        <Review :review="resObj.review[['content']]"></Review>
+      </template>
+      <template v-if="!('review' in resObj)">
+        <div class="reviewBox">
+          <div style="height:49px;line-height:49px; margin-left: 15px;font-size: 20px; font-weight: bold">建议</div>
+          <div style="margin-left: 10px; margin-bottom: 10px">该战斗记录生成时的复盘版本不支持此功能</div>
+        </div>
+      </template>
     </div>
   </template>
 
@@ -260,7 +351,23 @@ axios({
   for (let item in realTimeRank){
     for (let sub_item in realTimeRank[item]){
       realTimeRank[item][sub_item] = [realTimeRank[item][sub_item]]
-      realTimeRank[item][sub_item].push(resObj.value['rank'][item][sub_item])
+      if ('rank' in toRaw(resObj.value)){
+        realTimeRank[item][sub_item].push(resObj.value['rank'][item][sub_item])
+      }else{
+        realTimeRank[item][sub_item].push({num:'无',percent:'无'})
+      }
+    }
+  }
+
+  let allTimeRank = lodash.cloneDeep(toRaw(resObj.value['skill']))
+  for (let item in allTimeRank){
+    for (let sub_item in allTimeRank[item]){
+      allTimeRank[item][sub_item] = [allTimeRank[item][sub_item]]
+      if (rankObj.value){
+        allTimeRank[item][sub_item].push(rankObj.value[item][sub_item])
+      }else{
+        allTimeRank[item][sub_item].push({num:'无',percent:'无'})
+      }
     }
   }
 
@@ -322,6 +429,7 @@ axios({
     timeFlowWidth,
     timeScale,
     realTimeRank,
+    allTimeRank,
     timeflow_channelling,
     timeflow_without_channelling,
     firstHit,
@@ -377,14 +485,6 @@ const timeFlowWidth = computed(()=>{
 const ChartWidth = computed(()=>{
   if (loaded.value){
     return (Math.floor(timeFlowData.value.timeFlowWidth / 40 * 2) * 20 - 1) + 'px'
-  }else{
-    return '0px'
-  }
-})
-
-const timeScaleHeight = computed(()=>{
-  if (loaded.value){
-    return Math.floor(350 - 104 - 4 * timeFlowData.value.GCD / 1000 * 40) + 'px'
   }else{
     return '0px'
   }
@@ -521,6 +621,7 @@ const healer_chart = computed(()=>{
           label:{
             show:true,
             offset:[10,0],
+            color:'white'
           },
           itemStyle:{
             color:function(params){
@@ -574,25 +675,28 @@ const healer_chart = computed(()=>{
   flex-direction: row;
 }
 .statisticBox{
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: space-between;
   width: 1400px;
   background-color: #141414;
   border: 1px solid #555;
   margin-bottom: 20px;
 }
-.infoBox_inner{
-  width: 518px;
+.statisticBoxInner{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+.reviewBox{
+  width: 1400px;
   border: 1px solid #555;
+  margin-bottom: 20px ;
   background-color: #141414;
 }
 .timeFlow{
   display: flex;
   position: relative;
   flex-direction: column;
-  height: 350px;
+  height: v-bind("(101 + 5 * icon_length) + 'px'");
   width: v-bind("timeFlowWidth");
 }
 .coverage_chart{
@@ -626,7 +730,7 @@ const healer_chart = computed(()=>{
 .timeScale{
   display: flex;
   flex-direction: row;
-  height: v-bind("timeScaleHeight");
+  height: v-bind("icon_length");
 }
 .noGCD{
   display: flex;
@@ -636,15 +740,11 @@ const healer_chart = computed(()=>{
 }
 .bossPhase_icon{
   position: absolute;
-  top:245px;
-}
-.flower_icon{
-  position: absolute;
-  top:197px
+  top:v-bind("(101 + 3 * icon_length) + 'px'")
 }
 .noGCD_skill_icon{
   position: absolute;
-  top:149px;
+  top: v-bind("(101 + icon_length) + 'px'")
 }
 .GCD_skill_icon{
   position: absolute;
@@ -673,5 +773,18 @@ const healer_chart = computed(()=>{
   background-color: rgba(221, 170, 255,0.2);
   background-repeat: no-repeat;
 }
-
+:deep(.el-tabs__nav-scroll){
+  background-color: #201020;
+  border-bottom: 1px solid #555;
+}
+:deep(.el-tabs--border-card>.el-tabs__header .el-tabs__item.is-active){
+  color: #409EFF;
+  background-color: #141414;
+  font-size: 16px;
+  font-weight: bold;
+}
+:deep(.el-tabs--border-card>.el-tabs__header .el-tabs__item){
+  color: #FFFFFF;
+  font-size: 16px;
+}
 </style>

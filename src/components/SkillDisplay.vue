@@ -11,7 +11,7 @@
       <div class="skill_details">
         <el-tooltip v-for="key in sortList['key']" placement="right" effect="light">
           <template #content>
-            排名：<text :class="color(skill[key][1]['percent'])">{{skill[key][1]['percent']}}%</text><br>
+            排名：<text :class="color(skill[key][1]['percent'])">{{skill[key][1]['percent'] === '无' ? '无' : skill[key][1]['percent'] + '%' }}</text><br>
             样本：<text :class="color(skill[key][1]['percent'])">{{skill[key][1]['num']}}</text>
           </template>
           <text style="margin-left: 10px;width: 40px" :class="color(skill[key][1]['percent'])">{{formatter(skill[key][0])}}</text>
@@ -41,8 +41,11 @@ const color = (score) =>{
   else if (score >= 98 && score < 100){
     return 'pink'
   }
-  else{
+  else if (score == 100){
     return 'gold'
+  }
+  else{
+    return 'white'
   }
 }
 
