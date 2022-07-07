@@ -309,6 +309,12 @@ const showAllLogs = (logsList) =>{
 
 const general_chart = computed(()=>{
 
+  return {
+    xAxis:{
+      type: 'category',
+      data:
+    },
+  }
 })
 
 const color = (score) =>{
