@@ -1,5 +1,5 @@
 <template>
-  <template v-if="sect">
+  <template v-if="status === 200">
     <div style="display: flex; flex-direction: column; align-items: center">
       <div class="character_box">
         <div style="display: flex;flex-direction: row;padding: 10px">
@@ -12,8 +12,8 @@
           </div>
         </div>
         <div class="occ_choose">
-          <img @click="mainOcc" :class="{active:activeOcc === 1}" class="occ_img" :src="getImgUrl('occ_logo',occTable[sect][0])">
-          <img v-if="occTable[sect].length > 1" @click="subOcc" :class="{active:activeOcc === 2}" class="occ_img" :src="getImgUrl('occ_logo',occTable[sect][1])">
+          <img @click="mainOcc" :class="{active:activeOcc === 0}" class="occ_img" :src="getImgUrl('occ_logo',occTable[sect][0])">
+          <img v-if="occTable[sect].length > 1" @click="subOcc" :class="{active:activeOcc === 1}" class="occ_img" :src="getImgUrl('occ_logo',occTable[sect][1])">
         </div>
       </div>
       <div class="main_box">
@@ -22,27 +22,27 @@
             <el-option label="江湖无限赛季" value="110-4"></el-option>
             <el-option label="北天药宗赛季" value="110-3"></el-option>
           </el-select>
-          <el-select v-if="season === '110-4'" v-model="instance" size="small" style="width:150px">
+          <el-select v-if="season === '110-4'" v-model="instance" size="small" style="width:160px">
             <el-option label="河阳之战（25人英雄）" value="25人英雄河阳之战"></el-option>
             <el-option label="河阳之战（25人普通）" value="25人普通河阳之战"></el-option>
           </el-select>
-          <el-select v-if="season === '110-3'" v-model="instance" size="small" style="width:150px">
+          <el-select v-if="season === '110-3'" v-model="instance" size="small" style="width:160px">
             <el-option label="雷狱大泽（25人英雄）" value="25人英雄雷狱大泽"></el-option>
             <el-option disabled label="雷狱大泽（25人普通）" value="25人普通雷狱大泽"></el-option>
           </el-select>
         </div>
-        <div style="height: 400px; border:1px solid #555; margin:20px; display: flex; flex-direction: row;justify-content: space-between">
+        <div style="height: 300px; border:1px solid #555; margin:20px; display: flex; flex-direction: row;justify-content: space-between">
           <div>
-            CHART AREA
+            <v-chart :option="general_chart"></v-chart>
           </div>
           <div style="border-left: 1px solid #555; width: 300px; display: flex; flex-direction: column; justify-content: center;align-items: center">
-            <div style="font-size:22px; font-weight: bold; margin-bottom: 10px">最佳综合表现分</div>
+            <div style="font-size:22px; font-weight: bold; margin-bottom: 10px">最佳综合表现</div>
             <div style="font-size:26px; font-weight: bold; margin-bottom: 10px" :class="color(bestPerf)">{{ bestPerf }}</div>
-            <div style="font-size:22px; font-weight: bold; margin-bottom: 10px">综合表现中位数</div>
+            <div style="font-size:22px; font-weight: bold; margin-bottom: 10px">平均综合表现</div>
             <div style="font-size:26px; font-weight: bold; margin-bottom: 10px" :class="color(medPerf)">{{ medPerf }}</div>
           </div>
         </div>
-        <div style="margin: 0px 20px 20px 20px;border: 1px solid #555">
+        <div style="margin: 0 20px 20px 20px;border: 1px solid #555" v-if="occToSect[occTable[sect][activeOcc]][2] === 'd'">
           <el-table border :data="instData[season]" stripe style="width: 100%">
             <el-table-column align="center" prop="name" label="首领" width="180">
               <template #default="scope">
@@ -61,13 +61,60 @@
             <el-table-column align="center" label="最高aDPS" />
           </el-table>
         </div>
+        <div style="margin: 0 20px 20px 20px;border: 1px solid #555" v-if="occToSect[occTable[sect][activeOcc]][2] === 'h'">
+          <el-table border :data="healerForm" stripe style="width: 100%">
+            <el-table-column align="center" prop="name" label="首领" width="180">
+              <template #default="scope">
+                <div style="display: flex;flex-direction: row;justify-content: left;align-items: center">
+                  <img :src="scope.row.pic" alt="alt" class="boss_pic">
+                  <div style="margin-left: 10px">{{ scope.row.name }}</div>
+                </div>
+              </template>
+            </el-table-column>
+            <el-table-column align="center" label="击杀次数" prop="num" />
+            <el-table-column align="center" label="最佳表现">
+              <template #default="scope">
+                <div :class="color(scope.row.max)">{{scope.row.max}}</div>
+              </template>
+            </el-table-column>
+              <el-table-column align="center" label="平均表现">
+                <template #default="scope">
+                  <div :class="color(scope.row.avg)">{{scope.row.avg}}</div>
+                </template>
+              </el-table-column>
+            <el-table-column align="center" label="操作">
+              <template #default="scope">
+                <el-button type="primary" link :disabled="scope.row.logsList.length === 0" @click="showAllLogs(scope.row.logsList)">查看全部</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
       </div>
+    </div>
+  </template>
+  <template v-if="status === 404">
+    <div style="display: flex;;flex-direction: column;align-items: center;">
+      <div style="width: 190px;height: 190px;background-color: #000000;display: flex;justify-content: center;align-items: center">
+        <div>
+          <div style="font-size:54px; font-weight: bold; display: flex">
+            <div style="height: 80px;width: 80px;display: flex;justify-content: center;line-height: 80px;margin-right: 10px;margin-bottom: 10px">这</div>
+            <div style="height: 80px;width: 80px;display: flex;justify-content: center;line-height: 80px">还</div>
+          </div>
+          <div style="font-size:54px; font-weight: bold;display: flex">
+            <div style="height: 80px;width: 80px;display: flex;justify-content: center;line-height: 80px;margin-right: 10px">不</div>
+            <div style="height: 80px;width: 80px;display: flex;justify-content: center;line-height: 80px; color:#000000;
+          background-color: rgb(247,151,30)">急</div>
+          </div>
+        </div>
+      </div>
+      <div style="font-size: 36px;font-weight: bold;margin-top:40px; margin-bottom: 40px">哈哈，报错了！</div>
+      <div style="font-size: 24px">未找到该人物的战斗记录！</div>
     </div>
   </template>
 </template>
 
 <script setup>
-import {watch,reactive,ref,toRaw} from "vue";
+import {watch, reactive, ref, toRaw, computed} from "vue";
 import { useRoute } from "vue-router";
 import axios from "axios";
 import lodash from 'lodash'
@@ -82,11 +129,13 @@ const instance = ref('25人英雄河阳之战')
 const sect = ref()
 
 const occToSect = {
-  'xiangzhi':['cg',2,'h'],
-  'mowen':['cg',1,'d']
+  'mowen':['cg',0,'d'],
+  'xiangzhi':['cg',1,'h'],
+  'huajianyou':['wh',0,'d'],
+  'lijingyidao':['wh',1,'h']
 }
 
-const loaded = ref(false)
+const status = ref()
 
 const allLogs = ref()
 
@@ -104,55 +153,63 @@ const occTable = {
   'tc':['axzy','tll'],
   'tm':['jyj','tlgd'],
   'wd':['dj','butianjue'],
-  'wh':['hjy','ljyd'],
+  'wh':['huajianyou','lijingyidao'],
   'ytz':['txj'],
   'yz':['wf','lingsu']
 }
 
-const activeOcc = ref(1)
+const activeOcc = ref(0)
 
 const mainOcc = () => {
-  activeOcc.value = 1
+  activeOcc.value = 0
 }
 
 const subOcc = () => {
-  activeOcc.value = 2
+  activeOcc.value = 1
 }
 
-axios({
-  method:'get',
-  url: `http://139.199.102.41:8009/getSinglePlayer?id=${name}&server=${server}&map=${toRaw(instance.value)}`
-}).then((res)=>{
-  console.log(res)
-  // 根据最后一次上传的logs确定玩家的门派
-  let lastLog = []
-  for (let i in res.data.result.table){
-    lastLog.push(res.data.result.table[i].slice(-1)[0])
-  }
+watch(()=>instance.value,(newValue,oldValue)=>{
+  axios({
+    method:'get',
+    url: `http://120.48.95.56:8009/getSinglePlayer?id=${name}&server=${server}&map=${toRaw(newValue)}`
+  }).then((res)=>{
+    console.log(res)
+    if (JSON.stringify(res.data.result.table) === '{}'){
+      status.value = 404
+    }else{
+      // 根据最后一次上传的logs确定玩家的门派
+      let lastLog = []
+      for (let i in res.data.result.table){
+        lastLog.push(res.data.result.table[i].slice(-1)[0])
+      }
 
-  lastLog = lastLog.sort((a,b)=>{
-    return b.battleTime - a.battleTime
+      lastLog = lastLog.sort((a,b)=>{
+        return b.battleTime - a.battleTime
+      })
+
+      sect.value = occToSect[lastLog[0].occ][0]
+      activeOcc.value = occToSect[lastLog[0].occ][1]
+
+      let mainOccLogs = lodash.cloneDeep(res.data.result.table)
+      let subOccLogs = lodash.cloneDeep(res.data.result.table)
+
+      for (let i in mainOccLogs){
+        mainOccLogs[i] = mainOccLogs[i].filter((item)=>{
+          return item['occ'] === occTable[sect.value][0]
+        })
+      }
+
+      for (let i in subOccLogs){
+        subOccLogs[i] = subOccLogs[i].filter((item)=>{
+          return item['occ'] === occTable[sect.value][1]
+        })
+      }
+      allLogs.value = [mainOccLogs,subOccLogs]
+      status.value = 200
+    }
   })
+},{immediate:true})
 
-  sect.value = occToSect[lastLog[0].occ][0]
-  activeOcc.value = occToSect[lastLog[0].occ][1]
-
-  let mainOccLogs = lodash.cloneDeep(res.data.result.table)
-  let subOccLogs = lodash.cloneDeep(res.data.result.table)
-
-  for (let i in mainOccLogs){
-    mainOccLogs[i] = mainOccLogs[i].filter((item)=>{
-      return item['occ'] === occTable[sect.value][0]
-    })
-  }
-
-  for (let i in subOccLogs){
-    subOccLogs[i] = subOccLogs[i].filter((item)=>{
-      return item['occ'] === occTable[sect.value][1]
-    })
-  }
-  allLogs.value = [mainOccLogs,subOccLogs]
-})
 
 const getImgUrl = (folder,name) => {
   return new URL(`../assets/${folder}/${name}.png`, import.meta.url).href
@@ -218,6 +275,42 @@ watch(season,(new_value,old_value)=>{
   }
 })
 
+const healerForm = computed(()=>{
+  let form = lodash.cloneDeep(instData[season.value])
+  for (let item of form){
+    if (item.name in allLogs.value[activeOcc.value]){
+      let res = allLogs.value[activeOcc.value][item.name]
+      console.log('--------',res,'--------')
+      let scoreList = []
+      for (let item of res){
+        scoreList.push(item['score'])
+      }
+      item['max'] = Math.max.apply(null,scoreList)
+      let total = 0
+      for (let num of scoreList){
+        total += num
+      }
+      item['avg'] = total / scoreList.length
+      item['num'] = res.length
+      item['logsList'] = res
+    }else{
+      item['num'] = 0
+      item['max'] = 'N/A'
+      item['avg'] = 'N/A'
+      item['logsList'] = []
+    }
+  }
+  return form
+})
+
+const showAllLogs = (logsList) =>{
+  console.log(logsList)
+}
+
+const general_chart = computed(()=>{
+
+})
+
 const color = (score) =>{
   if (score < 25){
     return 'grey'
@@ -237,8 +330,11 @@ const color = (score) =>{
   else if (score >= 98 && score < 100){
     return 'pink'
   }
-  else{
+  else if (score === 100){
     return 'gold'
+  }
+  else{
+    return 'white'
   }
 }
 

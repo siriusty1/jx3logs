@@ -194,7 +194,6 @@
           </div>
         </el-tab-pane>
       </el-tabs>
-
       <!--      时间轴        -->
       <div style="display:flex;flex-direction:row; width: 1400px; border: 1px solid #555;background-color: #141414;position: relative;margin-bottom: 20px">
         <div style="display:flex;flex-direction:column; width: 150px;border-right: 1px solid #555">
@@ -305,7 +304,63 @@
       </template>
     </div>
   </template>
-
+  <template v-if="err === 'unsupport'">
+    <div style="display: flex;;flex-direction: column;align-items: center;">
+      <div style="width: 190px;height: 190px;background-color: #000000;display: flex;justify-content: center;align-items: center">
+        <div>
+          <div style="font-size:54px; font-weight: bold; display: flex">
+            <div style="height: 80px;width: 80px;display: flex;justify-content: center;line-height: 80px;margin-right: 10px;margin-bottom: 10px">你</div>
+            <div style="height: 80px;width: 80px;display: flex;justify-content: center;line-height: 80px">先</div>
+          </div>
+          <div style="font-size:54px; font-weight: bold;display: flex">
+            <div style="height: 80px;width: 80px;display: flex;justify-content: center;line-height: 80px;margin-right: 10px">别</div>
+            <div style="height: 80px;width: 80px;display: flex;justify-content: center;line-height: 80px; color:#000000;
+          background-color: rgb(247,151,30)">急</div>
+          </div>
+        </div>
+      </div>
+      <div style="font-size: 36px;font-weight: bold;margin-top:40px; margin-bottom: 40px">哈哈，报错了！</div>
+      <div style="font-size: 24px">不支持的心法，请等待之后的版本更新！</div>
+    </div>
+  </template>
+  <template v-if="err === 'private'">
+    <div style="display: flex;;flex-direction: column;align-items: center;">
+      <div style="width: 190px;height: 190px;background-color: #000000;display: flex;justify-content: center;align-items: center">
+        <div>
+          <div style="font-size:54px; font-weight: bold; display: flex">
+            <div style="height: 80px;width: 80px;display: flex;justify-content: center;line-height: 80px;margin-right: 10px;margin-bottom: 10px">你</div>
+            <div style="height: 80px;width: 80px;display: flex;justify-content: center;line-height: 80px">先</div>
+          </div>
+          <div style="font-size:54px; font-weight: bold;display: flex">
+            <div style="height: 80px;width: 80px;display: flex;justify-content: center;line-height: 80px;margin-right: 10px">别</div>
+            <div style="height: 80px;width: 80px;display: flex;justify-content: center;line-height: 80px; color:#000000;
+          background-color: rgb(247,151,30)">急</div>
+          </div>
+        </div>
+      </div>
+      <div style="font-size: 36px;font-weight: bold;margin-top:40px; margin-bottom: 40px">哈哈，报错了！</div>
+     <div style="font-size: 24px">该战斗记录被上传者设置为未公开！</div>
+    </div>
+  </template>
+  <template v-if="err === 'unexist'">
+    <div style="display: flex;;flex-direction: column;align-items: center;">
+      <div style="width: 190px;height: 190px;background-color: #000000;display: flex;justify-content: center;align-items: center">
+        <div>
+          <div style="font-size:54px; font-weight: bold; display: flex">
+            <div style="height: 80px;width: 80px;display: flex;justify-content: center;line-height: 80px;margin-right: 10px;margin-bottom: 10px">你</div>
+            <div style="height: 80px;width: 80px;display: flex;justify-content: center;line-height: 80px">先</div>
+          </div>
+          <div style="font-size:54px; font-weight: bold;display: flex">
+            <div style="height: 80px;width: 80px;display: flex;justify-content: center;line-height: 80px;margin-right: 10px">别</div>
+            <div style="height: 80px;width: 80px;display: flex;justify-content: center;line-height: 80px; color:#000000;
+          background-color: rgb(247,151,30)">急</div>
+          </div>
+        </div>
+      </div>
+      <div style="font-size: 36px;font-weight: bold;margin-top:40px; margin-bottom: 40px">哈哈，报错了！</div>
+      <div style="font-size: 24px">未找到该战斗记录！</div>
+    </div>
+  </template>
 </template>
 
 <script setup>
@@ -326,6 +381,7 @@ const route = useRoute()
 const resObj = ref()
 const rankObj = ref()
 const timeFlowData = ref()
+const err = ref()
 
 const xfColor = {
   2:['rgb(127, 31, 223)','rgba(127, 31, 223, 0.4)'],
@@ -340,104 +396,116 @@ axios({
   url: `http://120.48.95.56:8009/getReplayPro?id=${route.params.replay_id}`
 }).then((res)=>{
   console.log(res)
-  let repl = res.data['raw'].replace(/'/g, '"').replace(/&#39;/g, '"').replace(/\n/g, '\\n').replace(/\t/g, '\\t');
-  let repl2 = res.data['rank'].replace(/'/g, '"').replace(/&#34;/g, '"').replace(/\n/g, '\\n').replace(/\t/g, '\\t');
-  let replay  = JSON.parse(repl)
-  resObj.value = JSON.parse(repl)
-  let rank = JSON.parse(repl2)
-  rankObj.value = JSON.parse(repl2)
+  if (res.data.available){
+    let repl = res.data['raw'].replace(/'/g, '"').replace(/&#39;/g, '"').replace(/\n/g, '\\n').replace(/\t/g, '\\t');
+    let repl2 = res.data['rank'].replace(/'/g, '"').replace(/&#34;/g, '"').replace(/\n/g, '\\n').replace(/\t/g, '\\t');
+    let replay  = JSON.parse(repl)
+    resObj.value = JSON.parse(repl)
+    let rank = JSON.parse(repl2)
+    rankObj.value = JSON.parse(repl2)
 
-  let realTimeRank = lodash.cloneDeep(toRaw(resObj.value['skill']))
-  for (let item in realTimeRank){
-    for (let sub_item in realTimeRank[item]){
-      realTimeRank[item][sub_item] = [realTimeRank[item][sub_item]]
-      if ('rank' in toRaw(resObj.value)){
-        realTimeRank[item][sub_item].push(resObj.value['rank'][item][sub_item])
-      }else{
-        realTimeRank[item][sub_item].push({num:'无',percent:'无'})
+    let realTimeRank = lodash.cloneDeep(toRaw(resObj.value['skill']))
+    for (let item in realTimeRank){
+      for (let sub_item in realTimeRank[item]){
+        realTimeRank[item][sub_item] = [realTimeRank[item][sub_item]]
+        if ('rank' in toRaw(resObj.value)){
+          realTimeRank[item][sub_item].push(resObj.value['rank'][item][sub_item])
+        }else{
+          realTimeRank[item][sub_item].push({num:'无',percent:'无'})
+        }
       }
     }
-  }
 
-  let allTimeRank = lodash.cloneDeep(toRaw(resObj.value['skill']))
-  for (let item in allTimeRank){
-    for (let sub_item in allTimeRank[item]){
-      allTimeRank[item][sub_item] = [allTimeRank[item][sub_item]]
-      if (rankObj.value){
-        allTimeRank[item][sub_item].push(rankObj.value[item][sub_item])
-      }else{
-        allTimeRank[item][sub_item].push({num:'无',percent:'无'})
+    let allTimeRank = lodash.cloneDeep(toRaw(resObj.value['skill']))
+    for (let item in allTimeRank){
+      for (let sub_item in allTimeRank[item]){
+        allTimeRank[item][sub_item] = [allTimeRank[item][sub_item]]
+        if (rankObj.value){
+          allTimeRank[item][sub_item].push(rankObj.value[item][sub_item])
+        }else{
+          allTimeRank[item][sub_item].push({num:'无',percent:'无'})
+        }
       }
     }
-  }
 
-  const calcGCD = (haste,talent) =>{
-    if (haste < 43){}
-    else if (haste < 43){return 1500}
-    else if (haste >= 43 && haste < 1928){return 1440}
-    else if (haste >= 1928 && haste < 4026){return 1380}
-    else if (haste >= 4026 && haste < 6296){return 1310}
-    else if (haste >= 6296 && haste < 8780){return 1250}
-    else{return 1187.5}
-  }
-  let GCD = calcGCD(replay['overall']['hasteReal'])
-  let timeFlowWidth = (replay['replay']['finalTime'] - replay['replay']['startTime']) / 1000 * 40
-  let timeScale = Math.floor(timeFlowWidth / 200)
-  let timeflow_without_channelling = []
-  let timeflow_channelling = []
-  for (let item of replay['replay']['normal']){
-    if (item['skillname'] === '徵'){
-      timeflow_channelling.push(item)
-    }else{
-      timeflow_without_channelling.push(item)
+    const calcGCD = (haste,talent) =>{
+      if (haste < 43){}
+      else if (haste < 43){return 1500}
+      else if (haste >= 43 && haste < 1928){return 1440}
+      else if (haste >= 1928 && haste < 4026){return 1380}
+      else if (haste >= 4026 && haste < 6296){return 1310}
+      else if (haste >= 6296 && haste < 8780){return 1250}
+      else{return 1187.5}
     }
-  }
-  let firstHit = [timeflow_channelling[0]]
-  firstHit[0]['hits'] = 1
-  for (let i = 1; i < timeflow_channelling.length; i++){
-    if (timeflow_channelling[i]['start'] - timeflow_channelling[i - 1]['start'] < 1000){
-      firstHit[firstHit.length - 1]['hits'] += 1
-      firstHit[firstHit.length - 1]['heal'] = firstHit[firstHit.length - 1]['heal'] + ' / ' + timeflow_channelling[i]['heal']
-      firstHit[firstHit.length - 1]['healeff'] = firstHit[firstHit.length - 1]['healeff'] + ' / ' + timeflow_channelling[i]['healeff']
-      firstHit[firstHit.length - 1]['targetName'] = firstHit[firstHit.length - 1]['targetName'] + '<br>' + timeflow_channelling[i]['targetName']
-    }else{
-      firstHit.push(timeflow_channelling[i])
-      firstHit[firstHit.length - 1]['hits'] = 1
+    let GCD = calcGCD(replay['overall']['hasteReal'])
+    let timeFlowWidth = (replay['replay']['finalTime'] - replay['replay']['startTime']) / 1000 * 40
+    let timeScale = Math.floor(timeFlowWidth / 200)
+    let timeflow_without_channelling = []
+    let timeflow_channelling = []
+    for (let item of replay['replay']['normal']){
+      if (item['skillname'] === '徵'){
+        timeflow_channelling.push(item)
+      }else{
+        timeflow_without_channelling.push(item)
+      }
     }
-  }
+    let firstHit = [timeflow_channelling[0]]
+    firstHit[0]['hits'] = 1
+    for (let i = 1; i < timeflow_channelling.length; i++){
+      if (timeflow_channelling[i]['start'] - timeflow_channelling[i - 1]['start'] < 1000){
+        firstHit[firstHit.length - 1]['hits'] += 1
+        firstHit[firstHit.length - 1]['heal'] = firstHit[firstHit.length - 1]['heal'] + ' / ' + timeflow_channelling[i]['heal']
+        firstHit[firstHit.length - 1]['healeff'] = firstHit[firstHit.length - 1]['healeff'] + ' / ' + timeflow_channelling[i]['healeff']
+        firstHit[firstHit.length - 1]['targetName'] = firstHit[firstHit.length - 1]['targetName'] + '<br>' + timeflow_channelling[i]['targetName']
+      }else{
+        firstHit.push(timeflow_channelling[i])
+        firstHit[firstHit.length - 1]['hits'] = 1
+      }
+    }
 
-  let songChange = []
-  songChange.push({
-    'skillname':'梅花三弄·切换',
-    'start':replay['replay']['startTime']
-  })
-  for (let item of replay['replay']['special']){
-    if(item['skillname'] === '高山流水·切换' || item['skillname'] === '阳春白雪·切换' || item['skillname'] === '梅花三弄·切换'){
-      songChange.push(item)
+    let songChange = []
+    songChange.push({
+      'skillname':'梅花三弄·切换',
+      'start':replay['replay']['startTime']
+    })
+    for (let item of replay['replay']['special']){
+      if(item['skillname'] === '高山流水·切换' || item['skillname'] === '阳春白雪·切换' || item['skillname'] === '梅花三弄·切换'){
+        songChange.push(item)
+      }
     }
-  }
-  for (let i = 0; i < songChange.length; i++){
-    if (i < songChange.length - 1){
-      songChange[i]['lasts'] = songChange[i + 1]['start'] - songChange[i]['start']
-    }else{
-      songChange[i]['lasts'] = replay['replay']['finalTime'] - songChange[i]['start']
+    for (let i = 0; i < songChange.length; i++){
+      if (i < songChange.length - 1){
+        songChange[i]['lasts'] = songChange[i + 1]['start'] - songChange[i]['start']
+      }else{
+        songChange[i]['lasts'] = replay['replay']['finalTime'] - songChange[i]['start']
+      }
     }
-  }
 
-  timeFlowData.value = {
-    GCD,
-    timeFlowWidth,
-    timeScale,
-    realTimeRank,
-    allTimeRank,
-    timeflow_channelling,
-    timeflow_without_channelling,
-    firstHit,
-    songChange
+    timeFlowData.value = {
+      GCD,
+      timeFlowWidth,
+      timeScale,
+      realTimeRank,
+      allTimeRank,
+      timeflow_channelling,
+      timeflow_without_channelling,
+      firstHit,
+      songChange
+    }
+    loaded.value = true
+  }else{
+
+    if (res.data.text === '数据未公开.'){
+      err.value = 'private'
+    }
+    else if (res.data.text === '不支持的心法，请等待之后的版本更新.'){
+      err.value = 'unsupport'
+    }
+    else if (res.data.text === '结果未找到.'){
+      err.value = 'unexist'
+    }
   }
-  loaded.value = true
 })
-
 
 const color = (score) =>{
   if (score < 25){
@@ -458,10 +526,14 @@ const color = (score) =>{
   else if (score >= 98 && score < 100){
     return 'pink'
   }
-  else{
+  else if (score === 100){
     return 'gold'
   }
+  else{
+    return 'white'
+  }
 }
+
 const getImageUrl = (name,folder) => {
   return new URL(`../assets/${folder}/${name}.png`, import.meta.url).href
 }
