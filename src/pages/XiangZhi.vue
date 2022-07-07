@@ -343,7 +343,7 @@
     </div>
   </template>
   <template v-if="err === 'unexist'">
-    <div style="display: flex;;flex-direction: column;align-items: center;">
+    <div style="display: flex;flex-direction: column;align-items: center">
       <div style="width: 190px;height: 190px;background-color: #000000;display: flex;justify-content: center;align-items: center">
         <div>
           <div style="font-size:54px; font-weight: bold; display: flex">
