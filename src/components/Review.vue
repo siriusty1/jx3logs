@@ -70,7 +70,7 @@ const reviewRes = computed(()=>{
         break;
       case 102:
         resItem['title'] = '保证"梅花三弄"的覆盖率'
-        resItem['desc'] = `"梅花三弄"的覆盖率是奶歌最重要的指标，保证覆盖率可以增加团队输出，同时也为团队血量提供保障。多数时候，即使面对血量不满的目标也应当贴盾，让其它治疗来奶满。<br>本场战斗你的"梅花三弄"覆盖率为${resItem.cover}，超过了${resItem.rank}%的玩家。`
+        resItem['desc'] = `"梅花三弄"的覆盖率是奶歌最重要的指标，保证覆盖率可以增加团队输出，同时也为团队血量提供保障。多数时候，即使面对血量不满的目标也应当贴盾，让其它治疗来奶满。<br>本场战斗你的"梅花三弄"覆盖率为${(100 * resItem.cover).toFixed(2)}%，超过了${resItem.rank}%的玩家。`
         res.push(resItem)
         break;
       case 103:

@@ -3,6 +3,8 @@ const Index = () => import('../pages/Index.vue')
 const Character = () => import('../pages/Character.vue')
 const Ranking = () => import('../pages/Ranking.vue')
 const LingSu = () => import('../pages/LingSu.vue')
+const LingSu2 = () => import('../pages/LingSu2.vue')
+
 const XiangZhi = () => import('../pages/XiangZhi.vue')
 const LiJingYiDao = () => import('../pages/LiJingYiDao.vue')
 
@@ -22,8 +24,12 @@ const router = createRouter({
             component: Ranking
         },
         {
-            path:"/lingsu",
+            path:"/lingsu/:replay_id",
             component: LingSu
+        },
+        {
+            path:"/lingsu2",
+            component: LingSu2
         },
         {
             path:"/xiangzhi/:replay_id",

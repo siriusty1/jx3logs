@@ -213,17 +213,17 @@
             </div>
             <div class="GCD">
               <div v-for="i in timeFlowData.timeScale" style="height: 100%; width: 199px;border-right: 1px solid rgba(85,85,85,0.5)"></div>
-              <!--            <img v-for="(item, index) in firstHit"-->
-              <!--                 @mouseenter="enterImg($event,item)"-->
-              <!--                 @mouseleave="leaveImg($event,item)"-->
-              <!--                 :src="getImageUrl('15412_' + item.hits,'skills_logo')"-->
-              <!--                 alt="icon"-->
-              <!--                 class="GCD_skill_icon"-->
-              <!--                 :style="{-->
-              <!--                           left:xPosition(item.start),-->
-              <!--                           height:Math.floor(GCD / 1000 * 40)+'px',-->
-              <!--                           width:Math.floor(item.duration * item.hits / 1000 * 40)+'px'-->
-              <!--                          }">-->
+              <img v-for="(item, index) in timeFlowData.firstHit"
+                   @mouseenter="enterImg($event,item)"
+                   @mouseleave="leaveImg($event,item)"
+                   :src="getImageUrl('7174','skills_logo')"
+                   alt="icon"
+                   class="GCD_skill_icon"
+                   :style="{
+                             left:xPosition(item.start),
+                             height: icon_length,
+                             width: icon_length
+                            }">
               <img v-for="(item, index) in timeFlowData.timeflow_without_channelling"
                    :src="getImageUrl(item.iconid,'skills_logo')"
                    alt="icon"
@@ -449,6 +449,7 @@ axios({
         timeflow_without_channelling.push(item)
       }
     }
+    console.log(timeflow_channelling)
     let firstHit = [timeflow_channelling[0]]
     firstHit[0]['hits'] = 1
     for (let i = 1; i < timeflow_channelling.length; i++){
@@ -462,7 +463,7 @@ axios({
         firstHit[firstHit.length - 1]['hits'] = 1
       }
     }
-
+    console.log(firstHit)
     let songChange = []
     songChange.push({
       'skillname':'梅花三弄·切换',
@@ -723,10 +724,10 @@ const healer_chart = computed(()=>{
         }
       ],
       grid:{
-        width:'400px',
         top:'0px',
         bottom:'0px',
-        right:'0px'
+        right:'40px',
+        left:'100px'
       }
     }
   }else{
