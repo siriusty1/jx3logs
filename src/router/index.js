@@ -36,7 +36,7 @@ const router = createRouter({
             component: XiangZhi
         },
         {
-            path:"/lijingyidao",
+            path:"/lijingyidao/:replay_id",
             component: LiJingYiDao
         }
     ]

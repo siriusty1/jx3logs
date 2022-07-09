@@ -94,33 +94,33 @@ const reviewRes = computed(()=>{
         res.push(resItem)
         break;
       case 201:
-        resItem['title'] = '敬请期待'
-        resItem['desc'] = `这个心法的功能还没有完全实现，敬请期待！`
+        resItem['title'] = '保证"秋肃"的覆盖率'
+        resItem['desc'] = `"秋肃"会为团队带来可观的输出增益，是奶花在副本中最有价值的门票。尝试通过各种监控方式去适应秋肃的手感，绝对不要让增益中断。<br>本场战斗你的覆盖率"秋肃"为\`cover\`，超过了\`rank\`%的玩家。`
         res.push(resItem)
         break;
       case 202:
-        resItem['title'] = '敬请期待'
-        resItem['desc'] = `这个心法的功能还没有完全实现，敬请期待！`
+        resItem['title'] = '保证"握针"的覆盖率'
+        resItem['desc'] = `"握针"是奶花最重要的治疗量来源，尽可能使全团保持这个效果。"握针"的数量也是评判奶花手法最重要的依据。<br>本场战斗你的"握针"覆盖率为\`cover\`，超过了\`rank\`%的玩家。`
         res.push(resItem)
         break;
       case 203:
-        resItem['title'] = '敬请期待'
-        resItem['desc'] = `这个心法的功能还没有完全实现，敬请期待！`
+        resItem['title'] = '不要浪费瞬发次数'
+        resItem['desc'] = `""行气血"与"水月无间"提供的瞬发效果可以让你无损瞬发技能，但是如果时间用尽或者被新的"行气血"顶掉就会失去这些机会。尽可能利用好这些瞬发次数。<br>本场战斗你获得了\`timeShuiyue\`层水月，\`timeXqx\`层行气血，但你只使用了其中的\`timeCast\`次。`
         res.push(resItem)
         break;
       case 204:
-        resItem['title'] = '敬请期待'
-        resItem['desc'] = `这个心法的功能还没有完全实现，敬请期待！`
+        resItem['title'] = '优先瞬发"长针"'
+        resItem['desc'] = `尽可能使用瞬发效果去瞬发"长针"，这可以为你节省一个GCD的时间；瞬发"提针"与"彼针"不能为你节省GCD时间，除非这一个GCD可以用来救急，否则不应该这样瞬发。<br>本场战斗你使用了\`timeCast\`次瞬发，但只有\`timeChangzhen\`次用于"长针"。`
         res.push(resItem)
         break;
       case 205:
-        resItem['title'] = '敬请期待'
-        resItem['desc'] = `这个心法的功能还没有完全实现，敬请期待！`
+        resItem['title'] = '选择合适的"长针"目标'
+        resItem['desc'] = `"微潮"会以当前目标中心进行15尺扩散，因此选择正确的目标可以让更多队友受到"握针"的效果。使用茗伊团队面板的扩散辅助可以精准地找到最适合的目标。<br>你总共触发了\`time\`次"微潮"，但只有\`coverTime\`次覆盖了4个或更多的目标。`
         res.push(resItem)
         break;
       case 206:
-        resItem['title'] = '敬请期待'
-        resItem['desc'] = `这个心法的功能还没有完全实现，敬请期待！`
+        resItem['title'] = '提高"握针"扩散效率'
+        resItem['desc'] = `"微潮"只能将"握针"扩散到身上没有"握针"的目标，所以使用时不仅要保证目标身上有"握针"，还要让对应小队的"握针"数量越少越好。如果小队中"握针"还没有跳完，就应当改用"束彼"去刷新，或是等待其时间结束。<br>理想情况下每次微潮应该扩散4个目标，但你平均扩散了\`cover\`个目标。`
         res.push(resItem)
         break;
     }
