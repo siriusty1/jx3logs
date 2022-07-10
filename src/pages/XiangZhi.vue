@@ -1,7 +1,10 @@
 <template>
   <template v-if="loaded">
-    <div style="display:flex;flex-direction:column;align-items: center">
-      <div style="text-align: left; font-size: 20px; font-weight: bold; width: 1400px;margin-bottom: 20px">相知复盘 8.0.0 Dev</div>
+    <div style="display:flex;flex-direction:column;align-items: center;position: relative">
+      <div style="display:flex; justify-content:space-between;font-size: 20px; font-weight: bold; width: 1400px;margin-bottom: 20px">
+        <div>相知复盘 8.0.2</div>
+        <div><text>综合评分：</text><text :class="color(resObj.skill.general.score)">{{resObj.skill.general.score}}</text></div>
+      </div>
       <div class="infoBox">
         <div style="display:flex; flex-direction:row;justify-content: space-around; border: 1px solid #555; font-size: 14px;width: 300px;background-color: #141414">
           <div>
@@ -40,7 +43,16 @@
           </div>
           <div style="margin: 10px">
             <div style="font-size: 18px;font-weight: bold;margin-bottom: 10px">奇穴</div>
-            <div v-if="!resObj.equip['qixue']" style="font-size: 14px">
+            <div v-if="resObj.qixue['available']" style="font-size: 14px;display: flex;justify-content: space-around">
+              <div v-for="i in 12" style="display: flex;flex-direction: column;
+                   justify-content: center;align-items: center"
+                   @mouseenter="enterQixue($event,qixueTable[resObj.qixue[i]]['desc'])"
+                   @mouseleave="leaveQixue($event,'')">
+                <img :src="getImageUrl(qixueTable[resObj.qixue[i]]['img'],'skills_logo')" alt="img" style="width: 32px">
+                <div>{{ qixueTable[resObj.qixue[i]]['alias'] }}</div>
+              </div>
+            </div>
+            <div v-if="!resObj.qixue['available']" style="font-size: 14px">
               奇穴信息获取失败。在进入战斗后打开团队装分面板即可获取。如果是第一视角也可以自动获取。
             </div>
           </div>
@@ -302,6 +314,12 @@
           <div style="margin-left: 10px; margin-bottom: 10px">该战斗记录生成时的复盘版本不支持此功能</div>
         </div>
       </template>
+      <!--      奇穴悬浮窗-->
+      <div v-if="qixueDetailsShow" ref="qixueBox" class="qixueBoxStyle">
+        <div style="font-size:14px; margin: 10px">
+          <text>{{ qixueDetails }}</text>
+        </div>
+      </div>
     </div>
   </template>
   <template v-if="err === 'unsupport'">
@@ -382,6 +400,264 @@ const resObj = ref()
 const rankObj = ref()
 const timeFlowData = ref()
 const err = ref()
+
+const qixueTable = {
+  '雪海':{
+    'img':'7097',
+    'alias':'雪海',
+    'desc':'"宫"治疗效果提高10%。'
+  },
+  '红隙':{
+    'img':'7100',
+    'alias':'红隙',
+    'desc':'"宫"会心几率提高10%，会心效果提高10%。'
+  },
+  '蔚风':{
+    'img':'7102',
+    'alias':'蔚风',
+    'desc':'"角"每跳为友方玩家目标和自身回复1%内力值，该效果同一时间只能作用一个目标。'
+  },
+  '枕流':{
+    'img':'7956',
+    'alias':'枕流',
+    'desc':'"高山流水"曲目下每次施展"变宫"将会给目标叠加一层"枕流"效果，"枕流"持续8秒叠加至2层将对目标造成点治疗效果，"枕流"只能对一个目标生效。'
+  },
+  '秋鸿':{
+    'img':'7121',
+    'alias':'秋鸿',
+    'desc':'"徵"内力消耗降低15%，可对目标及其半径20尺范围内小队成员产生治疗效果。'
+  },
+  '风入松':{
+    'img':'7079',
+    'alias':'风入松',
+    'desc':'施展"角"使自身和目标移动速度提高30％，持续4秒。'
+  },
+  '奉知音':{
+    'img':'13451',
+    'alias':'奉知音',
+    'desc':'施展"移形换影"后3秒内，"徵"或"羽"命中当前选中的友方目标，对目标造成一次必会心的额外治疗量。若目标拥有属于自身的持续治疗效果，每多一个持续治疗效果则多造成一次必会心的额外治疗。'
+  },
+  '争簇':{
+    'img':'7126',
+    'alias':'争簇',
+    'desc':'"徵"作用效果降低20%，每0.5秒产生一次作用效果，持续3秒。'
+  },
+  '潋滟':{
+    'img':'11860',
+    'alias':'潋滟',
+    'desc':'"变徵"对目标造成一次治疗，使目标身上属于自身所有的持续治疗立刻生效一跳。'
+  },
+  '石间意':{
+    'img':'7129',
+    'alias':'石间意',
+    'desc':'施展"梅花三弄"主动招式，使目标免疫控制效果(击退和被拉除外)、缴械和无法运功效果，持续3秒，若"梅花三弄"盾提前消失则此效果消失。'
+  },
+  '流音':{
+    'img':'7136',
+    'alias':'流音',
+    'desc':'受到伤害重伤时自身影子将对自身施展"杯水留影"，该效果将不受"杯水留影"秘籍影响。'
+  },
+  '绿绮':{
+    'img':'7133',
+    'alias':'绿绮',
+    'desc':'"羽"治疗成效提高15%，施展后使"徵"会心几率提高10%，会心效果提高10%，持续10秒，该效果时间可叠加。'
+  },
+  '敛意':{
+    'img':'16233',
+    'alias':'敛意',
+    'desc':'解除自身受到的所有控制，执剑作歌，持续6秒，期间自身闪避几率提高80%，"醉剑"命中敌方目标则回复自身及10尺内小队成员气血值，可施展二段招式提前结束，收剑回琴。'
+  },
+  '一指回鸾':{
+    'img':'7045',
+    'alias':'回鸾',
+    'desc':'为友方目标卸除混元性内功不利效果、阳性内功不利效果、阴性内功不利效果、毒性内功不利效果各一个，并使目标气血值恢复点。'
+  },
+  '谪仙':{
+    'img':'7137',
+    'alias':'谪仙',
+    'desc':'"徵"运功不会被打退，立刻对目标产生治疗效果，治疗效果提高20%。'
+  },
+  '超然':{
+    'img':'7169',
+    'alias':'超然',
+    'desc':'"孤影化双"调息时间降低45秒，施展返回招式时，不受缴械和无法运功效果的影响，影子被召回8秒内仍然会附着玩家，期间分摊玩家受到伤害的50%，并使自身免疫所有控制效果(击退和被拉除外)。'
+  },
+  '寒酒':{
+    'img':'7142',
+    'alias':'寒酒',
+    'desc':'"梅花三弄"盾效果持续时间延长70%。'
+  },
+  '温语':{
+    'img':'7144',
+    'alias':'温语',
+    'desc':'"梅花三弄"伤害吸收量提高10%，命中气血值低于50%的目标，伤害吸收量再额外提高40%。'
+  },
+  '自赏':{
+    'img':'7144',
+    'alias':'自赏',
+    'desc':'"梅花三弄"伤害吸收量提高10%，命中气血值低于50%的目标，伤害吸收量再额外提高40%。'
+  },
+  '引芳':{
+    'img':'7148',
+    'alias':'引芳',
+    'desc':'"商""角"增加两跳治疗效果，"变宫""宫"不再需要运功，立刻对目标造成治疗效果，并使目标每3秒受到一次治疗效果，持续18秒。每个治疗持续效果为目标提供一层6%的减伤，最多可以叠加三层。'
+  },
+  '犹香':{
+    'img':'7150',
+    'alias':'犹香',
+    'desc':'"梅花三弄"盾也会治疗目标，数值相当于伤害吸收量的65%。'
+  },
+  '平吟':{
+    'img':'7151',
+    'alias':'平吟',
+    'desc':'施展"梅花三弄"将使自身恢复点点气血值，"梅花三弄"效果因受到伤害提前消失后获得的"寒梅"减伤效果，可在5秒内持续减免伤害。'
+  },
+  '寸光阴':{
+    'img':'7153',
+    'alias':'寸光阴',
+    'desc':'"商""角"治疗效果降低15%，"宫""变宫"成功运功两次后，命中有自身"商"或"角"持续治疗效果的目标，使目标及其小队20尺范围内所有友方队友添加该持续效果。'
+  },
+  '井仪':{
+    'img':'7155',
+    'alias':'井仪',
+    'desc':'持续效果被卸除后，每个持续效果使驱散者2秒内无法运功，最多持续6秒。'
+  },
+  '笙簧':{
+    'img':'7157',
+    'alias':'笙簧',
+    'desc':'"梅花三弄"盾持续时间结束时若仍拥有最大吸收量且目标在战斗状态，则自动刷新盾的持续时间。'
+  },
+  '乐情':{
+    'img':'7161',
+    'alias':'乐情',
+    'desc':'"笑傲光阴"调息时间降低7秒，音域减伤效果可对自身小队成员产生作用，自身减伤效果提高至70%。'
+  },
+  '思议':{
+    'img':'7114',
+    'alias':'思议',
+    'desc':'"高山流水"主动技能状态期间运功不会被打退、打断，不受无法施展内功招式和缴械效果的影响。'
+  },
+  '绝唱':{
+    'img':'7117',
+    'alias':'绝唱',
+    'desc':'"梅花三弄"若提前消失，则减少目标身上"落梅"效果持续时间，数值为"梅花三弄"剩余持续时间的60%。'
+  },
+  '蒹葭':{
+    'img':'7149',
+    'alias':'蒹葭',
+    'desc':'"云生结海"音域生成时立刻平衡音域范围内所有小队成员当前气血值百分比并恢复10%气血最大值。'
+  },
+  '捣衣':{
+    'img':'7165',
+    'alias':'捣衣',
+    'desc':'施展"疏影横斜"将自身传送至影子位置后使自身免疫缴械和无法运功效果，持续3秒，该效果时间可累加。'
+  },
+  '行云':{
+    'img':'13453',
+    'alias':'行云',
+    'desc':'"商""角"会心几率提高10%，会心效果提高20%。'
+  },
+  '诗上':{
+    'img':'7160',
+    'alias':'诗上',
+    'desc':'施展"移形换影"后"疏影"效果期间，自身治疗效果的45%将再次作用于自身。'
+  },
+  '相依':{
+    'img':'7168',
+    'alias':'相依',
+    'desc':'"孤影化双"持续时间延长8秒，施展"孤影化双"后，残影会在场地中施展两次逐渐向外扩散的环形音波，"莫问"心法下对敌对目标造成2次共计点阴性内功伤害，"相知"心法下使友方玩家回复2次共计点气血值。'
+  },
+  '流霜':{
+    'img':'13449',
+    'alias':'流霜',
+    'desc':'自身所有持续效果每跳造成的效果递增12%，自身所有持续作用间隔缩短1秒，总持续时间保持不变。'
+  },
+  '天音知脉':{
+    'img':'7170',
+    'alias':'天音',
+    'desc':'"羽"充能时间提高3秒，"梅花三弄"曲风下，施展"羽"消除目标"落梅"效果，并使自身下一次"梅花三弄"必会心。'
+  },
+  '绕梁':{
+    'img':'11865',
+    'alias':'绕梁',
+    'desc':'"梅花三弄"只对一个目标生效，治疗成效提高100%，若"梅花三弄"提前消失，使得目标"寒梅"效果期间，受到治疗成效提高25%。'
+  },
+  '棋宫':{
+    'img':'7104',
+    'alias':'棋宫',
+    'desc':'"阳春白雪"曲目下，自身治疗基础值提高10%。'
+  },
+  '贯珠':{
+    'img':'7106',
+    'alias':'贯珠',
+    'desc':'受到技能伤害超过自身气血最大值10%，则该次伤害降低20%。'
+  },
+  '寿生':{
+    'img':'7107',
+    'alias':'寿生',
+    'desc':'"杯水留影"使目标复活持续时间延长30秒，救治目标后立刻重置目标所有招式调息时间（救治重伤目标招式除外）。'
+  },
+  '庄周梦':{
+    'img':'9555',
+    'alias':'庄周梦',
+    'desc':'"梅花三弄"持续期间，目标伤害招式无视目标15%内外功防御等级。'
+  },
+  '不器':{
+    'img':'12720',
+    'alias':'不器',
+    'desc':'若"商""角"造成完整治疗，则为目标额外恢复气血值。'
+  },
+  '掷杯':{
+    'img':'7110',
+    'alias':'掷杯',
+    'desc':'施展任何疗伤招式命中气血值低于50%的目标，使自身基础治疗效果提高10%，持续12秒。'
+  },
+  '游羽':{
+    'img':'7076',
+    'alias':'游羽',
+    'desc':'"青霄飞羽"持续期间基础疗伤成效提高25%，双击"左平移""右平移"，可朝指定方向移动一段距离。'
+  },
+  '江永':{
+    'img':'11861',
+    'alias':'江永',
+    'desc':'气套路下技能调息时间降低20%。'
+  },
+  '大韶':{
+    'img':'7113',
+    'alias':'大韶',
+    'desc':'"云生结海""笑傲光阴"无需运功可直接释放。'
+  },
+  '古道':{
+    'img':'14066',
+    'alias':'古道',
+    'desc':'"青霄飞羽"期间自身受到伤害降低20%，施展治疗招式命中目标使得目标额外回复1.5%的最大气血值。'
+  },
+  '祭子期':{
+    'img':'13448',
+    'alias':'祭子期',
+    'desc':'"高山流水"主动技能变为充能技能，可充能两层，调息时间为50秒。'
+  },
+  '无尽藏':{
+    'img':'7115',
+    'alias':'无尽藏',
+    'desc':'"阳春白雪"主动技能调息时间降低2秒。'
+  },
+  '桑柔':{
+    'img':'11863',
+    'alias':'桑柔',
+    'desc':'"梅花三弄"持续期间，目标每次造成伤害，盾也会追加一次伤害。自身治疗量越高，伤害越高，对非侠士目标造成的伤害提高100%。每个盾每4秒最多触发一次。'
+  },
+  '琴音共鸣':{
+    'img':'7118',
+    'alias':'琴音',
+    'desc':'移除敌对玩家身上2个增益效果，并添加给自身。'
+  },
+  '游太清':{
+    'img':'14070',
+    'alias':'游太清',
+    'desc':'对敌方侠士目标施展，保存目标气血状态，持续10秒，可以施展二段技能，使目标气血状态恢复至记录的状态，但目标气血值不会低于30%。'
+  }
+}
 
 const xfColor = {
   2:['rgb(127, 31, 223)','rgba(127, 31, 223, 0.4)'],
@@ -572,6 +848,22 @@ const popUpPos = ref([0,0])
 const popUpDetails = ref()
 const popUp = ref()
 
+const qixueDetailsShow = ref(false)
+const qixuePos = ref([0,0])
+const qixueDetails = ref()
+const qixueBox =ref()
+
+const enterQixue = ($event,item) => {
+  qixueDetails.value = item
+  qixueDetailsShow.value = true
+  nextTick(()=>{
+    qixuePos.value = [$event.target.offsetLeft,$event.target.offsetTop + 50]
+  })
+}
+
+const leaveQixue = ($event,item) => {
+  qixueDetailsShow.value = false
+}
 const enterImg = ($event,item) => {
   popUpDetails.value = item
   popUpShow.value = true
@@ -740,6 +1032,15 @@ const healer_chart = computed(()=>{
 .skill_statistic_icon{
   height: 60px;
   width: 60px;
+}
+.qixueBoxStyle{
+  position: absolute;
+  width: 300px;
+  border: 1px solid rgba(85,85,85,0.5);
+  border-radius: 12px;
+  top: v-bind("qixuePos[1] + 'px'");
+  left: v-bind("qixuePos[0] + 'px'");
+  background-color: #201020;
 }
 .infoBox{
   margin-bottom: 20px;

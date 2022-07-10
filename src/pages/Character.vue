@@ -166,7 +166,9 @@ const occToSect = {
   'mowen':['cg',0,'d'],
   'xiangzhi':['cg',1,'h'],
   'huajianyou':['wh',0,'d'],
-  'lijingyidao':['wh',1,'h']
+  'lijingyidao':['wh',1,'h'],
+  'wufang':['yz',0,'d'],
+  'lingsu':['yz',1,'h'],
 }
 const timestampToTime = (timestamp) => {
   let date = new Date(timestamp * 1000);

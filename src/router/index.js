@@ -3,10 +3,11 @@ const Index = () => import('../pages/Index.vue')
 const Character = () => import('../pages/Character.vue')
 const Ranking = () => import('../pages/Ranking.vue')
 const LingSu = () => import('../pages/LingSu.vue')
-const LingSu2 = () => import('../pages/LingSu2.vue')
-
+const YunChangXinJing = () => import('../pages/YunChangXinJing.vue')
 const XiangZhi = () => import('../pages/XiangZhi.vue')
 const LiJingYiDao = () => import('../pages/LiJingYiDao.vue')
+const BuTianJue = () => import('../pages/BuTianJue.vue')
+
 
 const router = createRouter({
     history: createWebHistory(),
@@ -28,16 +29,20 @@ const router = createRouter({
             component: LingSu
         },
         {
-            path:"/lingsu2",
-            component: LingSu2
-        },
-        {
             path:"/xiangzhi/:replay_id",
             component: XiangZhi
         },
         {
             path:"/lijingyidao/:replay_id",
             component: LiJingYiDao
+        },
+        {
+            path:"/yunchangxinjing/:replay_id",
+            component: YunChangXinJing
+        },
+        {
+            path:"/butianjue/:replay_id",
+            component: BuTianJue
         }
     ]
 });
