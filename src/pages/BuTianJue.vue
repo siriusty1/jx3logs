@@ -2,8 +2,11 @@
   <template v-if="loaded">
     <div style="display:flex;flex-direction:column;align-items: center;position: relative">
       <div style="display:flex; justify-content:space-between;font-size: 20px; font-weight: bold; width: 1400px;margin-bottom: 20px">
-        <div>灵素复盘 8.0.2</div>
-        <div><text>综合评分：</text><text :class="color(resObj.skill.general.score)">{{resObj.skill.general.score}}</text></div>
+        <div>奶毒复盘 8.0.2</div>
+        <div v-if="'score' in resObj.skill.general">
+          <text>综合评分：</text>
+          <text :class="color(resObj.skill.general.score)">{{resObj.skill.general.score.toFixed(2)}}</text>
+        </div>
       </div>
       <div class="infoBox">
         <div style="display:flex; flex-direction:row;justify-content: space-around; border: 1px solid #555; font-size: 14px;width: 300px;background-color: #141414">
@@ -62,159 +65,157 @@
         </div>
       </div>
       <!--            统计面板-->
-      <!--      <el-tabs type="border-card"  class="statisticBox">-->
-      <!--        <el-tab-pane label="即时排名">-->
-      <!--          <div class="statisticBoxInner">-->
-      <!--            <SkillDisplay :skill="timeFlowData.allTimeRank['lszh']" :sortList="{-->
-      <!--        'key':['num','numPerSec','HPS'],-->
-      <!--        'value':['数量：','每秒数量：','HPS：']}">-->
-      <!--              <template #icon>-->
-      <!--                <img class="skill_statistic_icon" :src="getImageUrl('lszh','skills_logo')" alt="中和">-->
-      <!--                <text style="margin-top: 5px; font-weight: bold;font-size: 16px">灵素中和</text>-->
-      <!--              </template>-->
-      <!--            </SkillDisplay>-->
-      <!--            <SkillDisplay :skill="timeFlowData.allTimeRank['bzhf']" :sort-list="{-->
-      <!--        'key':['num','numPerSec','delay','HPS','effRate'],-->
-      <!--        'value':['数量：','每秒数量：','延迟：','HPS：','有效比例：']}">-->
-      <!--              <template #icon>-->
-      <!--                <img class="skill_statistic_icon" :src="getImageUrl('bzhf','skills_logo')" alt="白芷含芳">-->
-      <!--                <text style="margin-top: 5px; font-weight: bold;font-size: 16px">白芷含芳</text>-->
-      <!--              </template>-->
-      <!--            </SkillDisplay>-->
-      <!--            <SkillDisplay :skill="timeFlowData.allTimeRank['cshx']" :sort-list="{-->
-      <!--        'key':['skillNum','num','numPerSec','delay','skillHPS','HPS'],-->
-      <!--        'value':['数量：','HOT数量：','每秒HOT：','延迟：','直接HPS：','HOTHPS：']}">-->
-      <!--              <template #icon>-->
-      <!--                <img class="skill_statistic_icon" :src="getImageUrl('cshx','skills_logo')" alt="赤芍寒香">-->
-      <!--                <text style="margin-top: 5px; font-weight: bold;font-size: 16px">赤芍寒香</text>-->
-      <!--              </template>-->
-      <!--            </SkillDisplay>-->
-      <!--            <SkillDisplay :skill="timeFlowData.allTimeRank['dgsn']" :sort-list="{-->
-      <!--        'key':['num','numPerSec','delay','HPS','effRate'],-->
-      <!--        'value':['数量：','每秒数量：','延迟：','HPS：','有效比例：']}">-->
-      <!--              <template #icon>-->
-      <!--                <img class="skill_statistic_icon" :src="getImageUrl('dgsn','skills_logo')" alt="当归四逆">-->
-      <!--                <text style="margin-top: 5px; font-weight: bold;font-size: 16px">当归四逆</text>-->
-      <!--              </template>-->
-      <!--            </SkillDisplay>-->
-      <!--            <SkillDisplay :skill="timeFlowData.allTimeRank['qczl']" :sort-list="{-->
-      <!--        'key':['num','numPerSec','HPS','effRate'],-->
-      <!--        'value':['数量：','每秒数量：','HPS：','有效比例：']}">-->
-      <!--              <template #icon>-->
-      <!--                <img class="skill_statistic_icon" :src="getImageUrl('qczl','skills_logo')" alt="青川濯莲">-->
-      <!--                <text style="margin-top: 5px; font-weight: bold;font-size: 16px">青川濯莲</text>-->
-      <!--              </template>-->
-      <!--            </SkillDisplay>-->
-      <!--            <SkillDisplay :skill="timeFlowData.allTimeRank['ygzx']" :sort-list="{-->
-      <!--        'key':['num','numPerSec','HPS','effRate'],-->
-      <!--        'value':['数量：','每秒数量：','HPS：','有效比例：']}">-->
-      <!--              <template #icon>-->
-      <!--                <img class="skill_statistic_icon" :src="getImageUrl('ygzx','skills_logo')" alt="银光照雪">-->
-      <!--                <text style="margin-top: 5px; font-weight: bold;font-size: 16px">银光照雪</text>-->
-      <!--              </template>-->
-      <!--            </SkillDisplay>-->
-      <!--            <SkillDisplay :skill="timeFlowData.allTimeRank['qqhh']" :sort-list="{-->
-      <!--        'key':['num','HPS','effRate'],-->
-      <!--        'value':['数量：','HPS：','有效比例：']}">-->
-      <!--              <template #icon>-->
-      <!--                <img class="skill_statistic_icon" :src="getImageUrl('qqhh','skills_logo')" alt="七情和合">-->
-      <!--                <text style="margin-top: 5px; font-weight: bold;font-size: 16px">七情和合</text>-->
-      <!--              </template>-->
-      <!--            </SkillDisplay>-->
-      <!--            <SkillDisplay :skill="timeFlowData.allTimeRank['general']" :sort-list="{-->
-      <!--        'key':['PeiwuRate','PeiwuDPS','PiaohuangNum','PiaohuangDPS','efficiency'],-->
-      <!--        'value':['配伍比例','配伍DPS','飘黄数量','飘黄DPS','战斗效率']}">-->
-      <!--              <template #icon>-->
-      <!--                <img class="skill_statistic_icon" :src="getImageUrl('tuanfu','skills_logo')" alt="团辅">-->
-      <!--                <text style="margin-top: 5px; font-weight: bold;font-size: 16px">团队辅助</text>-->
-      <!--              </template>-->
-      <!--            </SkillDisplay>-->
-      <!--          </div>-->
-      <!--        </el-tab-pane>-->
-      <!--        <el-tab-pane label="全时刻排名">-->
-      <!--          <div class="statisticBoxInner">-->
-      <!--            <SkillDisplay :skill="timeFlowData.allTimeRank['lszh']" :sortList="{-->
-      <!--        'key':['num','numPerSec','HPS'],-->
-      <!--        'value':['数量：','每秒数量：','HPS：']}">-->
-      <!--              <template #icon>-->
-      <!--                <img class="skill_statistic_icon" :src="getImageUrl('lszh','skills_logo')" alt="中和">-->
-      <!--                <text style="margin-top: 5px; font-weight: bold;font-size: 16px">灵素中和</text>-->
-      <!--              </template>-->
-      <!--            </SkillDisplay>-->
-      <!--            <SkillDisplay :skill="timeFlowData.allTimeRank['bzhf']" :sort-list="{-->
-      <!--        'key':['num','numPerSec','delay','HPS','effRate'],-->
-      <!--        'value':['数量：','每秒数量：','延迟：','HPS：','有效比例：']}">-->
-      <!--              <template #icon>-->
-      <!--                <img class="skill_statistic_icon" :src="getImageUrl('bzhf','skills_logo')" alt="白芷含芳">-->
-      <!--                <text style="margin-top: 5px; font-weight: bold;font-size: 16px">白芷含芳</text>-->
-      <!--              </template>-->
-      <!--            </SkillDisplay>-->
-      <!--            <SkillDisplay :skill="timeFlowData.allTimeRank['cshx']" :sort-list="{-->
-      <!--        'key':['skillNum','num','numPerSec','delay','skillHPS','HPS'],-->
-      <!--        'value':['数量：','HOT数量：','每秒HOT：','延迟：','直接HPS：','HOTHPS：']}">-->
-      <!--              <template #icon>-->
-      <!--                <img class="skill_statistic_icon" :src="getImageUrl('cshx','skills_logo')" alt="赤芍寒香">-->
-      <!--                <text style="margin-top: 5px; font-weight: bold;font-size: 16px">赤芍寒香</text>-->
-      <!--              </template>-->
-      <!--            </SkillDisplay>-->
-      <!--            <SkillDisplay :skill="timeFlowData.allTimeRank['dgsn']" :sort-list="{-->
-      <!--        'key':['num','numPerSec','delay','HPS','effRate'],-->
-      <!--        'value':['数量：','每秒数量：','延迟：','HPS：','有效比例：']}">-->
-      <!--              <template #icon>-->
-      <!--                <img class="skill_statistic_icon" :src="getImageUrl('dgsn','skills_logo')" alt="当归四逆">-->
-      <!--                <text style="margin-top: 5px; font-weight: bold;font-size: 16px">当归四逆</text>-->
-      <!--              </template>-->
-      <!--            </SkillDisplay>-->
-      <!--            <SkillDisplay :skill="timeFlowData.allTimeRank['qczl']" :sort-list="{-->
-      <!--        'key':['num','numPerSec','HPS','effRate'],-->
-      <!--        'value':['数量：','每秒数量：','HPS：','有效比例：']}">-->
-      <!--              <template #icon>-->
-      <!--                <img class="skill_statistic_icon" :src="getImageUrl('qczl','skills_logo')" alt="青川濯莲">-->
-      <!--                <text style="margin-top: 5px; font-weight: bold;font-size: 16px">青川濯莲</text>-->
-      <!--              </template>-->
-      <!--            </SkillDisplay>-->
-      <!--            <SkillDisplay :skill="timeFlowData.allTimeRank['ygzx']" :sort-list="{-->
-      <!--        'key':['num','numPerSec','HPS','effRate'],-->
-      <!--        'value':['数量：','每秒数量：','HPS：','有效比例：']}">-->
-      <!--              <template #icon>-->
-      <!--                <img class="skill_statistic_icon" :src="getImageUrl('ygzx','skills_logo')" alt="银光照雪">-->
-      <!--                <text style="margin-top: 5px; font-weight: bold;font-size: 16px">银光照雪</text>-->
-      <!--              </template>-->
-      <!--            </SkillDisplay>-->
-      <!--            <SkillDisplay :skill="timeFlowData.allTimeRank['qqhh']" :sort-list="{-->
-      <!--        'key':['num','HPS','effRate'],-->
-      <!--        'value':['数量：','HPS：','有效比例：']}">-->
-      <!--              <template #icon>-->
-      <!--                <img class="skill_statistic_icon" :src="getImageUrl('qqhh','skills_logo')" alt="七情和合">-->
-      <!--                <text style="margin-top: 5px; font-weight: bold;font-size: 16px">七情和合</text>-->
-      <!--              </template>-->
-      <!--            </SkillDisplay>-->
-      <!--            <SkillDisplay :skill="timeFlowData.allTimeRank['general']" :sort-list="{-->
-      <!--        'key':['PeiwuRate','PeiwuDPS','PiaohuangNum','PiaohuangDPS','efficiency'],-->
-      <!--        'value':['配伍比例','配伍DPS','飘黄数量','飘黄DPS','战斗效率']}">-->
-      <!--              <template #icon>-->
-      <!--                <img class="skill_statistic_icon" :src="getImageUrl('tuanfu','skills_logo')" alt="团辅">-->
-      <!--                <text style="margin-top: 5px; font-weight: bold;font-size: 16px">团队辅助</text>-->
-      <!--              </template>-->
-      <!--            </SkillDisplay>-->
-      <!--          </div>-->
-      <!--        </el-tab-pane>-->
-      <!--      </el-tabs>-->
+            <el-tabs type="border-card"  class="statisticBox">
+              <el-tab-pane label="即时排名">
+                <div class="statisticBoxInner">
+                  <SkillDisplay :skill="timeFlowData.realTimeRank['bcqs']" :sortList="{
+              'key':['num','numPerSec','delay','HPS','effRate'],
+              'value':['数量：','每秒数量：','延迟：','HPS：','有效比例：']}">
+                    <template #icon>
+                      <img class="skill_statistic_icon" :src="getImageUrl('bcqs','skills_logo')" alt="冰蚕牵丝">
+                      <text style="margin-top: 5px; font-weight: bold;font-size: 16px">冰蚕牵丝</text>
+                    </template>
+                  </SkillDisplay>
+                  <SkillDisplay :skill="timeFlowData.realTimeRank['zwjt']" :sort-list="{
+              'key':['num','numPerSec','delay','HPS','effRate'],
+              'value':['数量：','每秒数量：','延迟：','HPS：','有效比例：']}">
+                    <template #icon>
+                      <img class="skill_statistic_icon" :src="getImageUrl('zwjt','skills_logo')" alt="醉舞九天">
+                      <text style="margin-top: 5px; font-weight: bold;font-size: 16px">醉舞九天</text>
+                    </template>
+                  </SkillDisplay>
+                  <SkillDisplay :skill="timeFlowData.realTimeRank['sszt']" :sort-list="{
+              'key':['num','numPerSec','delay','HPS','effRate'],
+              'value':['数量：','每秒数量：','延迟：','HPS：','有效比例：']}">
+                    <template #icon>
+                      <img class="skill_statistic_icon" :src="getImageUrl('sszt','skills_logo')" alt="圣手织天">
+                      <text style="margin-top: 5px; font-weight: bold;font-size: 16px">圣手织天</text>
+                    </template>
+                  </SkillDisplay>
+                  <SkillDisplay :skill="timeFlowData.realTimeRank['qdtr']" :sort-list="{
+              'key':['num','numPerSec','HPS','effRate'],
+              'value':['数量：','每秒数量：','HPS：','有效比例：']}">
+                    <template #icon>
+                      <img class="skill_statistic_icon" :src="getImageUrl('qdtr','skills_logo')" alt="千蝶吐瑞">
+                      <text style="margin-top: 5px; font-weight: bold;font-size: 16px">千蝶吐瑞</text>
+                    </template>
+                  </SkillDisplay>
+                  <SkillDisplay :skill="timeFlowData.realTimeRank['dc']" :sort-list="{
+              'key':['num','numPerSec','HPS','effRate'],
+              'value':['数量：','每秒数量：','HPS：','有效比例：']}">
+                    <template #icon>
+                      <img class="skill_statistic_icon" :src="getImageUrl('dc','skills_logo')" alt="蝶池">
+                      <text style="margin-top: 5px; font-weight: bold;font-size: 16px">蝶池</text>
+                    </template>
+                  </SkillDisplay>
+                  <SkillDisplay :skill="timeFlowData.realTimeRank['mxym']" :sort-list="{
+              'key':['num','numPerSec','HPS','cover'],
+              'value':['数量：','每秒数量：','HPS：','覆盖率：']}">
+                    <template #icon>
+                      <img class="skill_statistic_icon" :src="getImageUrl('mxym','skills_logo')" alt="迷仙引梦">
+                      <text style="margin-top: 5px; font-weight: bold;font-size: 16px">迷仙引梦</text>
+                    </template>
+                  </SkillDisplay>
+                  <SkillDisplay :skill="timeFlowData.realTimeRank['dx']" :sort-list="{
+              'key':['num','HPS'],
+              'value':['数量：','HPS：']}">
+                    <template #icon>
+                      <img class="skill_statistic_icon" :src="getImageUrl('dx','skills_logo')" alt="蝶旋">
+                      <text style="margin-top: 5px; font-weight: bold;font-size: 16px">蝶旋</text>
+                    </template>
+                  </SkillDisplay>
+                  <SkillDisplay :skill="timeFlowData.realTimeRank['general']" :sort-list="{
+              'key':['ghzs','nvwa','ql','efficiencyNonGcd','efficiency'],
+              'value':['蛊惑覆盖率：','女娲覆盖率：','绮栊覆盖率：','战斗效率：','GCD效率：']}">
+                    <template #icon>
+                      <img class="skill_statistic_icon" :src="getImageUrl('tuanfu','skills_logo')" alt="综合">
+                      <text style="margin-top: 5px; font-weight: bold;font-size: 16px">综合</text>
+                    </template>
+                  </SkillDisplay>
+                </div>
+              </el-tab-pane>
+              <el-tab-pane label="全时刻排名">
+                <div class="statisticBoxInner">
+                  <SkillDisplay :skill="timeFlowData.allTimeRank['bcqs']" :sortList="{
+              'key':['num','numPerSec','delay','HPS','effRate'],
+              'value':['数量：','每秒数量：','延迟：','HPS：','有效比例：']}">
+                    <template #icon>
+                      <img class="skill_statistic_icon" :src="getImageUrl('bcqs','skills_logo')" alt="冰蚕牵丝">
+                      <text style="margin-top: 5px; font-weight: bold;font-size: 16px">冰蚕牵丝</text>
+                    </template>
+                  </SkillDisplay>
+                  <SkillDisplay :skill="timeFlowData.allTimeRank['zwjt']" :sort-list="{
+              'key':['num','numPerSec','delay','HPS','effRate'],
+              'value':['数量：','每秒数量：','延迟：','HPS：','有效比例：']}">
+                    <template #icon>
+                      <img class="skill_statistic_icon" :src="getImageUrl('zwjt','skills_logo')" alt="醉舞九天">
+                      <text style="margin-top: 5px; font-weight: bold;font-size: 16px">醉舞九天</text>
+                    </template>
+                  </SkillDisplay>
+                  <SkillDisplay :skill="timeFlowData.allTimeRank['sszt']" :sort-list="{
+              'key':['num','numPerSec','delay','HPS','effRate'],
+              'value':['数量：','每秒数量：','延迟：','HPS：','有效比例：']}">
+                    <template #icon>
+                      <img class="skill_statistic_icon" :src="getImageUrl('sszt','skills_logo')" alt="圣手织天">
+                      <text style="margin-top: 5px; font-weight: bold;font-size: 16px">圣手织天</text>
+                    </template>
+                  </SkillDisplay>
+                  <SkillDisplay :skill="timeFlowData.allTimeRank['qdtr']" :sort-list="{
+              'key':['num','numPerSec','HPS','effRate'],
+              'value':['数量：','每秒数量：','HPS：','有效比例：']}">
+                    <template #icon>
+                      <img class="skill_statistic_icon" :src="getImageUrl('qdtr','skills_logo')" alt="千蝶吐瑞">
+                      <text style="margin-top: 5px; font-weight: bold;font-size: 16px">千蝶吐瑞</text>
+                    </template>
+                  </SkillDisplay>
+                  <SkillDisplay :skill="timeFlowData.allTimeRank['dc']" :sort-list="{
+              'key':['num','numPerSec','HPS','effRate'],
+              'value':['数量：','每秒数量：','HPS：','有效比例：']}">
+                    <template #icon>
+                      <img class="skill_statistic_icon" :src="getImageUrl('dc','skills_logo')" alt="蝶池">
+                      <text style="margin-top: 5px; font-weight: bold;font-size: 16px">蝶池</text>
+                    </template>
+                  </SkillDisplay>
+                  <SkillDisplay :skill="timeFlowData.allTimeRank['mxym']" :sort-list="{
+              'key':['num','numPerSec','HPS','cover'],
+              'value':['数量：','每秒数量：','HPS：','覆盖率：']}">
+                    <template #icon>
+                      <img class="skill_statistic_icon" :src="getImageUrl('mxym','skills_logo')" alt="迷仙引梦">
+                      <text style="margin-top: 5px; font-weight: bold;font-size: 16px">迷仙引梦</text>
+                    </template>
+                  </SkillDisplay>
+                  <SkillDisplay :skill="timeFlowData.allTimeRank['dx']" :sort-list="{
+              'key':['num','HPS'],
+              'value':['数量：','HPS：']}">
+                    <template #icon>
+                      <img class="skill_statistic_icon" :src="getImageUrl('dx','skills_logo')" alt="蝶旋">
+                      <text style="margin-top: 5px; font-weight: bold;font-size: 16px">蝶旋</text>
+                    </template>
+                  </SkillDisplay>
+                  <SkillDisplay :skill="timeFlowData.allTimeRank['general']" :sort-list="{
+              'key':['ghzs','nvwa','ql','efficiencyNonGcd','efficiency'],
+              'value':['蛊惑覆盖率：','女娲覆盖率：','绮栊覆盖率：','战斗效率：','GCD效率：']}">
+                    <template #icon>
+                      <img class="skill_statistic_icon" :src="getImageUrl('tuanfu','skills_logo')" alt="综合">
+                      <text style="margin-top: 5px; font-weight: bold;font-size: 16px">综合</text>
+                    </template>
+                  </SkillDisplay>
+                </div>
+              </el-tab-pane>
+            </el-tabs>
       <!--      时间轴        -->
       <div style="display:flex;flex-direction:row; width: 1400px; border: 1px solid #555;background-color: #141414;position: relative;margin-bottom: 20px">
         <div style="display:flex;flex-direction:column; width: 150px;border-right: 1px solid #555">
-          <div style="height: 100px; padding-left:10px; line-height:100px; background-color:#201020; border-bottom: 1px solid #555;">资源（药性）</div>
           <div class="label">GCD技能</div>
+          <div class="label">醉舞九天</div>
           <div class="label">非GCD技能</div>
-          <div class="label">青川濯莲</div>
-          <div class="label">千枝绽蕊</div>
+          <div class="label">迷仙引梦</div>
+          <div class="label">仙王蛊鼎</div>
+          <div class="label">蛊惑众生</div>
           <div class="label">BOSS机制</div>
         </div>
         <el-scrollbar style="width: 1250px;position: relative" ref="scrollBar" @wheel.prevent="handleScroll">
           <div class="timeFlow">
-            <div style="height: 100px;width: 100%;border-bottom: 1px solid #555">
-              <v-chart :option="yaoxing_chart" style="width: 100%;height: 100%"></v-chart>
-            </div>
             <div class="GCD">
               <div v-for="i in timeFlowData.timeScale" style="height: 100%; width: 199px;border-right: 1px solid rgba(85,85,85,0.5)"></div>
               <img v-for="(item, index) in timeFlowData.casting"
@@ -228,17 +229,33 @@
                            height: icon_length,
                            width: Math.floor(item.duration / 1000 * 40) + 'px'
                           }">
+              <div class="GCD_skill_icon" v-for="item in timeFlowData.firstHit" :style="{
+                backgroundColor:'rgba(63, 31, 159, 0.8)',
+                borderRadius:'3px',
+                left:xPosition(item['start']),
+                height: icon_length,
+                width: Math.floor(item['hits'] * item['duration'] / 2 * 40 / 1000) + 'px'}">
+              </div>
               <img v-for="(item, index) in timeFlowData.firstHit"
-                   :src="getImageUrl(item.iconid + '_' + item['hits'],'skills_logo')"
-                   alt="icon"
-                   class="GCD_skill_icon"
+                   :src="getImageUrl(item.iconid,'skills_logo')"
+                   alt="icon" class="GCD_skill_icon"
                    @mouseenter="enterImg($event,item)"
                    @mouseleave="leaveImg($event,item)"
                    :style="{
                            left:xPosition(item.start),
                            height: icon_length,
-                           width: Math.floor(item.duration * item['hits']/ 1000 * 40) + 'px'
+                           width: icon_length
                           }">
+            </div>
+            <div class="zuiwu">
+              <div v-for="i in timeFlowData.timeScale" style="height: 100%; width: 199px;border-right: 1px solid rgba(85,85,85,0.5)"></div>
+              <div class="zuiwu_icon" v-for="item in timeFlowData.zwjtChannel" :style="{
+                backgroundColor:'rgba(63, 31, 159, 0.8)',
+                borderRadius:'3px',
+                left:xPosition(item['startTime']),
+                height: icon_length,
+                width: Math.floor(item['duration'] * 40 / 1000) + 'px'}">
+              </div>
             </div>
             <div class="noGCD">
               <div v-for="i in timeFlowData.timeScale" style="height: 100%; width: 199px;border-right: 1px solid rgba(85,85,85,0.5)"></div>
@@ -254,40 +271,35 @@
                width: icon_length
              }">
             </div>
-            <div class="flowerBuff">
+            <div class="mixian">
               <div v-for="i in timeFlowData.timeScale" style="height: 100%; width: 199px;border-right: 1px solid rgba(85,85,85,0.5)"></div>
-              <div class="flower_icon" v-for="item in timeFlowData.qingchuan_active" :style="{
-                backgroundColor:'rgb(84,169,108)',
+              <div class="mixian_icon" v-for="item in timeFlowData.mxymChannel" :style="{
+                backgroundColor:'rgba(63, 31, 159, 0.8)',
                 borderRadius:'3px',
-                left:xPosition(item[0]),
+                left:xPosition(item['startTime']),
                 height: icon_length,
-                width: Math.floor(item[1] * 40 / 1000) + 'px'}">
+                width: Math.floor(item['duration'] * 40 / 1000) + 'px'}">
               </div>
-              <img class="flower_icon"  :src="getImageUrl(9529,'skills_logo')" v-for="item in timeFlowData.qingchuan_active" :style="{
-                left:xPosition(item[0]),
-                height: icon_length,
-                width: icon_length}">
             </div>
-            <div class="qianzhiBuff">
+            <div class="guding">
               <div v-for="i in timeFlowData.timeScale" style="height: 100%; width: 199px;border-right: 1px solid rgba(85,85,85,0.5)"></div>
-              <div class="qianzhi_icon" v-for="item in timeFlowData.qianzhi_active" :style="{
-                position:'absolute',
-                backgroundColor:'rgb(84,169,108)',
+              <div class="guding_icon" v-for="item in timeFlowData.xwgdChannel" :style="{
+                backgroundColor:'rgba(63, 31, 159, 0.8)',
                 borderRadius:'3px',
-                left:xPosition(item[0]),
+                left:xPosition(item['startTime']),
                 height: icon_length,
-                width: Math.floor(item[1] * 40 / 1000) + 'px'}">
+                width: Math.floor(item['duration'] * 40 / 1000) + 'px'}">
               </div>
-              <img v-for="(item, index) in timeFlowData.qianzhi_active"
-                   :src="getImageUrl(16027,'skills_logo')"
-                   alt="icon"
-                   class="qianzhi_icon"
-                   :style="{
-               left:xPosition(item[0]),
-               height:icon_length,
-               width:icon_length
-             }"
-              >
+            </div>
+            <div class="guhuo">
+              <div v-for="i in timeFlowData.timeScale" style="height: 100%; width: 199px;border-right: 1px solid rgba(85,85,85,0.5)"></div>
+              <div class="guhuo_icon" v-for="item in timeFlowData.ghzsChannel" :style="{
+                backgroundColor:'rgba(63, 31, 159, 0.8)',
+                borderRadius:'3px',
+                left:xPosition(item['startTime']),
+                height: icon_length,
+                width: Math.floor(item['duration'] * 40 / 1000) + 'px'}">
+              </div>
             </div>
             <div class="bossPhase">
               <div v-for="i in timeFlowData.timeScale" style="height: 100%; width: 199px;border-right: 1px solid rgba(85,85,85,0.5)"></div>
@@ -480,6 +492,11 @@ const qixueTable = {
     'img':'2745',
     'alias':'冰丝',
     'desc':'施展"冰蚕牵丝"，使自身急速提高3%，持续18秒，可叠加3层。'
+  },
+  '虫兽':{
+    'img':'3023',
+    'alias':'虫兽',
+    'desc':'当宠物存在时，自身毒性内功基础攻击力提高15%，疗伤效果提高15%。'
   },
   '祭灵':{
     'img':'2803',
@@ -680,7 +697,6 @@ axios({
     resObj.value = JSON.parse(repl)
     let rank = JSON.parse(repl2)
     rankObj.value = JSON.parse(repl2)
-
     let realTimeRank = lodash.cloneDeep(toRaw(resObj.value['skill']))
     for (let item in realTimeRank){
       for (let sub_item in realTimeRank[item]){
@@ -692,7 +708,9 @@ axios({
         }
       }
     }
-
+    realTimeRank['general']['ghzs'] = realTimeRank['ghzs']['cover']
+    realTimeRank['general']['ql'] = realTimeRank['qilong']['cover']
+    realTimeRank['general']['nvwa'] = realTimeRank['nvwa']['cover']
     let allTimeRank = lodash.cloneDeep(toRaw(resObj.value['skill']))
     for (let item in allTimeRank){
       for (let sub_item in allTimeRank[item]){
@@ -704,6 +722,9 @@ axios({
         }
       }
     }
+    allTimeRank['general']['ghzs'] = allTimeRank['ghzs']['cover']
+    allTimeRank['general']['ql'] = allTimeRank['qilong']['cover']
+    allTimeRank['general']['nvwa'] = allTimeRank['nvwa']['cover']
 
     const calcGCD = (haste,talent) =>{
       if (haste < 43){}
@@ -722,53 +743,106 @@ axios({
     let channelling = []
     let casting = []
     for (let item of resObj.value['replay']['normal']){
-      if (item['skillname'] === '当归四逆'){
+      if (item['skillname'] === '千蝶吐瑞'){
         channelling.push(item)
-      }else{
+        // TODO 帮狗花修蛊惑BUG，下版本记得改回来
+      }else if (item['skillname'] === '蛊惑众生'){
+        resObj.value['replay']['special'].push(item)
+      }
+      else{
         casting.push(item)
       }
     }
-
-    let firstHit = [{...channelling[0]}]
-    firstHit[0]['hits'] = 1
-    for (let i = 1; i < channelling.length; i++){
-      if (channelling[i]['start'] - channelling[i - 1]['start'] < 1000){
-        firstHit[firstHit.length - 1]['hits'] += 1
-        firstHit[firstHit.length - 1]['heal'] = firstHit[firstHit.length - 1]['heal'] + ' / ' + channelling[i]['heal']
-        firstHit[firstHit.length - 1]['healeff'] = firstHit[firstHit.length - 1]['healeff'] + ' / ' + channelling[i]['healeff']
-        firstHit[firstHit.length - 1]['targetName'] = firstHit[firstHit.length - 1]['targetName'] + '<br>' + channelling[i]['targetName']
+    resObj.value['replay']['special'].sort((a,b)=>{
+      if(a.start > b.start){
+        return a - b
       }else{
-        firstHit.push({...channelling[i]})
-        firstHit[firstHit.length - 1]['hits'] = 1
+        return b - a
+      }
+    })
+    let firstHit = []
+    if (channelling.length > 0){
+      firstHit.push({...channelling[0]})
+      firstHit[0]['hits'] = 1
+      for (let i = 1; i < channelling.length; i++){
+        if (channelling[i]['start'] - channelling[i - 1]['start'] < 1000){
+          firstHit[firstHit.length - 1]['hits'] += 1
+          firstHit[firstHit.length - 1]['heal'] = firstHit[firstHit.length - 1]['heal'] + channelling[i]['heal']
+          firstHit[firstHit.length - 1]['healeff'] = firstHit[firstHit.length - 1]['healeff'] + channelling[i]['healeff']
+          firstHit[firstHit.length - 1]['targetName'] = firstHit[firstHit.length - 1]['targetName'] + '+' + channelling[i]['targetName']
+        }else{
+          firstHit.push({...channelling[i]})
+          firstHit[firstHit.length - 1]['hits'] = 1
+        }
       }
     }
 
-    let qingchuan = resObj.value['replay']['qingchuan'].slice(1)
-    if (qingchuan[qingchuan.length - 1][1]){
-      qingchuan.push([resObj.value['replay']['finalTime'],0])
-    }
-    let qingchuan_active = []
-    for (let i = 1;i < qingchuan.length; i = i + 2){
-      qingchuan_active.push([qingchuan[i-1][0],qingchuan[i][0] - qingchuan[i - 1][0]])
-    }
-
-    let qianzhi_active = []
-    if (resObj.value['replay']['qianzhi'].length % 2 === 0){
-      let endMark = resObj.value['replay']['qianzhi'][resObj.value['replay']['qianzhi'].length - 1]
-      endMark[0] = resObj.value['replay']['finalTime']
-      resObj.value['replay']['qianzhi'].push(endMark)
-    }
-    for (let i = 2;i < resObj.value['replay']['qianzhi'].length - 1; i = i + 2){
-      qianzhi_active.push([resObj.value['replay']['qianzhi'][i-1][0],resObj.value['replay']['qianzhi'][i][0] - resObj.value['replay']['qianzhi'][i-1][0]])
+    let zwjtChannel = []
+    for (let i = 0; i < replay['replay']['zwjt'].length; i++){
+      if(replay['replay']['zwjt'][i][1] === 1){
+        if (i !== replay['replay']['zwjt'].length - 1){
+          zwjtChannel.push({
+            startTime:replay['replay']['zwjt'][i][0],
+            duration:replay['replay']['zwjt'][i + 1][0] - replay['replay']['zwjt'][i][0]
+          })
+        }else{
+          zwjtChannel.push({
+            startTime:replay['replay']['zwjt'][i][0],
+            duration:replay['replay']['finalTime'] - replay['replay']['zwjt'][i][0]
+          })
+        }
+      }
     }
 
-    let yaoxing_data = resObj.value['replay']['yaoxing']
-    let yaoxing_end = yaoxing_data[yaoxing_data.length - 1]
-    yaoxing_end[0] = resObj.value['replay']['finalTime']
-    yaoxing_data.unshift(['time','yaoxing'])
-    yaoxing_data.push(yaoxing_end)
-    for (let item of yaoxing_data){
-      item[1] = -1 * item[1]
+    let mxymChannel = []
+    for (let i = 0; i < replay['replay']['mxym'].length; i++){
+      if(replay['replay']['mxym'][i][1] === 1){
+        if (i < replay['replay']['mxym'].length - 1){
+          mxymChannel.push({
+            startTime:replay['replay']['mxym'][i][0],
+            duration:replay['replay']['mxym'][i + 1][0] - replay['replay']['mxym'][i][0]
+          })
+        }else{
+          mxymChannel.push({
+            startTime:replay['replay']['mxym'][i][0],
+            duration:replay['replay']['finalTime'] - replay['replay']['mxym'][i][0]
+          })
+        }
+      }
+    }
+
+    let xwgdChannel = []
+    for (let i = 0; i < replay['replay']['xwgd'].length; i++){
+      if(replay['replay']['xwgd'][i][1] === 1){
+        if (i < replay['replay']['xwgd'].length - 1){
+          xwgdChannel.push({
+            startTime:replay['replay']['xwgd'][i][0],
+            duration:replay['replay']['xwgd'][i + 1][0] - replay['replay']['xwgd'][i][0]
+          })
+        }else{
+          xwgdChannel.push({
+            startTime:replay['replay']['xwgd'][i][0],
+            duration:replay['replay']['finalTime'] - replay['replay']['xwgd'][i][0]
+          })
+        }
+      }
+    }
+
+    let ghzsChannel = []
+    for (let i = 0; i < replay['replay']['ghzs'].length; i++){
+      if(replay['replay']['ghzs'][i][1] === 1){
+        if (i < replay['replay']['ghzs'].length - 1){
+          ghzsChannel.push({
+            startTime:replay['replay']['ghzs'][i][0],
+            duration:replay['replay']['ghzs'][i + 1][0] - replay['replay']['ghzs'][i][0]
+          })
+        }else{
+          ghzsChannel.push({
+            startTime:replay['replay']['ghzs'][i][0],
+            duration:replay['replay']['finalTime'] - replay['replay']['ghzs'][i][0]
+          })
+        }
+      }
     }
 
     timeFlowData.value = {
@@ -779,9 +853,10 @@ axios({
       timeScale,
       realTimeRank,
       allTimeRank,
-      qingchuan_active,
-      qianzhi_active,
-      yaoxing_data
+      zwjtChannel,
+      mxymChannel,
+      xwgdChannel,
+      ghzsChannel
     }
     loaded.value = true
   }else{
@@ -997,117 +1072,6 @@ const healer_chart = computed(()=>{
   }
 })
 
-const yaoxing_chart = computed(()=>{
-  return {
-    dataset:{
-      source:timeFlowData.value.yaoxing_data
-    },
-    xAxis:{
-      type:'time',
-      boundaryGap: false,
-      axisPointer:{
-        show:true,
-        label:{
-          show:true,
-          backgroundColor:'transparent',
-          formatter:(params)=>{
-            let toTime = (params.value - resObj.value['replay']['startTime']) / 1000
-            return toTime.toFixed(1) + 's'
-          }
-        }
-      },
-    },
-    yAxis:{
-      max:5,
-      min:-5,
-      maxInterval:1,
-      splitLine:{
-        lineStyle:{
-          color:'rgba(85,85,85,0.5)'
-        }
-      }
-    },
-    series:[{
-      type: 'line',
-      step:'end',
-      symbol: 'none',
-      encode:{
-        x:'time',
-        y:'yaoxing'
-      },
-      areaStyle: {}
-    }],
-    grid:{
-      top:'0px',
-      bottom:'0px',
-      left:'0px',
-      right:'0px'
-    },
-    visualMap:{
-      show:false,
-      type:'piecewise',
-      dimension:1,
-      pieces:[
-        {
-          gte: -5,
-          lt: -4,
-          color: 'rgb(31,78,120)'
-        },
-        {
-          gte: -4,
-          lt: -3,
-          color: 'rgb(47,117,181)'
-        },
-        {
-          gte: -3,
-          lt: -2,
-          color: 'rgb(155,194,230)'
-        },
-        {
-          gte: -2,
-          lt: -1,
-          color: 'rgb(189,215,238)'
-        },
-        {
-          gte: -1,
-          lt: 0,
-          color: 'rgb(221,235,247)'
-        },
-        {
-          gte: 0,
-          lt: 1,
-          color: '#FFFFFF'
-        },
-        {
-          gte: 1,
-          lt: 2,
-          color: 'rgb(255,242,204)'
-        },
-        {
-          gte: 2,
-          lt: 3,
-          color: 'rgb(255,230,153)'
-        },
-        {
-          gte: 3,
-          lt: 4,
-          color: 'rgb(255,217,102)'
-        },
-        {
-          gte: 4,
-          lt: 5,
-          color: 'rgb(255,192,0)'
-        },
-        {
-          gte: 5,
-          lt: 6,
-          color: 'rgb(249,104,13)'
-        }
-      ]
-    }
-  }
-})
-
 </script>
 
 <style scoped>
@@ -1155,9 +1119,6 @@ const yaoxing_chart = computed(()=>{
   height: v-bind("(101 + 5 * icon_length) + 'px'");
   width: v-bind("timeFlowWidth");
 }
-.coverage_chart{
-  width: v-bind("ChartWidth")
-}
 .label{
   background-color: #201020;
   height: v-bind("icon_length");
@@ -1171,13 +1132,31 @@ const yaoxing_chart = computed(()=>{
   border-bottom: 1px solid #555;
   height: v-bind("icon_length");
 }
-.flowerBuff{
+.zuiwu{
   display: flex;
   flex-direction: row;
   height: v-bind("icon_length");
   border-bottom: 1px solid #555;
 }
-.qianzhiBuff{
+.mixian{
+  display: flex;
+  flex-direction: row;
+  height: v-bind("icon_length");
+  border-bottom: 1px solid #555;
+}
+.noGCD{
+  display: flex;
+  flex-direction: row;
+  height: v-bind("icon_length");
+  border-bottom: 1px solid #555;
+}
+.guding{
+  display: flex;
+  flex-direction: row;
+  height: v-bind("icon_length");
+  border-bottom: 1px solid #555;
+}
+.guhuo{
   display: flex;
   flex-direction: row;
   height: v-bind("icon_length");
@@ -1194,34 +1173,37 @@ const yaoxing_chart = computed(()=>{
   flex-direction: row;
   height: v-bind("icon_length");
 }
-.noGCD{
-  display: flex;
-  flex-direction: row;
-  height: v-bind("icon_length");
-  border-bottom: 1px solid #555;
-}
-.bossPhase_icon{
+.GCD_skill_icon{
   position: absolute;
-  top:v-bind("(101 + 4 * icon_length) + 'px'")
+  top:0px;
+}
+.zuiwu_icon{
+  position: absolute;
+  top: v-bind("(icon_length) + 'px'")
 }
 .noGCD_skill_icon{
   position: absolute;
-  top: v-bind("(101 + icon_length) + 'px'")
+  top: v-bind("(2 * icon_length) + 'px'")
 }
-.GCD_skill_icon{
+.mixian_icon{
   position: absolute;
-  top:101px;
+  top:v-bind("(3 * icon_length) + 'px'")
 }
-.qianzhi_icon{
+.guding_icon{
   position: absolute;
-  top:v-bind("(101 + 3 * icon_length) + 'px'")
+  top:v-bind("(4 * icon_length) + 'px'")
 }
-.flower_icon{
+.guhuo_icon{
   position: absolute;
-  top:v-bind("(101 + 2 * icon_length) + 'px'")
+  top:v-bind("(5 * icon_length) + 'px'")
+}
+.bossPhase_icon{
+  position: absolute;
+  top:v-bind("(6 * icon_length) + 'px'")
 }
 .popUp{
   position: absolute;
+  max-width: 450px;
   border: 1px solid rgba(85,85,85,0.5);
   border-radius: 12px;
   top: v-bind("popUpPos[1] + 'px'");

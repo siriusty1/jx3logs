@@ -3,7 +3,10 @@
     <div style="display:flex;flex-direction:column;align-items: center;position: relative">
       <div style="display:flex; justify-content:space-between;font-size: 20px; font-weight: bold; width: 1400px;margin-bottom: 20px">
         <div>奶花复盘 8.0.2</div>
-        <div><text>综合评分：</text><text :class="color(resObj.skill.general.score)">{{resObj.skill.general.score}}</text></div>
+        <div v-if="'score' in resObj.skill.general">
+          <text>综合评分：</text>
+          <text :class="color(resObj.skill.general.score)">{{resObj.skill.general.score.toFixed(2)}}</text>
+        </div>
       </div>
       <div class="infoBox">
         <div style="display:flex; flex-direction:row;justify-content: space-around; border: 1px solid #555; font-size: 14px;width: 300px;background-color: #141414">
@@ -695,7 +698,6 @@ axios({
     resObj.value = JSON.parse(repl)
     let rank = JSON.parse(repl2)
     rankObj.value = JSON.parse(repl2)
-    console.log(resObj.value)
 
     let realTimeRank = lodash.cloneDeep(toRaw(resObj.value['skill']))
     for (let item in realTimeRank){
@@ -861,7 +863,6 @@ const leaveQixue = ($event,item) => {
 
 const enterImg = ($event,item) => {
   popUpDetails.value = item
-  console.log(item)
   popUpShow.value = true
   nextTick(()=>{
     let leftBias

@@ -3,7 +3,10 @@
     <div style="display:flex;flex-direction:column;align-items: center;position: relative">
       <div style="display:flex; justify-content:space-between;font-size: 20px; font-weight: bold; width: 1400px;margin-bottom: 20px">
         <div>相知复盘 8.0.2</div>
-        <div><text>综合评分：</text><text :class="color(resObj.skill.general.score)">{{resObj.skill.general.score}}</text></div>
+        <div v-if="'score' in resObj.skill.general">
+          <text>综合评分：</text>
+          <text :class="color(resObj.skill.general.score)">{{resObj.skill.general.score.toFixed(2)}}</text>
+        </div>
       </div>
       <div class="infoBox">
         <div style="display:flex; flex-direction:row;justify-content: space-around; border: 1px solid #555; font-size: 14px;width: 300px;background-color: #141414">
@@ -671,7 +674,6 @@ axios({
   method:'get',
   url: `http://120.48.95.56:8009/getReplayPro?id=${route.params.replay_id}`
 }).then((res)=>{
-  console.log(res)
   if (res.data.available){
     let repl = res.data['raw'].replace(/'/g, '"').replace(/&#39;/g, '"').replace(/\n/g, '\\n').replace(/\t/g, '\\t');
     let repl2 = res.data['rank'].replace(/'/g, '"').replace(/&#34;/g, '"').replace(/\n/g, '\\n').replace(/\t/g, '\\t');
@@ -725,7 +727,6 @@ axios({
         timeflow_without_channelling.push(item)
       }
     }
-    console.log(timeflow_channelling)
     let firstHit = [timeflow_channelling[0]]
     firstHit[0]['hits'] = 1
     for (let i = 1; i < timeflow_channelling.length; i++){
@@ -739,7 +740,6 @@ axios({
         firstHit[firstHit.length - 1]['hits'] = 1
       }
     }
-    console.log(firstHit)
     let songChange = []
     songChange.push({
       'skillname':'梅花三弄·切换',

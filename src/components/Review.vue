@@ -145,12 +145,12 @@ const reviewRes = computed(()=>{
         break;
       case 401:
         resItem['title'] = '保证"冰蚕牵丝"或"醉舞九天"的触发次数'
-        resItem['desc'] = `"根据流派不同，"冰蚕牵丝"或"醉舞九天"之一是你的主要填充技能，你需要保证其触发次数从而提供稳定的治疗。<br>本场战斗你的"冰蚕牵丝"的每秒次数为"bcNum"，超过了"bcRank"%的玩家；"醉舞九天"的每秒次数为"zwNum"，超过了"zwRank"%的玩家。`
+        resItem['desc'] = `"根据流派不同，"冰蚕牵丝"或"醉舞九天"之一是你的主要填充技能，你需要保证其触发次数从而提供稳定的治疗。<br>本场战斗你的"冰蚕牵丝"的每秒次数为${resItem.bcNum}，超过了${resItem.bcRank}%的玩家；"醉舞九天"的每秒次数为${resItem.zwNum}，超过了${resItem.zwRank}%的玩家。`
         res.push(resItem)
         break;
       case 402:
         resItem['title'] = '使用"蛊惑众生"'
-        resItem['desc'] = `""蛊惑众生"是非常强力的单体保人技能，不要因为游戏内插件不统计就忘记施放了。<br>本场战斗你的"蛊惑众生"的覆盖率为"cover"。`
+        resItem['desc'] = `""蛊惑众生"是非常强力的单体保人技能，不要因为游戏内插件不统计就忘记施放了。<br>本场战斗你的"蛊惑众生"的覆盖率为${(100 * resItem.cover).toFixed(2)}%。`
         res.push(resItem)
         break;
       case 403:
@@ -160,17 +160,17 @@ const reviewRes = computed(()=>{
         break;
       case 404:
         resItem['title'] = '不要回收"迷仙引梦"'
-        resItem['desc'] = `"迷仙引梦"的主要作用应当是回蓝，回收会导致损失回蓝的跳数，并且治疗量也得不偿失，不应当为了抢治疗进行回收。<br>本场战斗你回收了"timeCast"次"迷仙引梦"。`
+        resItem['desc'] = `"迷仙引梦"的主要作用应当是回蓝，回收会导致损失回蓝的跳数，并且治疗量也得不偿失，不应当为了抢治疗进行回收。<br>本场战斗你回收了${resItem.timeCast}次"迷仙引梦"。`
         res.push(resItem)
         break;
       case 405:
         resItem['title'] = '使用"蚕引"层数'
-        resItem['desc'] = `"蚕引"效果附赠了具有治疗增益的"冰蚕诀"，记得在30秒之内把它们全部用掉。<br>本场战斗你获得了"sumAll"层蚕引，但你只使用了其中的"timeCast"次。`
+        resItem['desc'] = `"蚕引"效果附赠了具有治疗增益的"冰蚕诀"，记得在30秒之内把它们全部用掉。<br>本场战斗你获得了${resItem.sumAll}层蚕引，但你只使用了其中的${resItem.timeCast}次。`
         res.push(resItem)
         break;
       case 406:
         resItem['title'] = '保留"碧蝶献祭"的会心增益到"蝶池"'
-        resItem['desc'] = `"碧蝶献祭"会获得一个必会心的buff，它会被治疗技能消耗掉，所以应当在1秒之内避免使用其它治疗技能从而让"蝶池"吃到这个增益。<br>本场战斗你使用了"sumAll"次"蛊虫献祭"，但是只有"rightTime"次正确处理了必会心的buff。`
+        resItem['desc'] = `"碧蝶献祭"会获得一个必会心的buff，它会被治疗技能消耗掉，所以应当在1秒之内避免使用其它治疗技能从而让"蝶池"吃到这个增益。<br>本场战斗你使用了${resItem.sumAll}次"蛊虫献祭"，但是只有${resItem.rightTime}次正确处理了必会心的buff。`
         res.push(resItem)
         break;
       case 501:

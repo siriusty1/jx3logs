@@ -3,7 +3,10 @@
     <div style="display:flex;flex-direction:column;align-items: center;position: relative">
       <div style="display:flex; justify-content:space-between;font-size: 20px; font-weight: bold; width: 1400px;margin-bottom: 20px">
         <div>灵素复盘 8.0.2</div>
-        <div><text>综合评分：</text><text :class="color(resObj.skill.general.score)">{{resObj.skill.general.score}}</text></div>
+        <div v-if="'score' in resObj.skill.general">
+          <text>综合评分：</text>
+          <text :class="color(resObj.skill.general.score)">{{resObj.skill.general.score.toFixed(2)}}</text>
+        </div>
       </div>
       <div class="infoBox">
         <div style="display:flex; flex-direction:row;justify-content: space-around; border: 1px solid #555; font-size: 14px;width: 300px;background-color: #141414">
@@ -65,7 +68,7 @@
       <el-tabs type="border-card"  class="statisticBox">
         <el-tab-pane label="即时排名">
           <div class="statisticBoxInner">
-            <SkillDisplay :skill="timeFlowData.allTimeRank['lszh']" :sortList="{
+            <SkillDisplay :skill="timeFlowData.realTimeRank['lszh']" :sortList="{
         'key':['num','numPerSec','HPS'],
         'value':['数量：','每秒数量：','HPS：']}">
               <template #icon>
@@ -73,7 +76,7 @@
                 <text style="margin-top: 5px; font-weight: bold;font-size: 16px">灵素中和</text>
               </template>
             </SkillDisplay>
-            <SkillDisplay :skill="timeFlowData.allTimeRank['bzhf']" :sort-list="{
+            <SkillDisplay :skill="timeFlowData.realTimeRank['bzhf']" :sort-list="{
         'key':['num','numPerSec','delay','HPS','effRate'],
         'value':['数量：','每秒数量：','延迟：','HPS：','有效比例：']}">
               <template #icon>
@@ -81,7 +84,7 @@
                 <text style="margin-top: 5px; font-weight: bold;font-size: 16px">白芷含芳</text>
               </template>
             </SkillDisplay>
-            <SkillDisplay :skill="timeFlowData.allTimeRank['cshx']" :sort-list="{
+            <SkillDisplay :skill="timeFlowData.realTimeRank['cshx']" :sort-list="{
         'key':['skillNum','num','numPerSec','delay','skillHPS','HPS'],
         'value':['数量：','HOT数量：','每秒HOT：','延迟：','直接HPS：','HOTHPS：']}">
               <template #icon>
@@ -89,7 +92,7 @@
                 <text style="margin-top: 5px; font-weight: bold;font-size: 16px">赤芍寒香</text>
               </template>
             </SkillDisplay>
-            <SkillDisplay :skill="timeFlowData.allTimeRank['dgsn']" :sort-list="{
+            <SkillDisplay :skill="timeFlowData.realTimeRank['dgsn']" :sort-list="{
         'key':['num','numPerSec','delay','HPS','effRate'],
         'value':['数量：','每秒数量：','延迟：','HPS：','有效比例：']}">
               <template #icon>
@@ -97,7 +100,7 @@
                 <text style="margin-top: 5px; font-weight: bold;font-size: 16px">当归四逆</text>
               </template>
             </SkillDisplay>
-            <SkillDisplay :skill="timeFlowData.allTimeRank['qczl']" :sort-list="{
+            <SkillDisplay :skill="timeFlowData.realTimeRank['qczl']" :sort-list="{
         'key':['num','numPerSec','HPS','effRate'],
         'value':['数量：','每秒数量：','HPS：','有效比例：']}">
               <template #icon>
@@ -105,7 +108,7 @@
                 <text style="margin-top: 5px; font-weight: bold;font-size: 16px">青川濯莲</text>
               </template>
             </SkillDisplay>
-            <SkillDisplay :skill="timeFlowData.allTimeRank['ygzx']" :sort-list="{
+            <SkillDisplay :skill="timeFlowData.realTimeRank['ygzx']" :sort-list="{
         'key':['num','numPerSec','HPS','effRate'],
         'value':['数量：','每秒数量：','HPS：','有效比例：']}">
               <template #icon>
@@ -113,7 +116,7 @@
                 <text style="margin-top: 5px; font-weight: bold;font-size: 16px">银光照雪</text>
               </template>
             </SkillDisplay>
-            <SkillDisplay :skill="timeFlowData.allTimeRank['qqhh']" :sort-list="{
+            <SkillDisplay :skill="timeFlowData.realTimeRank['qqhh']" :sort-list="{
         'key':['num','HPS','effRate'],
         'value':['数量：','HPS：','有效比例：']}">
               <template #icon>
@@ -121,7 +124,7 @@
                 <text style="margin-top: 5px; font-weight: bold;font-size: 16px">七情和合</text>
               </template>
             </SkillDisplay>
-            <SkillDisplay :skill="timeFlowData.allTimeRank['general']" :sort-list="{
+            <SkillDisplay :skill="timeFlowData.realTimeRank['general']" :sort-list="{
         'key':['PeiwuRate','PeiwuDPS','PiaohuangNum','PiaohuangDPS','efficiency'],
         'value':['配伍比例','配伍DPS','飘黄数量','飘黄DPS','战斗效率']}">
               <template #icon>

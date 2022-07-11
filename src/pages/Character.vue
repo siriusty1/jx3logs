@@ -169,6 +169,11 @@ const occToSect = {
   'lijingyidao':['wh',1,'h'],
   'wufang':['yz',0,'d'],
   'lingsu':['yz',1,'h'],
+  'dujing':['wd',0,'d'],
+  'butianjue':['wd',1,'h'],
+  'bingxinjue':['qx',0,'d'],
+  'yunchangxinjing':['qx',1,'h'],
+
 }
 const timestampToTime = (timestamp) => {
   let date = new Date(timestamp * 1000);
@@ -185,22 +190,22 @@ const status = ref()
 const allLogs = ref()
 
 const occTable = {
-  'bd':['baj'],
+  'bd':['beiaojue'],
   'cg':['mowen','xiangzhi'],
-  'cj':['sjjy'],
-  'cy':['fsj','tgy'],
-  'cyg':['zxg','txjy'],
-  'lxg':['ylj'],
-  'mj':['fy','mz'],
-  'pl':['lhj'],
-  'qx':['bx','ycxj'],
+  'cj':['shanjujianyi'],
+  'cy':['fenshanjin','tieguyi'],
+  'cyg':['zixiagong','taixujianyi'],
+  'lxg':['yinlongjue'],
+  'mj':['fenying','mingzun'],
+  'pl':['linghaijue'],
+  'qx':['bingxinjue','yunchangxinjing'],
   'sl':['yjj','xsj'],
-  'tc':['axzy','tll'],
-  'tm':['jyj','tlgd'],
-  'wd':['dj','butianjue'],
+  'tc':['aoxue','tielao'],
+  'tm':['jingyujue','tianluo'],
+  'wd':['dujing','butianjue'],
   'wh':['huajianyou','lijingyidao'],
-  'ytz':['txj'],
-  'yz':['wf','lingsu']
+  'ytz':['taixuanjing'],
+  'yz':['wufang','lingsu']
 }
 
 const activeOcc = ref(0)
@@ -216,6 +221,7 @@ const subOcc = () => {
 const getImgUrl = (folder,name) => {
   return new URL(`../assets/${folder}/${name}.png`, import.meta.url).href
 }
+
 
 const instData = {
   '110-4':[
