@@ -175,6 +175,7 @@ const occToSect = {
   'yunchangxinjing':['qx',1,'h'],
 
 }
+
 const timestampToTime = (timestamp) => {
   let date = new Date(timestamp * 1000);
   let Y = date.getFullYear() + '-'
@@ -185,6 +186,7 @@ const timestampToTime = (timestamp) => {
   let s = (date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds())
   return Y+M+D+h+m+s;
 }
+
 const status = ref()
 
 const allLogs = ref()
@@ -221,7 +223,6 @@ const subOcc = () => {
 const getImgUrl = (folder,name) => {
   return new URL(`../assets/${folder}/${name}.png`, import.meta.url).href
 }
-
 
 const instData = {
   '110-4':[
