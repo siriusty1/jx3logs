@@ -89,7 +89,7 @@
               </el-table-column>
               <el-table-column align="center" label="操作">
                 <template #default="scope">
-                  <el-button type="primary" link :disabled="scope.row.logsList.length === 0" @click="showAllLogs(scope.row.logsList)">查看全部</el-button>
+                  <el-button type="primary" link :disabled="scope.row.logsList?.length === 0" @click="showAllLogs(scope.row.logsList)">查看全部</el-button>
                 </template>
               </el-table-column>
             </el-table>

@@ -87,7 +87,7 @@ const props = defineProps(['skill','sortList'])
   margin-right: 20px;
 }
 .skill_details{
-  font-size: 5px;
+  font-size: 12px;
   display: flex;
   flex-direction: column;
   justify-content: center;
