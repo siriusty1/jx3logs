@@ -1209,6 +1209,7 @@ const healer_chart = computed(()=>{
   top: v-bind("popUpPos[1] + 'px'");
   left: v-bind("popUpPos[0] + 'px'");
   background-color: #201020;
+  max-width: 450px;
 }
 
 :deep(.el-tabs__nav-scroll){

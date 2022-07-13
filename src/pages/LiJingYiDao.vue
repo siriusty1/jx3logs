@@ -767,7 +767,6 @@ axios({
     }
     loaded.value = true
   }else{
-
     if (res.data.text === '数据未公开.'){
       err.value = 'private'
     }
@@ -1142,6 +1141,7 @@ const heatChart = computed(()=>{
   top: v-bind("popUpPos[1] + 'px'");
   left: v-bind("popUpPos[0] + 'px'");
   background-color: #201020;
+  max-width: 450px;
 }
 
 :deep(.el-tabs__nav-scroll){

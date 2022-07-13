@@ -37,7 +37,7 @@
           <div style="margin: 10px">
             <div style="font-size: 18px;font-weight: bold;margin-bottom: 10px">装备</div>
             <div v-if="resObj.equip['available']" style="font-size: 14px">
-              装备信息获取失败。在进入战斗后打开团队装分面板即可获取。如果是第一视角也可以自动获取。
+              待更新。
 
             </div>
             <div v-if="!resObj.equip['available']" style="font-size: 14px">
@@ -228,10 +228,22 @@
             </div>
             <div class="GCD">
               <div v-for="i in timeFlowData.timeScale" style="height: 100%; width: 199px;border-right: 1px solid rgba(85,85,85,0.5)"></div>
-              <img v-for="(item, index) in timeFlowData.firstHit"
+              <div v-for="(item, index) in timeFlowData.firstHit"
                    @mouseenter="enterImg($event,item)"
                    @mouseleave="leaveImg($event,item)"
+                   :style="{
+                           position: 'absolute',
+                           top:'101px',
+                           borderRadius:'3px',
+                           backgroundColor:'rgb(100, 250, 180)',
+                           left:xPosition(item.start),
+                           height: icon_length,
+                           width: Math.floor(item.duration * item['hits'] / 1000 * 40) + 'px'
+                          }"></div>
+              <img v-for="(item, index) in timeFlowData.firstHit"
                    :src="getImageUrl('7174','skills_logo')"
+                   @mouseenter="enterImg($event,item)"
+                   @mouseleave="leaveImg($event,item)"
                    alt="icon"
                    class="GCD_skill_icon"
                    :style="{
@@ -732,9 +744,8 @@ axios({
     for (let i = 1; i < timeflow_channelling.length; i++){
       if (timeflow_channelling[i]['start'] - timeflow_channelling[i - 1]['start'] < 1000){
         firstHit[firstHit.length - 1]['hits'] += 1
-        firstHit[firstHit.length - 1]['heal'] = firstHit[firstHit.length - 1]['heal'] + ' / ' + timeflow_channelling[i]['heal']
-        firstHit[firstHit.length - 1]['healeff'] = firstHit[firstHit.length - 1]['healeff'] + ' / ' + timeflow_channelling[i]['healeff']
-        firstHit[firstHit.length - 1]['targetName'] = firstHit[firstHit.length - 1]['targetName'] + '<br>' + timeflow_channelling[i]['targetName']
+        firstHit[firstHit.length - 1]['heal'] = firstHit[firstHit.length - 1]['heal'] + timeflow_channelling[i]['heal']
+        firstHit[firstHit.length - 1]['healeff'] = firstHit[firstHit.length - 1]['healeff'] + timeflow_channelling[i]['healeff']
       }else{
         firstHit.push(timeflow_channelling[i])
         firstHit[firstHit.length - 1]['hits'] = 1
@@ -758,6 +769,9 @@ axios({
       }
     }
 
+    if (replay.equip.available){
+      console.log(replay.equip.raw)
+    }
     timeFlowData.value = {
       GCD,
       timeFlowWidth,
@@ -1131,6 +1145,7 @@ const healer_chart = computed(()=>{
   top: v-bind("popUpPos[1] + 'px'");
   left: v-bind("popUpPos[0] + 'px'");
   background-color: #201020;
+  max-width: 450px;
 }
 .阳春白雪·切换{
   background-image: url("../assets/skills_logo/ycbx.png");

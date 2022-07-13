@@ -36,7 +36,12 @@ const reviewRes = computed(()=>{
         break;
       case 10:
         resItem['title'] = '不要放生队友'
-        resItem['desc'] = `如果你的队友没有受到不可挽救的伤害，你就应当对其进行治疗以避免重伤。请记住，治疗职业的第一优先级永远是保证团队成员的存活，不要为了刷治疗量放弃队友。有时拯救队友需要快速的反应或者预判，这取决于你对副本的理解。<br>本场战斗你放生了${resItem.num}次队友。`
+        let deadList = ''
+        for (let i = 0; i < item['time'].length; i++){
+          let str = `${item['time']}：${item['id']}（${item['damage']}）<br>`
+          deadList += str
+            }
+        resItem['desc'] = `如果你的队友没有受到不可挽救的伤害，你就应当对其进行治疗以避免重伤。请记住，治疗职业的第一优先级永远是保证团队成员的存活，不要为了刷治疗量放弃队友。有时拯救队友需要快速的反应或者预判，这取决于你对副本的理解。<br>本场战斗你放生了${resItem.num}次队友。<br>${deadList}`
         res.push(resItem)
         break;
       case 11:

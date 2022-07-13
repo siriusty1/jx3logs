@@ -43,39 +43,33 @@
           <img class="occ_icon" :src="getImgUrl('occ_logo','lijingyidao')" alt="nh" :class="{active:occChosen === 'lijingyidao'}" @click="occChosen = 'lijingyidao'">
           <img class="occ_icon" :src="getImgUrl('occ_logo','butianjue')" alt="nd" :class="{active:occChosen === 'butianjue'}" @click="occChosen = 'butianjue'">
           <img class="occ_icon" :src="getImgUrl('occ_logo','xiangzhi')" alt="ng" :class="{active:occChosen === 'xiangzhi'}" @click="occChosen = 'xiangzhi'">
-          <img class="occ_icon" :src="getImgUrl('occ_logo','lingsu')" alt="ny" :class="{active:occChosen === 'lingsu'}" @click="occChosen = 'lingsu'">
+          <img class="occ_icon" :src="getImgUrl('occ_logo','lingsu')" alt="ny" :class="{active:occChosen === 'lingsu'}" @click="occChosen ='lingsu'">
         </div>
       </div>
     </div>
     <div style="width: 1400px; border: 1px solid #555;margin-top: 20px">
       <div style="margin-bottom: 20px">
-        <el-select v-model="season" size="small" style="margin-left:20px;margin-right:20px;margin-top:20px; width:150px">
-          <el-option label="江湖无限赛季" value="110-4"></el-option>
-          <el-option label="北天药宗赛季" value="110-3"></el-option>
-        </el-select>
-        <el-select v-if="season === '110-4'" v-model="instance" size="small" style="width:160px;margin-right:20px">
+        <el-select v-model="instance" size="small" style="width:160px;margin-left:20px;margin-top: 20px;margin-right:20px" placeholder="请选择副本">
+          <el-option-group label="江湖无限赛季">
           <el-option label="河阳之战（25人英雄）" value="25人英雄河阳之战"></el-option>
           <el-option label="河阳之战（25人普通）" value="25人普通河阳之战"></el-option>
-        </el-select>
-        <el-select v-if="season === '110-3'" v-model="instance" size="small" style="width:160px;margin-right:20px">
+          </el-option-group>
+          <el-option-group label="北天药宗赛季">
           <el-option label="雷狱大泽（25人英雄）" value="25人英雄雷狱大泽"></el-option>
           <el-option disabled label="雷狱大泽（25人普通）" value="25人普通雷狱大泽"></el-option>
+          </el-option-group>
         </el-select>
-        <el-select v-if="season === '110-4'" v-model="boss" size="small" style="width:160px">
-          <el-option label="勒齐那" value="勒齐那"></el-option>
-          <el-option label="阿阁诺" value="阿阁诺"></el-option>
-          <el-option label="周通忌" value="周通忌"></el-option>
-          <el-option label="周贽" value="周贽"></el-option>
-          <el-option label="常宿" value="常宿"></el-option>
-        </el-select>
-        <el-select v-if="season === '110-3'" v-model="boss" size="small" style="width:160px">
-          <el-option label="巨型尖吻凤" value="巨型尖吻凤"></el-option>
-          <el-option label="桑乔" value="桑乔"></el-option>
-          <el-option label="悉达罗摩" value="悉达罗摩"></el-option>
-          <el-option label="尤迦罗摩" value="尤迦罗摩"></el-option>
-          <el-option label="月泉淮" value="月泉淮"></el-option>
-          <el-option label="乌蒙贵" value="乌蒙贵"></el-option>
-        </el-select>
+        <template v-if="instance ==='25人英雄河阳之战' || instance ==='25人普通河阳之战'">
+          <el-select v-model="boss" size="small" style="width:160px">
+            <el-option v-for="item in bossTable['110-4']" :label="item" :value="item"></el-option>
+          </el-select>
+        </template>
+        <template v-if="instance ==='25人英雄雷域大泽' || instance ==='25人普通雷域大泽'">
+          <el-select v-model="boss" size="small" style="width:160px">
+            <el-option v-for="item in bossTable['110-3']" :label="item" :value="item"></el-option>
+          </el-select>
+        </template>
+
       </div>
       <div style="margin-left: 20px;margin-right: 20px;margin-bottom: 20px">
         <el-table border :data="rankData" stripe style="width: 100%">
@@ -116,9 +110,10 @@
 
 <script setup>
 import { watch, ref } from 'vue'
-import { useRouter } from "vue-router";
+import { useRoute,useRouter } from "vue-router";
 import axios from 'axios'
 
+const route = useRoute()
 const router = useRouter()
 
 const timestampToTime = (timestamp) => {
@@ -159,7 +154,13 @@ const color = (score) =>{
   }
 }
 
-const occChosen = ref()
+const occChosen = ref(route.query.occ)
+
+const changeOcc = (occ) => {
+  let newQuery = route.query
+  newQuery.occ = occ
+  router.push({path:'/ranking', query: newQuery})
+}
 
 const toReplay = (occ,id) =>{
   router.push(`/${occ}/${id}`)
@@ -169,41 +170,51 @@ const getImgUrl = (folder,name) => {
   return new URL(`../assets/${folder}/${name}.png`, import.meta.url).href
 }
 
-const season = ref('110-4')
+const bossTable = {
+  '110-4':['勒齐那', '阿阁诺', '周通忌', '周贽','常宿'],
+  '110-3':['巨型尖吻凤','桑乔','悉达罗摩','尤迦罗摩','月泉淮','乌蒙贵'],
+}
 
-const instance = ref('25人英雄河阳之战')
+const instance = ref(route.query.map)
 
-const boss = ref('勒齐那')
+const boss = ref(route.query.boss)
 
 const page = ref(1)
 
-watch(season,(new_value,old_value)=>{
-  if (new_value === '110-3'){
-    instance.value = '25人英雄雷狱大泽'
-    boss.value = '巨型尖吻凤'
-  }else if(new_value === '110-4'){
-    instance.value = '25人英雄河阳之战'
+const rankData = ref()
+
+watch(()=>instance.value,(newValue)=>{
+  if (newValue ==='25人英雄河阳之战' || newValue ==='25人普通河阳之战'){
     boss.value = '勒齐那'
+  }else if (instance ==='25人英雄雷域大泽' || instance ==='25人普通雷域大泽'){
+    boss.value = '巨型尖吻凤'
   }
 })
 
-const rankData = ref()
-
 watch(()=>[instance.value,boss.value,occChosen.value,page.value],(newValue)=>{
-  if (newValue[2]){
+  router.push({
+    url:'/ranking',
+    query:{
+      'map':newValue[0],
+      'boss':newValue[1],
+      'occ':newValue[2]
+    }
+  })
+  if (instance.value && boss.value && occChosen.value){
     axios({
       method:'get',
-      url:`http://139.199.102.41:8009/getRank?map=${newValue[0]}&boss=${newValue[1]}&occ=${newValue[2]}&page=${newValue[3]}`
+      url:`http://120.48.95.56:8009/getRank?map=${instance.value}&boss=${boss.value}&occ=${occChosen.value}&page=${page.value}`
     }).then((res)=>{
       let series = []
       for (let i = 0; i < res.data.result.table.length; i++){
         series.push(i)
       }
-      console.log(res)
       rankData.value = res.data.result.table
     })
   }
-})
+},{immediate:true})
+
+
 </script>
 
 <style scoped>
