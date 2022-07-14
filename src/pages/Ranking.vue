@@ -80,7 +80,7 @@
             <template #default="scope">
               <div style="display: flex;justify-content: center">
                 <img :src="getImgUrl('occ_logo',occChosen)" alt="occ" style="height: 24px;width: 24px;margin-right: 5px">
-                <div :class="color(scope.row.score)">{{ scope.row.score }}</div>
+                <div :class="color(scope.row.score)">{{ scope.row.score === 100 ? scope.row.score.toFixed(1) : scope.row.score.toFixed(2) }}</div>
               </div>
             </template>
           </el-table-column>
