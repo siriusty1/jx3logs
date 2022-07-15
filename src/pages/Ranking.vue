@@ -55,21 +55,13 @@
           <el-option label="河阳之战（25人普通）" value="25人普通河阳之战"></el-option>
           </el-option-group>
           <el-option-group label="北天药宗赛季">
-          <el-option label="雷狱大泽（25人英雄）" value="25人英雄雷狱大泽"></el-option>
-          <el-option disabled label="雷狱大泽（25人普通）" value="25人普通雷狱大泽"></el-option>
+          <el-option label="雷域大泽（25人英雄）" value="25人英雄雷域大泽"></el-option>
+          <el-option disabled label="雷域大泽（25人普通）" value="25人普通雷域大泽"></el-option>
           </el-option-group>
         </el-select>
-        <template v-if="instance ==='25人英雄河阳之战' || instance ==='25人普通河阳之战'">
-          <el-select v-model="boss" size="small" style="width:160px">
-            <el-option v-for="item in bossTable['110-4']" :label="item" :value="item"></el-option>
-          </el-select>
-        </template>
-        <template v-if="instance ==='25人英雄雷域大泽' || instance ==='25人普通雷域大泽'">
-          <el-select v-model="boss" size="small" style="width:160px">
-            <el-option v-for="item in bossTable['110-3']" :label="item" :value="item"></el-option>
-          </el-select>
-        </template>
-
+        <el-select v-model="boss" size="small" style="width:160px" placeholder="请选择首领">
+          <el-option v-for="item in bossTable" :label="item" :value="item"></el-option>
+        </el-select>
       </div>
       <div style="margin-left: 20px;margin-right: 20px;margin-bottom: 20px">
         <el-table border :data="rankData" stripe style="width: 100%">
@@ -109,7 +101,7 @@
 </template>
 
 <script setup>
-import { watch, ref } from 'vue'
+import { computed, watch, ref } from 'vue'
 import { useRoute,useRouter } from "vue-router";
 import axios from 'axios'
 
@@ -170,10 +162,19 @@ const getImgUrl = (folder,name) => {
   return new URL(`../assets/${folder}/${name}.png`, import.meta.url).href
 }
 
-const bossTable = {
-  '110-4':['勒齐那', '阿阁诺', '周通忌', '周贽','常宿'],
-  '110-3':['巨型尖吻凤','桑乔','悉达罗摩','尤迦罗摩','月泉淮','乌蒙贵'],
-}
+const bossTable = computed(()=>{
+  if (instance.value === '25人英雄河阳之战' || instance.value === '25人普通河阳之战'){
+    return ['勒齐那', '阿阁诺', '周通忌', '周贽','常宿']
+  }else if (instance.value === '25人英雄雷域大泽' || instance.value === '25人英雄雷域大泽'){
+    return ['巨型尖吻凤','桑乔','悉达罗摩','尤迦罗摩','月泉淮','乌蒙贵']
+  }
+})
+
+  // '25人英雄河阳之战':['勒齐那', '阿阁诺', '周通忌', '周贽','常宿'],
+  // '25人普通河阳之战':['勒齐那', '阿阁诺', '周通忌', '周贽','常宿'],
+  // '25人英雄雷域大泽':['巨型尖吻凤','桑乔','悉达罗摩','尤迦罗摩','月泉淮','乌蒙贵'],
+  // '25人普通雷域大泽':['巨型尖吻凤','桑乔','悉达罗摩','尤迦罗摩','月泉淮','乌蒙贵']
+
 
 const instance = ref(route.query.map)
 
@@ -184,9 +185,10 @@ const page = ref(1)
 const rankData = ref()
 
 watch(()=>instance.value,(newValue)=>{
+  console.log(newValue)
   if (newValue ==='25人英雄河阳之战' || newValue ==='25人普通河阳之战'){
     boss.value = '勒齐那'
-  }else if (instance ==='25人英雄雷域大泽' || instance ==='25人普通雷域大泽'){
+  }else if (newValue === '25人英雄雷域大泽' || newValue === '25人英雄雷域大泽'){
     boss.value = '巨型尖吻凤'
   }
 })
