@@ -7,7 +7,6 @@ const YunChangXinJing = () => import('../pages/YunChangXinJing.vue')
 const XiangZhi = () => import('../pages/XiangZhi.vue')
 const LiJingYiDao = () => import('../pages/LiJingYiDao.vue')
 const BuTianJue = () => import('../pages/BuTianJue.vue')
-const showEquip = () => import('../components/ShowEquip.vue')
 
 const router = createRouter({
     history: createWebHistory(),
@@ -15,10 +14,6 @@ const router = createRouter({
         {
             path: "/",
             component: Index
-        },
-        {
-            path: "/se",
-            component: showEquip
         },
         {
             path:"/character/:server/:name",

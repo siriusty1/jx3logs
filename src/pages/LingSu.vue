@@ -37,8 +37,7 @@
           <div style="margin: 10px">
             <div style="font-size: 18px;font-weight: bold;margin-bottom: 10px">装备</div>
             <div v-if="resObj.equip['available']" style="font-size: 14px">
-              装备信息展示待更新。
-
+              <ShowEquip :equipInfo="resObj.equip.raw"></ShowEquip>
             </div>
             <div v-if="!resObj.equip['available']" style="font-size: 14px">
               装备信息获取失败。在进入战斗后打开团队装分面板即可获取。如果是第一视角也可以自动获取。
@@ -404,6 +403,7 @@
 import { nextTick, ref, toRaw,computed} from 'vue'
 import lodash from 'lodash'
 import SkillDisplay from '../components/SkillDisplay.vue'
+import ShowEquip from '../components/ShowEquip.vue'
 import Review from '../components/Review.vue'
 import axios from "axios";
 import { useRoute } from 'vue-router'
