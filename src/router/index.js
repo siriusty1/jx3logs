@@ -8,12 +8,18 @@ const XiangZhi = () => import('../pages/XiangZhi.vue')
 const LiJingYiDao = () => import('../pages/LiJingYiDao.vue')
 const BuTianJue = () => import('../pages/BuTianJue.vue')
 
+const HPS = () => import('../pages/HPS.vue')
+
 const router = createRouter({
     history: createWebHistory(),
     routes:[
         {
             path: "/",
             component: Index
+        },
+        {
+            path: "/hps",
+            component: HPS
         },
         {
             path:"/character/:server/:name",

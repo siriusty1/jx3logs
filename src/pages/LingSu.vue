@@ -70,19 +70,21 @@
               </el-button>
               <el-button link @click="selectHPS = 1">
                 <template #default>
-                  <span :class="selectHPS === 0 ? 'selected' : 'unselected'">面板HPS</span>
+                  <span :class="selectHPS === 1 ? 'selected' : 'unselected'">oHPS</span>
                 </template>
               </el-button>
               <el-button link @click="selectHPS = 2">
                 <template #default>
-                  <span :class="selectHPS === 0 ? 'selected' : 'unselected'">面板HPS</span>
+                  <span :class="selectHPS === 2 ? 'selected' : 'unselected'">aHPS</span>
                 </template>
               </el-button>
               <el-button link @click="selectHPS = 3">
                 <template #default>
-                  <span :class="selectHPS === 0 ? 'selected' : 'unselected'">面板HPS</span>
+                  <span :class="selectHPS === 3 ? 'selected' : 'unselected'">rHPS</span>
                 </template>
               </el-button>
+              <el-divider/>
+              <el-button link :icon="QuestionFilled">帮助</el-button>
             </div>
           </div>
           <div style="margin-left:10px;margin-right:10px; flex-grow: 1">
@@ -437,6 +439,7 @@ import ShowEquip from '../components/ShowEquip.vue'
 import Review from '../components/Review.vue'
 import axios from "axios";
 import { useRoute } from 'vue-router'
+import { QuestionFilled } from '@element-plus/icons-vue'
 
 const loaded = ref(false)
 const route = useRoute()
