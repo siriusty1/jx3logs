@@ -2,7 +2,7 @@
   <template v-if="loaded">
     <div style="display:flex;flex-direction:column;align-items: center;position: relative">
       <div style="display:flex; justify-content:space-between;font-size: 20px; font-weight: bold; width: 1400px;margin-bottom: 20px">
-        <div>奶毒复盘 8.0.2</div>
+        <div>{{resObj['overall']['edition']}}</div>
         <div v-if="'score' in resObj.skill.general">
           <text>综合评分：</text>
           <text :class="color(resObj.skill.general.score)">{{resObj.skill.general.score.toFixed(2)}}</text>
@@ -22,7 +22,8 @@
             <div style="margin: 5px 10px 10px;">数据种类：</div>
           </div>
           <div>
-            <div style="margin: 10px 10px 5px">{{ resObj.overall['name'] }}</div>
+            <div @click="router.push(`/character/${resObj.overall['server']}/${resObj.overall['name']}`)"
+                 style="margin: 10px 10px 5px; color:#409EFF; cursor: pointer">{{ resObj.overall['name'] }}</div>
             <div style="margin: 5px 10px 5px;">{{ resObj.overall['server'] }}</div>
             <div style="margin: 5px 10px 5px;">{{ resObj.overall['battleTimePrint'] }}</div>
             <div style="margin: 5px 10px 5px;">{{ resObj.overall['generateTimePrint'] }}</div>
@@ -59,8 +60,40 @@
             </div>
           </div>
         </div>
-        <div style="display: flex; border: 1px solid #555; width: 500px; background-color: #141414">
-          <v-chart :option="healer_chart" style="height: 100%;width: 100%"></v-chart>
+        <div style="display: flex;flex-direction: column; border: 1px solid #555; width: 520px; background-color: #141414">
+          <div style="margin: 10px 10px 0px 10px;display: flex;justify-content: space-between">
+            <div style="font-size: 18px;font-weight: bold">治疗组</div>
+            <div style="display: flex;flex-direction: row;align-items: center">
+              <el-button link @click="selectHPS = 0">
+                <template #default>
+                  <span :class="selectHPS === 0 ? 'selected' : 'unselected'">面板HPS</span>
+                </template>
+              </el-button>
+              <el-button link @click="selectHPS = 1">
+                <template #default>
+                  <span :class="selectHPS === 1 ? 'selected' : 'unselected'">oHPS</span>
+                </template>
+              </el-button>
+              <el-button link @click="selectHPS = 2">
+                <template #default>
+                  <span :class="selectHPS === 2 ? 'selected' : 'unselected'">aHPS</span>
+                </template>
+              </el-button>
+              <el-button link @click="selectHPS = 3">
+                <template #default>
+                  <span :class="selectHPS === 3 ? 'selected' : 'unselected'">rHPS</span>
+                </template>
+              </el-button>
+              <el-divider direction="vertical" />
+              <el-button link :icon="QuestionFilled" @click="router.push('/help/hps')">帮助</el-button>
+            </div>
+          </div>
+          <div style="margin-left:10px;margin-right:10px; flex-grow: 1">
+            <v-chart @click='toPartner' v-if="selectHPS === 0" :option="healer_chart[0]" style="height: 100%;width: 100%"></v-chart>
+            <v-chart v-else-if="selectHPS === 1" :option="healer_chart[1]" style="height: 100%;width: 100%"></v-chart>
+            <v-chart v-else-if="selectHPS === 2" :option="healer_chart[2]" style="height: 100%;width: 100%"></v-chart>
+            <v-chart v-else-if="selectHPS === 3" :option="healer_chart[3]" style="height: 100%;width: 100%"></v-chart>
+          </div>
         </div>
       </div>
       <!--            统计面板-->
@@ -415,10 +448,12 @@ import ShowEquip from '../components/ShowEquip.vue'
 import SkillDisplay from '../components/SkillDisplay.vue'
 import Review from '../components/Review.vue'
 import axios from "axios";
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
+import { QuestionFilled } from '@element-plus/icons-vue'
 
 const loaded = ref(false)
 const route = useRoute()
+const router = useRouter()
 const resObj = ref()
 const rankObj = ref()
 const timeFlowData = ref()
@@ -685,6 +720,8 @@ const qixueTable = {
   },
 }
 
+const teamMate = ref()
+
 axios({
   method:'get',
   url: `http://120.48.95.56:8009/getReplayPro?id=${route.params.replay_id}`
@@ -693,10 +730,13 @@ axios({
   if (res.data.available){
     let repl = res.data['raw'].replace(/'/g, '"').replace(/&#39;/g, '"').replace(/\n/g, '\\n').replace(/\t/g, '\\t');
     let repl2 = res.data['rank'].replace(/'/g, '"').replace(/&#34;/g, '"').replace(/\n/g, '\\n').replace(/\t/g, '\\t');
+    let repl3 = res.data['teammate'].replace(/'/g, '"').replace(/&#34;/g, '"').replace(/\n/g, '\\n').replace(/\t/g, '\\t');
     let replay  = JSON.parse(repl)
     resObj.value = JSON.parse(repl)
     let rank = JSON.parse(repl2)
     rankObj.value = JSON.parse(repl2)
+    teamMate.value = JSON.parse(repl3)
+
     let realTimeRank = lodash.cloneDeep(toRaw(resObj.value['skill']))
     for (let item in realTimeRank){
       for (let sub_item in realTimeRank[item]){
@@ -984,20 +1024,65 @@ const handleScroll = (e) => {
   scrollbar.setScrollLeft(scrollbar.wrap$.scrollLeft - wheelDelta)
 }
 
+const selectHPS = ref(0)
+
+const toPartner = (params) => {
+  let occ = occTable[resObj.value.healer.table[params.dataIndex]['occ']]
+  let id = teamMate.value[resObj.value.healer.table[params.dataIndex]['name']]
+  router.push(`/${occ}/${id}`)
+}
+
 const healer_chart = computed(()=>{
   if(loaded.value){
     let healer = []
     let hps = []
     let effHps = []
+    let aHPS = []
+    let oHPS = []
+    let rHPS = []
     let occ = []
     for(let item of resObj.value['healer']['table']){
       healer.push(item['name'])
       hps.push(item['heal'] - item['healEff'])
       effHps.push(item['healEff'])
       occ.push(item['occ'])
+      if (resObj.value['overall']['edition'].slice(-5) === '8.1.0'){
+        rHPS.push(item['rhps'])
+        oHPS.push(item['ohps'])
+        aHPS.push(item['ahps'])
+      }else{
+        rHPS.push(0)
+        oHPS.push(0)
+        aHPS.push(0)
+      }
     }
-    return {
+    let HPSData = {
+      tooltip: {
+        trigger: 'axis',
+        showContent:false,
+        axisPointer: {
+          type: 'shadow',
+        }
+      },
       xAxis: {
+        type: 'category',
+        data: healer,
+        triggerEvent:true,
+        axisLine:{
+          show:false
+        },
+        axisLabel:{
+          color:'white',
+          formatter:(value)=>{
+            if (value.length > 6){
+              let str = value.slice(0,6) + '\n' + value.slice(6)
+              return str
+            }
+            return value
+          }
+        }
+      },
+      yAxis: {
         type: 'value',
         splitLine:{
           lineStyle:{
@@ -1005,7 +1090,53 @@ const healer_chart = computed(()=>{
           }
         }
       },
-      yAxis: {
+      series: [
+        {
+          name: '有效HPS',
+          type: 'bar',
+          stack: 'total',
+          barMaxWidth:'30px',
+          label:{
+            show:true,
+            color:'white',
+            offset:[0,-5]
+          },
+          itemStyle:{
+            color:function(params){
+              return xfColor[occ[params.dataIndex]][0]
+            }
+          },
+          data: effHps
+        },
+        {
+          name: '虚条HPS',
+          type: 'bar',
+          stack: 'total',
+          label:{
+            show:true,
+            color:'white',
+            offset:[0,-15],
+            formatter:function(params){
+              return params.value + effHps[params.dataIndex]
+            }
+          },
+          itemStyle:{
+            color:function(params){
+              return xfColor[occ[params.dataIndex]][1]
+            }
+          },
+          data: hps
+        }
+      ],
+      grid:{
+        top:'10px',
+        bottom:'30px',
+        right:'0px',
+        left:'0px'
+      }
+    }
+    let oHPSData = {
+      xAxis: {
         type: 'category',
         data: healer,
         axisLine:{
@@ -1022,53 +1153,138 @@ const healer_chart = computed(()=>{
           }
         }
       },
-      series: [
-        {
-          name: '有效HPS',
-          type: 'bar',
-          stack: 'total',
-          barMaxWidth:'30px',
-          label:{
-            show:true,
-            offset:[10,0],
-            color:'white'
-          },
-          itemStyle:{
-            color:function(params){
-              return xfColor[occ[params.dataIndex]][0]
-            }
-          },
-          data: effHps
-        },
-        {
-          name: '虚条HPS',
-          type: 'bar',
-          stack: 'total',
-          label:{
-            show:true,
-            position:'right',
-            color:'white',
-            formatter:function(params){
-              return params.value + effHps[params.dataIndex]
-            }
-          },
-          itemStyle:{
-            color:function(params){
-              return xfColor[occ[params.dataIndex]][1]
-            }
-          },
-          data: hps
+      yAxis: {
+        type: 'value',
+        splitLine:{
+          lineStyle:{
+            color:'#555'
+          }
         }
-      ],
+      },
+      series: [{
+        name: 'oHPS',
+        type: 'bar',
+        barMaxWidth:'30px',
+        label:{
+          show:true,
+          color:'white',
+          position:'top'
+        },
+        itemStyle:{
+          color:function(params){
+            return xfColor[occ[params.dataIndex]][0]
+          }
+        },
+        data: oHPS
+      }],
       grid:{
-        top:'0px',
-        bottom:'0px',
-        right:'40px',
-        left:'100px'
+        top:'15px',
+        bottom:'30px',
+        right:'0px',
+        left:'0px'
       }
     }
+    let aHPSData = {
+      xAxis: {
+        type: 'category',
+        data: healer,
+        axisLine:{
+          show:false
+        },
+        axisLabel:{
+          color:'white',
+          formatter:(value)=>{
+            if (value.length > 6){
+              let str = value.slice(0,6) + '\n' + value.slice(6)
+              return str
+            }
+            return value
+          }
+        }
+      },
+      yAxis: {
+        type: 'value',
+        splitLine:{
+          lineStyle:{
+            color:'#555'
+          }
+        }
+      },
+      series: [{
+        name: 'aHPS',
+        type: 'bar',
+        barMaxWidth:'30px',
+        label:{
+          show:true,
+          color:'white',
+          position:'top'
+        },
+        itemStyle:{
+          color:function(params){
+            return xfColor[occ[params.dataIndex]][0]
+          }
+        },
+        data: aHPS
+      }],
+      grid:{
+        top:'15px',
+        bottom:'30px',
+        right:'0px',
+        left:'0px'
+      }
+    }
+    let rHPSData = {
+      xAxis: {
+        type: 'category',
+        data: healer,
+        axisLine:{
+          show:false
+        },
+        axisLabel:{
+          color:'white',
+          formatter:(value)=>{
+            if (value.length > 6){
+              let str = value.slice(0,6) + '\n' + value.slice(6)
+              return str
+            }
+            return value
+          }
+        }
+      },
+      yAxis: {
+        type: 'value',
+        splitLine:{
+          lineStyle:{
+            color:'#555'
+          }
+        }
+      },
+      series: [{
+        name: 'rHPS',
+        type: 'bar',
+        barMaxWidth:'30px',
+        label:{
+          show:true,
+          color:'white',
+          position:'top'
+        },
+        itemStyle:{
+          color:function(params){
+            return xfColor[occ[params.dataIndex]][0]
+          }
+        },
+        data: rHPS
+      }],
+      grid:{
+        top:'15px',
+        bottom:'30px',
+        right:'0px',
+        left:'0px'
+      }
+    }
+    return [HPSData,oHPSData,aHPSData,rHPSData]
   }else{
-    return {}
+    return [{},{},{},{}]
   }
 })
 

@@ -2,7 +2,7 @@
   <template v-if="loaded">
     <div style="display:flex;flex-direction:column;align-items: center;position: relative">
       <div style="display:flex; justify-content:space-between;font-size: 20px; font-weight: bold; width: 1400px;margin-bottom: 20px">
-        <div>灵素复盘 8.0.2</div>
+        <div>{{resObj['overall']['edition']}}</div>
         <div v-if="'score' in resObj.skill.general">
           <text>综合评分：</text>
           <text :class="color(resObj.skill.general.score)">{{resObj.skill.general.score.toFixed(2)}}</text>
@@ -22,7 +22,8 @@
             <div style="margin: 5px 10px 10px;">数据种类：</div>
           </div>
           <div>
-            <div style="margin: 10px 10px 5px">{{ resObj.overall['name'] }}</div>
+            <div @click="router.push(`/character/${resObj.overall['server']}/${resObj.overall['name']}`)"
+                 style="margin: 10px 10px 5px; color:#409EFF; cursor: pointer">{{ resObj.overall['name'] }}</div>
             <div style="margin: 5px 10px 5px;">{{ resObj.overall['server'] }}</div>
             <div style="margin: 5px 10px 5px;">{{ resObj.overall['battleTimePrint'] }}</div>
             <div style="margin: 5px 10px 5px;">{{ resObj.overall['generateTimePrint'] }}</div>
@@ -60,9 +61,9 @@
           </div>
         </div>
         <div style="display: flex;flex-direction: column; border: 1px solid #555; width: 520px; background-color: #141414">
-          <div style="margin: 10px;display: flex;justify-content: space-between">
+          <div style="margin: 10px 10px 0px 10px;display: flex;justify-content: space-between">
             <div style="font-size: 18px;font-weight: bold">治疗组</div>
-            <div style="display: flex;flex-direction: row;">
+            <div style="display: flex;flex-direction: row;align-items: center">
               <el-button link @click="selectHPS = 0">
                 <template #default>
                   <span :class="selectHPS === 0 ? 'selected' : 'unselected'">面板HPS</span>
@@ -83,12 +84,12 @@
                   <span :class="selectHPS === 3 ? 'selected' : 'unselected'">rHPS</span>
                 </template>
               </el-button>
-              <el-divider/>
-              <el-button link :icon="QuestionFilled">帮助</el-button>
+              <el-divider direction="vertical" />
+              <el-button link :icon="QuestionFilled" @click="router.push('/help/hps')">帮助</el-button>
             </div>
           </div>
           <div style="margin-left:10px;margin-right:10px; flex-grow: 1">
-            <v-chart v-if="selectHPS === 0" :option="healer_chart[0]" style="height: 100%;width: 100%"></v-chart>
+            <v-chart @click='toPartner' v-if="selectHPS === 0" :option="healer_chart[0]" style="height: 100%;width: 100%"></v-chart>
             <v-chart v-else-if="selectHPS === 1" :option="healer_chart[1]" style="height: 100%;width: 100%"></v-chart>
             <v-chart v-else-if="selectHPS === 2" :option="healer_chart[2]" style="height: 100%;width: 100%"></v-chart>
             <v-chart v-else-if="selectHPS === 3" :option="healer_chart[3]" style="height: 100%;width: 100%"></v-chart>
@@ -438,15 +439,24 @@ import SkillDisplay from '../components/SkillDisplay.vue'
 import ShowEquip from '../components/ShowEquip.vue'
 import Review from '../components/Review.vue'
 import axios from "axios";
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { QuestionFilled } from '@element-plus/icons-vue'
 
 const loaded = ref(false)
+const router = useRouter()
 const route = useRoute()
 const resObj = ref()
 const rankObj = ref()
 const timeFlowData = ref()
 const err = ref()
+
+const occTable = {
+  2:'lijingyidao',
+  5:'yunchangxinjing',
+  6:'butianjue',
+  22:'xiangzhi',
+  212:'lingsu'
+}
 
 const xfColor = {
   2:['rgb(127, 31, 223)','rgba(127, 31, 223, 0.4)'],
@@ -713,19 +723,22 @@ const qixueTable = {
     'desc':'在自身脚下舒展一幅卷轴，使得自身进入"百药宣时"状态，"中和"效果提高50%，施展"行宜列药"套路的治疗招式均会额外触发一次"中和"效果，持续10秒，期间自身每通过这个方式获得额外的一次中和效果，即使得"百药宣时"状态结束后的下一次中和效果治疗量降低90%。'
   }
 }
-console.log('1',Date.now())
+
+const teamMate = ref()
+
 axios({
   method:'get',
   url: `http://120.48.95.56:8009/getReplayPro?id=${route.params.replay_id}`
 }).then((res)=>{
-  console.log('2',Date.now())
   if (res.data.available){
     let repl = res.data['raw'].replace(/'/g, '"').replace(/&#39;/g, '"').replace(/\n/g, '\\n').replace(/\t/g, '\\t');
     let repl2 = res.data['rank'].replace(/'/g, '"').replace(/&#34;/g, '"').replace(/\n/g, '\\n').replace(/\t/g, '\\t');
+    let repl3 = res.data['teammate'].replace(/'/g, '"').replace(/&#34;/g, '"').replace(/\n/g, '\\n').replace(/\t/g, '\\t');
     let replay  = JSON.parse(repl)
     resObj.value = JSON.parse(repl)
     let rank = JSON.parse(repl2)
     rankObj.value = JSON.parse(repl2)
+    teamMate.value = JSON.parse(repl3)
 
     let realTimeRank = lodash.cloneDeep(toRaw(resObj.value['skill']))
     for (let item in realTimeRank){
@@ -819,7 +832,6 @@ axios({
     for (let item of yaoxing_data){
       item[1] = -1 * item[1]
     }
-    console.log('3',Date.now())
     timeFlowData.value = {
       GCD,
       timeFlowWidth,
@@ -926,6 +938,7 @@ const enterQixue = ($event,item) => {
 const leaveQixue = ($event,item) => {
   qixueDetailsShow.value = false
 }
+
 const enterImg = ($event,item) => {
   popUpDetails.value = item
   popUpShow.value = true
@@ -961,7 +974,9 @@ const handleScroll = (e) => {
 const selectHPS = ref(0)
 
 const toPartner = (params) => {
-  console.log(params)
+  let occ = occTable[resObj.value.healer.table[params.dataIndex]['occ']]
+  let id = teamMate.value[resObj.value.healer.table[params.dataIndex]['name']]
+  router.push(`/${occ}/${id}`)
 }
 
 const healer_chart = computed(()=>{
@@ -989,9 +1004,17 @@ const healer_chart = computed(()=>{
       }
     }
     let HPSData = {
+      tooltip: {
+        trigger: 'axis',
+        showContent:false,
+        axisPointer: {
+          type: 'shadow',
+        }
+      },
       xAxis: {
         type: 'category',
         data: healer,
+        triggerEvent:true,
         axisLine:{
           show:false
         },
@@ -1054,7 +1077,7 @@ const healer_chart = computed(()=>{
       ],
       grid:{
         top:'10px',
-        bottom:'40px',
+        bottom:'30px',
         right:'0px',
         left:'0px'
       }
@@ -1102,8 +1125,8 @@ const healer_chart = computed(()=>{
             data: oHPS
           }],
         grid:{
-          top:'10px',
-          bottom:'40px',
+          top:'15px',
+          bottom:'30px',
           right:'0px',
           left:'0px'
         }
@@ -1151,8 +1174,8 @@ const healer_chart = computed(()=>{
         data: aHPS
       }],
       grid:{
-        top:'10px',
-        bottom:'40px',
+        top:'15px',
+        bottom:'30px',
         right:'0px',
         left:'0px'
       }
@@ -1200,8 +1223,8 @@ const healer_chart = computed(()=>{
         data: rHPS
       }],
       grid:{
-        top:'10px',
-        bottom:'40px',
+        top:'15px',
+        bottom:'30px',
         right:'0px',
         left:'0px'
       }

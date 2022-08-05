@@ -8,6 +8,7 @@ const XiangZhi = () => import('../pages/XiangZhi.vue')
 const LiJingYiDao = () => import('../pages/LiJingYiDao.vue')
 const BuTianJue = () => import('../pages/BuTianJue.vue')
 
+const Help = () => import('../pages/Help.vue')
 const HPS = () => import('../pages/HPS.vue')
 
 const router = createRouter({
@@ -18,15 +19,21 @@ const router = createRouter({
             component: Index
         },
         {
-            path: "/hps",
-            component: HPS
+            path: "/help",
+            component: Help,
+            children:[
+                {
+                    path:'hps',
+                    component:HPS
+                }
+            ]
         },
         {
             path:"/character/:server/:name",
             component: Character
         },
         {
-            path:"/ranking/",
+            path:"/ranking",
             component: Ranking
         },
         {

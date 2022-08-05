@@ -80,12 +80,12 @@ const reviewRes = computed(()=>{
         break;
       case 103:
         resItem['title'] = '中断"徵"的倒读条'
-        resItem['desc'] = `"徵"应当在读条过半时中断（带有"争簇"时为第3跳，无"争簇"时为第2跳），这样可以最大化利"弄梅"。特别是当点出“谪仙“时，不中断会导致损失徵的跳数。<br>本场战斗你总共运功了${resItem.time}次徵，但只正确中断了${resItem.perfectTime}次，其中有${resItem.fullTime}次完全没有进行中断。`
+        resItem['desc'] = `"徵"应当在读条过半时中断（带有"争簇"时为第3跳，无"争簇"时为第2跳），这样可以最大化利"弄梅"。特别是当点出“谪仙“时，不中断会导致损失徵的跳数。<br>本场战斗你总共运功了${resItem.time}次徵，但只正确中断了${resItem.perfectTime}次，其中${resItem.fullTime}次完全没有进行中断。`
         res.push(resItem)
         break;
       case 104:
         resItem['title'] = '选择合适的"徵"目标'
-        resItem['desc'] = `"徵"会以当前目标中心进行20尺扩散，因此选择正确的目标可以让更多队友受到治疗效果。使用茗伊团队面板的扩散辅助可以精准地找到最适合的目标。<br>本场战斗你总共施放了${resItem.time}跳徵，但只有${resItem.coverTime}跳覆盖了4个或更多的目标。`
+        resItem['desc'] = `"徵"会以当前目标中心进行20尺扩散，因此选择正确的目标可以让更多队友受到治疗效果。使用茗伊团队面板的扩散辅助可以精准地找到最适合的目标。<br>本场战斗你总共施放了${resItem.time}跳徵，其中${resItem.coverTime}跳覆盖了4个或更多的目标。`
         res.push(resItem)
         break;
       case 105:
@@ -175,7 +175,7 @@ const reviewRes = computed(()=>{
         break;
       case 406:
         resItem['title'] = '保留"碧蝶献祭"的会心增益到"蝶池"'
-        resItem['desc'] = `"碧蝶献祭"会获得一个必会心的buff，它会被治疗技能消耗掉，所以应当在1秒之内避免使用其它治疗技能从而让"蝶池"吃到这个增益。<br>本场战斗你使用了${resItem.sumAll}次"蛊虫献祭"，但是只有${resItem.rightTime}次正确处理了必会心的buff。`
+        resItem['desc'] = `"碧蝶献祭"会获得一个必会心的buff，它会被治疗技能消耗掉，所以应当在1秒之内避免使用其它治疗技能从而让"蝶池"吃到这个增益。<br>本场战斗你使用了${resItem.sumAll}次"蛊虫献祭"，其中${resItem.rightTime}次正确处理了必会心的buff。`
         res.push(resItem)
         break;
       case 501:
