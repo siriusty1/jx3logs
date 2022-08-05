@@ -37,8 +37,7 @@
           <div style="margin: 10px">
             <div style="font-size: 18px;font-weight: bold;margin-bottom: 10px">装备</div>
             <div v-if="resObj.equip['available']" style="font-size: 14px">
-              装备信息获取失败。在进入战斗后打开团队装分面板即可获取。如果是第一视角也可以自动获取。
-
+              <ShowEquip :equipInfo="resObj.equip.raw"></ShowEquip>
             </div>
             <div v-if="!resObj.equip['available']" style="font-size: 14px">
               装备信息获取失败。在进入战斗后打开团队装分面板即可获取。如果是第一视角也可以自动获取。
@@ -61,7 +60,7 @@
           </div>
         </div>
         <div style="display: flex; border: 1px solid #555; width: 500px; background-color: #141414">
-          <v-chart :option="healer_chart" style="height: 100%;width: 100%"></v-chart>
+          <v-chart @click="clickChart" :option="healer_chart" style="height: 100%;width: 100%"></v-chart>
         </div>
       </div>
       <!--            统计面板-->
@@ -402,8 +401,9 @@
 </template>
 
 <script setup>
-import { nextTick, ref, toRaw,computed} from 'vue'
+import { h,nextTick, ref, toRaw,computed} from 'vue'
 import lodash from 'lodash'
+import ShowEquip from '../components/ShowEquip.vue'
 import SkillDisplay from '../components/SkillDisplay.vue'
 import Review from '../components/Review.vue'
 import axios from "axios";
@@ -927,6 +927,7 @@ const healer_chart = computed(()=>{
         axisLine:{
           show:false
         },
+        triggerEvent:true,
         axisLabel:{
           color:'white',
           formatter:(value)=>{
@@ -936,7 +937,7 @@ const healer_chart = computed(()=>{
             }
             return value
           }
-        }
+        },
       },
       series: [
         {
@@ -988,6 +989,7 @@ const healer_chart = computed(()=>{
   }
 })
 
+const clickChart = (params) => {console.log(params)}
 
 const heatChart = computed(()=>{
   let teams = [0,1,2,3,4]

@@ -59,8 +59,38 @@
             </div>
           </div>
         </div>
-        <div style="display: flex; border: 1px solid #555; width: 500px; background-color: #141414">
-          <v-chart :option="healer_chart" style="height: 100%;width: 100%"></v-chart>
+        <div style="display: flex;flex-direction: column; border: 1px solid #555; width: 520px; background-color: #141414">
+          <div style="margin: 10px;display: flex;justify-content: space-between">
+            <div style="font-size: 18px;font-weight: bold">治疗组</div>
+            <div style="display: flex;flex-direction: row;">
+              <el-button link @click="selectHPS = 0">
+                <template #default>
+                  <span :class="selectHPS === 0 ? 'selected' : 'unselected'">面板HPS</span>
+                </template>
+              </el-button>
+              <el-button link @click="selectHPS = 1">
+                <template #default>
+                  <span :class="selectHPS === 0 ? 'selected' : 'unselected'">面板HPS</span>
+                </template>
+              </el-button>
+              <el-button link @click="selectHPS = 2">
+                <template #default>
+                  <span :class="selectHPS === 0 ? 'selected' : 'unselected'">面板HPS</span>
+                </template>
+              </el-button>
+              <el-button link @click="selectHPS = 3">
+                <template #default>
+                  <span :class="selectHPS === 0 ? 'selected' : 'unselected'">面板HPS</span>
+                </template>
+              </el-button>
+            </div>
+          </div>
+          <div style="margin-left:10px;margin-right:10px; flex-grow: 1">
+            <v-chart v-if="selectHPS === 0" :option="healer_chart[0]" style="height: 100%;width: 100%"></v-chart>
+            <v-chart v-else-if="selectHPS === 1" :option="healer_chart[1]" style="height: 100%;width: 100%"></v-chart>
+            <v-chart v-else-if="selectHPS === 2" :option="healer_chart[2]" style="height: 100%;width: 100%"></v-chart>
+            <v-chart v-else-if="selectHPS === 3" :option="healer_chart[3]" style="height: 100%;width: 100%"></v-chart>
+          </div>
         </div>
       </div>
       <!--            统计面板-->
@@ -680,11 +710,12 @@ const qixueTable = {
     'desc':'在自身脚下舒展一幅卷轴，使得自身进入"百药宣时"状态，"中和"效果提高50%，施展"行宜列药"套路的治疗招式均会额外触发一次"中和"效果，持续10秒，期间自身每通过这个方式获得额外的一次中和效果，即使得"百药宣时"状态结束后的下一次中和效果治疗量降低90%。'
   }
 }
-
+console.log('1',Date.now())
 axios({
   method:'get',
   url: `http://120.48.95.56:8009/getReplayPro?id=${route.params.replay_id}`
 }).then((res)=>{
+  console.log('2',Date.now())
   if (res.data.available){
     let repl = res.data['raw'].replace(/'/g, '"').replace(/&#39;/g, '"').replace(/\n/g, '\\n').replace(/\t/g, '\\t');
     let repl2 = res.data['rank'].replace(/'/g, '"').replace(/&#34;/g, '"').replace(/\n/g, '\\n').replace(/\t/g, '\\t');
@@ -785,7 +816,7 @@ axios({
     for (let item of yaoxing_data){
       item[1] = -1 * item[1]
     }
-
+    console.log('3',Date.now())
     timeFlowData.value = {
       GCD,
       timeFlowWidth,
@@ -924,28 +955,38 @@ const handleScroll = (e) => {
   scrollbar.setScrollLeft(scrollbar.wrap$.scrollLeft - wheelDelta)
 }
 
+const selectHPS = ref(0)
+
+const toPartner = (params) => {
+  console.log(params)
+}
+
 const healer_chart = computed(()=>{
   if(loaded.value){
     let healer = []
     let hps = []
     let effHps = []
+    let aHPS = []
+    let oHPS = []
+    let rHPS = []
     let occ = []
     for(let item of resObj.value['healer']['table']){
       healer.push(item['name'])
       hps.push(item['heal'] - item['healEff'])
       effHps.push(item['healEff'])
       occ.push(item['occ'])
+      if (resObj.value['overall']['edition'].slice(-5) === '8.1.0'){
+        rHPS.push(item['rhps'])
+        oHPS.push(item['ohps'])
+        aHPS.push(item['ahps'])
+      }else{
+        rHPS.push(0)
+        oHPS.push(0)
+        aHPS.push(0)
+      }
     }
-    return {
+    let HPSData = {
       xAxis: {
-        type: 'value',
-        splitLine:{
-          lineStyle:{
-            color:'#555'
-          }
-        }
-      },
-      yAxis: {
         type: 'category',
         data: healer,
         axisLine:{
@@ -962,6 +1003,14 @@ const healer_chart = computed(()=>{
           }
         }
       },
+      yAxis: {
+        type: 'value',
+        splitLine:{
+          lineStyle:{
+            color:'#555'
+          }
+        }
+      },
       series: [
         {
           name: '有效HPS',
@@ -970,8 +1019,8 @@ const healer_chart = computed(()=>{
           barMaxWidth:'30px',
           label:{
             show:true,
-            offset:[10,0],
-            color:'white'
+            color:'white',
+            offset:[0,-5]
           },
           itemStyle:{
             color:function(params){
@@ -986,8 +1035,8 @@ const healer_chart = computed(()=>{
           stack: 'total',
           label:{
             show:true,
-            position:'right',
             color:'white',
+            offset:[0,-15],
             formatter:function(params){
               return params.value + effHps[params.dataIndex]
             }
@@ -1001,14 +1050,162 @@ const healer_chart = computed(()=>{
         }
       ],
       grid:{
-        top:'0px',
-        bottom:'0px',
-        right:'40px',
-        left:'100px'
+        top:'10px',
+        bottom:'40px',
+        right:'0px',
+        left:'0px'
       }
     }
+    let oHPSData = {
+        xAxis: {
+          type: 'category',
+          data: healer,
+          axisLine:{
+            show:false
+          },
+          axisLabel:{
+            color:'white',
+            formatter:(value)=>{
+              if (value.length > 6){
+                let str = value.slice(0,6) + '\n' + value.slice(6)
+                return str
+              }
+              return value
+            }
+          }
+        },
+        yAxis: {
+          type: 'value',
+          splitLine:{
+            lineStyle:{
+              color:'#555'
+            }
+          }
+        },
+        series: [{
+            name: 'oHPS',
+            type: 'bar',
+            barMaxWidth:'30px',
+            label:{
+              show:true,
+              color:'white',
+              position:'top'
+            },
+            itemStyle:{
+              color:function(params){
+                return xfColor[occ[params.dataIndex]][0]
+              }
+            },
+            data: oHPS
+          }],
+        grid:{
+          top:'10px',
+          bottom:'40px',
+          right:'0px',
+          left:'0px'
+        }
+      }
+    let aHPSData = {
+      xAxis: {
+        type: 'category',
+        data: healer,
+        axisLine:{
+          show:false
+        },
+        axisLabel:{
+          color:'white',
+          formatter:(value)=>{
+            if (value.length > 6){
+              let str = value.slice(0,6) + '\n' + value.slice(6)
+              return str
+            }
+            return value
+          }
+        }
+      },
+      yAxis: {
+        type: 'value',
+        splitLine:{
+          lineStyle:{
+            color:'#555'
+          }
+        }
+      },
+      series: [{
+        name: 'aHPS',
+        type: 'bar',
+        barMaxWidth:'30px',
+        label:{
+          show:true,
+          color:'white',
+          position:'top'
+        },
+        itemStyle:{
+          color:function(params){
+            return xfColor[occ[params.dataIndex]][0]
+          }
+        },
+        data: aHPS
+      }],
+      grid:{
+        top:'10px',
+        bottom:'40px',
+        right:'0px',
+        left:'0px'
+      }
+    }
+    let rHPSData = {
+      xAxis: {
+        type: 'category',
+        data: healer,
+        axisLine:{
+          show:false
+        },
+        axisLabel:{
+          color:'white',
+          formatter:(value)=>{
+            if (value.length > 6){
+              let str = value.slice(0,6) + '\n' + value.slice(6)
+              return str
+            }
+            return value
+          }
+        }
+      },
+      yAxis: {
+        type: 'value',
+        splitLine:{
+          lineStyle:{
+            color:'#555'
+          }
+        }
+      },
+      series: [{
+        name: 'rHPS',
+        type: 'bar',
+        barMaxWidth:'30px',
+        label:{
+          show:true,
+          color:'white',
+          position:'top'
+        },
+        itemStyle:{
+          color:function(params){
+            return xfColor[occ[params.dataIndex]][0]
+          }
+        },
+        data: rHPS
+      }],
+      grid:{
+        top:'10px',
+        bottom:'40px',
+        right:'0px',
+        left:'0px'
+      }
+    }
+    return [HPSData,oHPSData,aHPSData,rHPSData]
   }else{
-    return {}
+    return [{},{},{},{}]
   }
 })
 
@@ -1258,5 +1455,8 @@ const yaoxing_chart = computed(()=>{
 :deep(.el-tabs--border-card>.el-tabs__header .el-tabs__item){
   color: #FFFFFF;
   font-size: 16px;
+}
+.selected{
+  color: #409EFF
 }
 </style>

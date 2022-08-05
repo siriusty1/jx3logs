@@ -185,7 +185,6 @@ const page = ref(1)
 const rankData = ref()
 
 watch(()=>instance.value,(newValue)=>{
-  console.log(newValue)
   if (newValue ==='25人英雄河阳之战' || newValue ==='25人普通河阳之战'){
     boss.value = '勒齐那'
   }else if (newValue === '25人英雄雷域大泽' || newValue === '25人英雄雷域大泽'){
