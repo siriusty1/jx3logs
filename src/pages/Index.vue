@@ -1,23 +1,33 @@
 <template>
-  <div class="banner" style="text-align: center;color: white">
-
+  <div class="banner" style="text-align: center;color: white;line-height: 100px">
+    这里本来应该有个Banner，但是我不会画.jpg
   </div>
   <div style="padding-top:104px; display: flex; flex-direction: column; align-items: center">
     <div class="instruction">
-      <div style="padding: 10px">
+      <div style="margin: 10px">
         欢迎来到 JX3 Logs，本网站旨在为《剑网三》提供战斗记录分析。保存并上传你的JCL战斗记录，后台将对其进行实时分析，根据收集的全局样本估算出战斗参与者的排名数据。
         同时本网站针对部分职业提供更为细致的复盘和评价等功能，如果您想参与某个职业模块的建设，请联系网站管理员！
       </div>
+      <div style="margin: 10px">
+        本网站正处于开发中，目前页面体现及功能并不一定为最终效果，请周知。
+      </div>
+      <div style="margin: 10px">
+        目前已实现的功能有：五奶复盘、天梯榜（治疗部分）、HPS算法等。
+      </div>
+      <el-button link type="primary" style="margin: 10px" size="large" @click="router.push('/ranking')">点击查看天梯榜</el-button>
     </div>
-    <Instance :data="yxhy" />
-    <Instance :data="pthy" />
-    <Instance :data="yxly" />
+<!--    <Instance :data="yxhy" />-->
+<!--    <Instance :data="pthy" />-->
+<!--    <Instance :data="yxly" />-->
   </div>
 </template>
 
 <script setup>
 import {reactive} from "vue";
+import {useRouter} from "vue-router";
 import Instance from '../components/Instance.vue'
+
+const router = useRouter()
 
 const getImgUrl = (name) => {
   return new URL(`../assets/${name}.png`, import.meta.url).href

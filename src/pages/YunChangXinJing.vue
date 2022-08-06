@@ -432,6 +432,14 @@ const xfColor = {
   212:['rgb(0, 172, 153)','rgba(0, 172, 153, 0.4)']
 }
 
+const occTable = {
+  2:'lijingyidao',
+  5:'yunchangxinjing',
+  6:'butianjue',
+  22:'xiangzhi',
+  212:'lingsu'
+}
+
 const qixueTable = {
   '香蕊':{
     'img':'2952',
@@ -947,7 +955,7 @@ const healer_chart = computed(()=>{
       hps.push(item['heal'] - item['healEff'])
       effHps.push(item['healEff'])
       occ.push(item['occ'])
-      if (resObj.value['overall']['edition'].slice(-5) === '8.1.0'){
+      if (resObj.value['overall']['edition'].slice(-5) >= '8.1.0'){
         rHPS.push(item['rhps'])
         oHPS.push(item['ohps'])
         aHPS.push(item['ahps'])
@@ -1364,5 +1372,8 @@ const buffCoverChart = computed(()=>{
 :deep(.el-tabs--border-card>.el-tabs__header .el-tabs__item){
   color: #FFFFFF;
   font-size: 16px;
+}
+.selected{
+  color: #409EFF
 }
 </style>

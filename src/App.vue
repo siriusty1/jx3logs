@@ -126,6 +126,15 @@ const options = [
         label: '绝代天骄',
       },
     ]
+  },
+  {
+    label:'國際服',
+    options: [
+      {
+        value: '傲血戰意',
+        label: '傲血戰意',
+      },
+    ]
   }
 ]
 const getImageUrl = (name) => {
