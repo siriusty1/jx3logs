@@ -13,7 +13,7 @@
               <div class="reviewTitle">{{ item.title }}</div>
             </div>
             <div style="width: 200px;margin-right: 20px">
-              <el-progress :text-inside="true" :stroke-width="16" :percentage="item.rate * 100" :color="rateColor(item.status)"/>
+              <el-progress :text-inside="true" :stroke-width="16" :percentage="(item.rate * 100).toFixed(2)" :color="rateColor(item.status)"/>
             </div>
           </div>
         </template>
@@ -102,7 +102,7 @@ const reviewRes = computed(()=>{
         break;
       case 103:
         resItem['title'] = '中断"徵"的倒读条'
-        resItem['desc'] = `"徵"应当在读条过半时中断（带有"争簇"时为第3跳，无"争簇"时为第2跳），这样可以最大化利"弄梅"。特别是当点出“谪仙“时，不中断会导致损失徵的跳数。<br>本场战斗你总共运功了${resItem.time}次徵，但只正确中断了${resItem.perfectTime}次，其中${resItem.fullTime}次完全没有进行中断。`
+        resItem['desc'] = `"徵"应当在读条过半时中断（带有"争簇"时为第3跳，无"争簇"时为第2跳），这样可以最大化利"弄梅"。特别是当点出“谪仙“时，不中断会导致损失徵的跳数。<br>本场战斗你总共运功了${resItem.time}次徵，正确中断了${resItem.perfectTime}次，其中${resItem.fullTime}次完全没有进行中断。`
         res.push(resItem)
         break;
       case 104:
@@ -192,7 +192,7 @@ const reviewRes = computed(()=>{
         break;
       case 405:
         resItem['title'] = '使用"蚕引"层数'
-        resItem['desc'] = `"蚕引"效果附赠了具有治疗增益的"冰蚕诀"，记得在30秒之内把它们全部用掉。<br>本场战斗你获得了${resItem.sumAll}层蚕引，但你只使用了其中的${resItem.timeCast}次。`
+        resItem['desc'] = `"蚕引"效果附赠了具有治疗增益的"冰蚕诀"，记得在30秒之内把它们全部用掉。<br>本场战斗你获得了${resItem.sumAll}层蚕引，你使用了其中的${resItem.timeCast}次。`
         res.push(resItem)
         break;
       case 406:
@@ -212,7 +212,7 @@ const reviewRes = computed(()=>{
         break;
       case 503:
         resItem['title'] = '"中断"回雪飘摇"的倒读条'
-        resItem['desc'] = `你需要在"回雪飘摇"第二跳之后直接使用GCD技能，而不是等倒读条结束，这样每6跳回雪飘摇中你就多了一个施展GCD技能的机会；另外，也不要过早中断，这样会直接导致回雪跳数损失。<br>本场战斗你总共施放了${resItem.time}次"回雪飘摇"，但其中只正确中断了${resItem.perfectTime}次，有${resItem.earlyTime}次因过早中断而损失了跳数。`
+        resItem['desc'] = `你需要在"回雪飘摇"第二跳之后直接使用GCD技能，而不是等倒读条结束，这样每6跳回雪飘摇中你就多了一个施展GCD技能的机会；另外，也不要过早中断，这样会直接导致回雪跳数损失。<br>本场战斗你总共施放了${resItem.time}次"回雪飘摇"，其中正确中断了${resItem.perfectTime}次，有${resItem.earlyTime}次因过早中断而损失了跳数。`
         res.push(resItem)
         break;
       case 504:
