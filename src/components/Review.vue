@@ -4,11 +4,18 @@
     <el-collapse>
       <el-collapse-item v-for="(item,index) in reviewRes" :name="index">
         <template #title>
-          <el-icon v-if="item['status'] === 3" :size="18" style="margin-left: 10px; color: rgb(219, 40, 40)"><CircleCloseFilled /></el-icon>
-          <el-icon v-if="item['status'] === 2" :size="18" style="margin-left: 10px; color: rgb(242, 113, 28)"><CirclePlusFilled /></el-icon>
-          <el-icon v-if="item['status'] === 1" :size="18" style="margin-left: 10px; color: rgb(235, 199, 0)"><CirclePlusFilled /></el-icon>
-          <el-icon v-if="item['status'] === 0" :size="18" style="margin-left: 10px; color: rgb(33, 186, 69)"><CircleCheckFilled /></el-icon>
-          <div class="reviewTitle">{{ item.title }}</div>
+          <div style="width:100%; display: flex;align-items: center;justify-content: space-between">
+            <div style="display: flex;align-items: center">
+              <el-icon v-if="item['status'] === 3" :size="18" style="margin-left: 10px; color: rgb(219, 40, 40)"><CircleCloseFilled /></el-icon>
+              <el-icon v-if="item['status'] === 2" :size="18" style="margin-left: 10px; color: rgb(242, 113, 28)"><CirclePlusFilled /></el-icon>
+              <el-icon v-if="item['status'] === 1" :size="18" style="margin-left: 10px; color: rgb(235, 199, 0)"><CirclePlusFilled /></el-icon>
+              <el-icon v-if="item['status'] === 0" :size="18" style="margin-left: 10px; color: rgb(33, 186, 69)"><CircleCheckFilled /></el-icon>
+              <div class="reviewTitle">{{ item.title }}</div>
+            </div>
+            <div style="width: 200px;margin-right: 20px">
+              <el-progress :text-inside="true" :stroke-width="16" :percentage="item.rate * 100" :color="rateColor(item.status)"/>
+            </div>
+          </div>
         </template>
         <div class="reviewDetails" v-html="item.desc"></div>
       </el-collapse-item>
@@ -23,6 +30,21 @@ import lodash from 'lodash'
 const reviewObj = ref()
 const props = defineProps(['review'])
 reviewObj.value = props.review
+
+const rateColor = (status) =>{
+  if (status === 0){
+    return 'rgb(33, 186, 69)'
+  }
+  else if (status === 1){
+    return 'rgb(235, 199, 0)'
+  }
+  else if (status === 2){
+    return 'rgb(242, 113, 28)'
+  }
+  else if (status === 3){
+    return 'rgb(219, 40, 40)'
+  }
+}
 
 const reviewRes = computed(()=>{
   let res = []

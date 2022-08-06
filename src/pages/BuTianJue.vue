@@ -793,11 +793,7 @@ axios({
     for (let item of resObj.value['replay']['normal']){
       if (item['skillname'] === '千蝶吐瑞'){
         channelling.push(item)
-        // TODO 帮狗花修蛊惑BUG，下版本记得改回来
-      }else if (item['skillname'] === '蛊惑众生'){
-        resObj.value['replay']['special'].push(item)
-      }
-      else{
+      }else{
         casting.push(item)
       }
     }
@@ -892,6 +888,7 @@ axios({
         }
       }
     }
+
 
     timeFlowData.value = {
       GCD,
