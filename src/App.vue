@@ -2,8 +2,10 @@
   <el-config-provider :locale="zhCn">
       <el-container>
         <el-header class="header">
-          <img :src="getImageUrl('logo')" alt="logo" style="height: 40px; width: 40px">
-          <div style="margin-left: 10px;font-size: 26px; font-family: 'Microsoft YaHei';">JX3 Logs</div>
+          <div style="display: flex;justify-content: center;align-items: center;cursor: pointer" @click="router.push('/')">
+            <img :src="getImageUrl('logo')" alt="logo" style="height: 40px; width: 40px">
+            <div style="margin-left: 10px;font-size: 26px; font-family: 'Microsoft YaHei';">JX3 Logs</div>
+          </div>
           <el-input style="width: 200px;margin-left: 60px" placeholder="请输入角色名进行查询" v-model="name"></el-input>
           <el-select style="width: 150px;margin-left: 10px" placeholder="请选择服务器" v-model="server" filterable>
             <el-option-group
