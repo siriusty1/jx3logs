@@ -124,17 +124,6 @@
                 <text style="margin-top: 5px; font-weight: bold;font-size: 16px">商</text>
               </template>
             </SkillDisplay>
-            <!--        7.9.1兼容性-->
-            <SkillDisplay :skill="timeFlowData.realTimeRank['yu']" :sort-list="resObj.overall['edition'] === '奶歌复盘pro v7.9.1' ?
-        {'key':['num','effRate','delay','HPS'], 'value':['数量：','有效比率：','延迟：','HPS：']} :
-        {'key':['num','numPerSec','effRate','delay','HPS'], 'value':['数量：','每秒数量：','有效比率：','延迟：','HPS：']}
-        ">
-              <!--                  -->
-              <template #icon>
-                <img class="skill_statistic_icon" :src="getImageUrl('yu','skills_logo')" alt="羽">
-                <text style="margin-top: 5px; font-weight: bold;font-size: 16px">羽</text>
-              </template>
-            </SkillDisplay>
             <SkillDisplay :skill="timeFlowData.realTimeRank['zhi']" :sort-list="{
         'key':['num','numPerSec','delay','HPS','effRate','gudaoHPS'],
         'value':['数量：','每秒数量：','延迟：','HPS：','有效比率：','古道HPS：']}">
@@ -152,16 +141,16 @@
               </template>
             </SkillDisplay>
             <SkillDisplay :skill="timeFlowData.realTimeRank['xiangyi']" :sort-list="{
-        'key':['num','HPS','effRate'],
-        'value':['数量：','HPS：','有效比率：']}">
+        'key':['num','HPS'],
+        'value':['数量：','HPS：']}">
               <template #icon>
                 <img class="skill_statistic_icon" :src="getImageUrl('xiangyi','skills_logo')" alt="相依">
                 <text style="margin-top: 5px; font-weight: bold;font-size: 16px">相依</text>
               </template>
             </SkillDisplay>
             <SkillDisplay :skill="timeFlowData.realTimeRank['general']" :sort-list="{
-        'key':['APS','SangrouDPS','ZhuangzhouDPS','YujianDPS','efficiency'],
-        'value':['APS估算：','桑柔DPS：','庄周梦DPS：','玉简DPS：','战斗效率：']}">
+        'key':['rDPS','cover','efficiency'],
+        'value':['rDPS：','沐风覆盖率：','战斗效率：']}">
               <template #icon>
                 <img class="skill_statistic_icon" :src="getImageUrl('tuanfu','skills_logo')" alt="团辅">
                 <text style="margin-top: 5px; font-weight: bold;font-size: 16px">团队辅助</text>
@@ -171,73 +160,62 @@
         </el-tab-pane>
         <el-tab-pane label="全时刻排名">
           <div class="statisticBoxInner">
-            <SkillDisplay :skill="timeFlowData.allTimeRank['meihua']" :sortList="{
-        'key':['num','numPerSec','cover','delay','youxiangHPS','pingyinHPS'],
-        'value':['数量：','每秒数量：','覆盖率：','延迟：','犹香HPS：','平吟HPS：']}">
-              <template #icon>
-                <img class="skill_statistic_icon" :src="getImageUrl('meihua','skills_logo')" alt="梅花三弄">
-                <text style="margin-top: 5px; font-weight: bold;font-size: 16px">梅花三弄</text>
-              </template>
-            </SkillDisplay>
-            <SkillDisplay :skill="timeFlowData.allTimeRank['gong']" :sort-list="{
-        'key':['num','numPerSec','delay','HPS','effRate','zhenliuHPS'],
-        'value':['数量：','每秒数量：','延迟：','HPS：','有效比率：','枕流HPS：']}">
-              <template #icon>
-                <img class="skill_statistic_icon" :src="getImageUrl('gong','skills_logo')" alt="宫">
-                <text style="margin-top: 5px; font-weight: bold;font-size: 16px">宫</text>
-              </template>
-            </SkillDisplay>
-            <SkillDisplay :skill="timeFlowData.allTimeRank['shang']" :sort-list="{
-        'key':['num','numPerSec','cover','delay','HPS'],
-        'value':['数量：','每秒数量：','覆盖率：','延迟：','HPS：']}">
-              <template #icon>
-                <img class="skill_statistic_icon" :src="getImageUrl('shang','skills_logo')" alt="商">
-                <text style="margin-top: 5px; font-weight: bold;font-size: 16px">商</text>
-              </template>
-            </SkillDisplay>
-            <!--        7.9.1兼容性-->
-            <SkillDisplay :skill="timeFlowData.allTimeRank['yu']" :sort-list="resObj.overall['edition'] === '奶歌复盘pro v7.9.1' ?
-        {'key':['num','effRate','delay','HPS'], 'value':['数量：','有效比率：','延迟：','HPS：']} :
-        {'key':['num','numPerSec','effRate','delay','HPS'], 'value':['数量：','每秒数量：','有效比率：','延迟：','HPS：']}
-        ">
-              <!--                  -->
-              <template #icon>
-                <img class="skill_statistic_icon" :src="getImageUrl('yu','skills_logo')" alt="羽">
-                <text style="margin-top: 5px; font-weight: bold;font-size: 16px">羽</text>
-              </template>
-            </SkillDisplay>
-            <SkillDisplay :skill="timeFlowData.allTimeRank['zhi']" :sort-list="{
-        'key':['num','numPerSec','delay','HPS','effRate','gudaoHPS'],
-        'value':['数量：','每秒数量：','延迟：','HPS：','有效比率：','古道HPS：']}">
-              <template #icon>
-                <img class="skill_statistic_icon" :src="getImageUrl('zhi','skills_logo')" alt="徵">
-                <text style="margin-top: 5px; font-weight: bold;font-size: 16px">徵</text>
-              </template>
-            </SkillDisplay>
-            <SkillDisplay :skill="timeFlowData.allTimeRank['jue']" :sort-list="{
-        'key':['num','numPerSec','cover','delay','HPS'],
-        'value':['数量：','每秒数量：','覆盖率：','延迟：','HPS：']}">
-              <template #icon>
-                <img class="skill_statistic_icon" :src="getImageUrl('jue','skills_logo')" alt="角">
-                <text style="margin-top: 5px; font-weight: bold;font-size: 16px">角</text>
-              </template>
-            </SkillDisplay>
-            <SkillDisplay :skill="timeFlowData.allTimeRank['xiangyi']" :sort-list="{
-        'key':['num','HPS','effRate'],
-        'value':['数量：','HPS：','有效比率：']}">
-              <template #icon>
-                <img class="skill_statistic_icon" :src="getImageUrl('xiangyi','skills_logo')" alt="相依">
-                <text style="margin-top: 5px; font-weight: bold;font-size: 16px">相依</text>
-              </template>
-            </SkillDisplay>
-            <SkillDisplay :skill="timeFlowData.allTimeRank['general']" :sort-list="{
-        'key':['APS','SangrouDPS','ZhuangzhouDPS','YujianDPS','efficiency'],
-        'value':['APS估算：','桑柔DPS：','庄周梦DPS：','玉简DPS：','战斗效率：']}">
-              <template #icon>
-                <img class="skill_statistic_icon" :src="getImageUrl('tuanfu','skills_logo')" alt="团辅">
-                <text style="margin-top: 5px; font-weight: bold;font-size: 16px">团队辅助</text>
-              </template>
-            </SkillDisplay>
+<!--            <SkillDisplay :skill="timeFlowData.allTimeRank['meihua']" :sortList="{-->
+<!--        'key':['num','numPerSec','cover','delay','youxiangHPS','pingyinHPS'],-->
+<!--        'value':['数量：','每秒数量：','覆盖率：','延迟：','犹香HPS：','平吟HPS：']}">-->
+<!--              <template #icon>-->
+<!--                <img class="skill_statistic_icon" :src="getImageUrl('meihua','skills_logo')" alt="梅花三弄">-->
+<!--                <text style="margin-top: 5px; font-weight: bold;font-size: 16px">梅花三弄</text>-->
+<!--              </template>-->
+<!--            </SkillDisplay>-->
+<!--            <SkillDisplay :skill="timeFlowData.allTimeRank['gong']" :sort-list="{-->
+<!--        'key':['num','numPerSec','delay','HPS','effRate','zhenliuHPS'],-->
+<!--        'value':['数量：','每秒数量：','延迟：','HPS：','有效比率：','枕流HPS：']}">-->
+<!--              <template #icon>-->
+<!--                <img class="skill_statistic_icon" :src="getImageUrl('gong','skills_logo')" alt="宫">-->
+<!--                <text style="margin-top: 5px; font-weight: bold;font-size: 16px">宫</text>-->
+<!--              </template>-->
+<!--            </SkillDisplay>-->
+<!--            <SkillDisplay :skill="timeFlowData.allTimeRank['shang']" :sort-list="{-->
+<!--        'key':['num','numPerSec','cover','delay','HPS'],-->
+<!--        'value':['数量：','每秒数量：','覆盖率：','延迟：','HPS：']}">-->
+<!--              <template #icon>-->
+<!--                <img class="skill_statistic_icon" :src="getImageUrl('shang','skills_logo')" alt="商">-->
+<!--                <text style="margin-top: 5px; font-weight: bold;font-size: 16px">商</text>-->
+<!--              </template>-->
+<!--            </SkillDisplay>-->
+<!--            <SkillDisplay :skill="timeFlowData.allTimeRank['zhi']" :sort-list="{-->
+<!--        'key':['num','numPerSec','delay','HPS','effRate','gudaoHPS'],-->
+<!--        'value':['数量：','每秒数量：','延迟：','HPS：','有效比率：','古道HPS：']}">-->
+<!--              <template #icon>-->
+<!--                <img class="skill_statistic_icon" :src="getImageUrl('zhi','skills_logo')" alt="徵">-->
+<!--                <text style="margin-top: 5px; font-weight: bold;font-size: 16px">徵</text>-->
+<!--              </template>-->
+<!--            </SkillDisplay>-->
+<!--            <SkillDisplay :skill="timeFlowData.allTimeRank['jue']" :sort-list="{-->
+<!--        'key':['num','numPerSec','cover','delay','HPS'],-->
+<!--        'value':['数量：','每秒数量：','覆盖率：','延迟：','HPS：']}">-->
+<!--              <template #icon>-->
+<!--                <img class="skill_statistic_icon" :src="getImageUrl('jue','skills_logo')" alt="角">-->
+<!--                <text style="margin-top: 5px; font-weight: bold;font-size: 16px">角</text>-->
+<!--              </template>-->
+<!--            </SkillDisplay>-->
+<!--            <SkillDisplay :skill="timeFlowData.allTimeRank['xiangyi']" :sort-list="{-->
+<!--        'key':['num','HPS'],-->
+<!--        'value':['数量：','HPS：']}">-->
+<!--              <template #icon>-->
+<!--                <img class="skill_statistic_icon" :src="getImageUrl('xiangyi','skills_logo')" alt="相依">-->
+<!--                <text style="margin-top: 5px; font-weight: bold;font-size: 16px">相依</text>-->
+<!--              </template>-->
+<!--            </SkillDisplay>-->
+<!--            <SkillDisplay :skill="timeFlowData.allTimeRank['general']" :sort-list="{-->
+<!--        'key':['rDPS','cover','efficiency'],-->
+<!--        'value':['rDPS：','沐风覆盖率：','战斗效率：']}">-->
+<!--              <template #icon>-->
+<!--                <img class="skill_statistic_icon" :src="getImageUrl('tuanfu','skills_logo')" alt="团辅">-->
+<!--                <text style="margin-top: 5px; font-weight: bold;font-size: 16px">团队辅助</text>-->
+<!--              </template>-->
+<!--            </SkillDisplay>-->
           </div>
         </el-tab-pane>
       </el-tabs>

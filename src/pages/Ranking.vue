@@ -48,31 +48,70 @@
       </div>
     </div>
     <div style="width: 1400px; border: 1px solid #555;margin-top: 20px">
-      <div style="margin-bottom: 20px">
-        <el-select v-model="instance" size="small" style="width:160px;margin-left:20px;margin-top: 20px;margin-right:20px" placeholder="请选择副本">
-          <el-option-group label="江湖无限赛季">
-          <el-option label="河阳之战（25人英雄）" value="25人英雄河阳之战"></el-option>
-          <el-option label="河阳之战（25人普通）" value="25人普通河阳之战"></el-option>
-          </el-option-group>
-          <el-option-group label="北天药宗赛季">
-          <el-option label="雷域大泽（25人英雄）" value="25人英雄雷域大泽"></el-option>
-          <el-option disabled label="雷域大泽（25人普通）" value="25人普通雷域大泽"></el-option>
+      <div style="margin-bottom: 20px;margin-top: 20px;display: flex;justify-content: left;align-items: center">
+        <el-select v-model="instance" size="small" style="width:160px;margin-left:20px;margin-right:20px" placeholder="请选择副本">
+          <el-option-group label="横刀断浪赛季">
+          <el-option label="西津渡（25人英雄）" value="25人英雄西津渡"></el-option>
+          <el-option label="西津渡（25人普通）" value="25人普通西津渡"></el-option>
           </el-option-group>
         </el-select>
         <el-select v-model="boss" size="small" style="width:160px" placeholder="请选择首领">
           <el-option v-for="item in bossTable" :label="item" :value="item"></el-option>
         </el-select>
+        <el-radio-group style="margin-left:20px;" v-model="displayData" size="small">
+          <el-radio-button label="表现分" />
+          <el-radio-button label="rHPS" />
+          <el-radio-button label="rDPS" />
+          <el-radio-button label="nDPS" />
+          <el-radio-button label="mrDPS" />
+          <el-radio-button label="mnDPS" />
+        </el-radio-group>
       </div>
       <div style="margin-left: 20px;margin-right: 20px;margin-bottom: 20px">
         <el-table border :data="rankData" stripe style="width: 100%">
           <el-table-column align="center" label="排名" type="index" width="60" />
-          <el-table-column align="center" label="玩家名称" prop="id" />
-          <el-table-column align="center" label="服务器" prop="server" />
-          <el-table-column align="center" label="表现" width="100">
+          <el-table-column align="center" label="玩家名称" prop="id">
             <template #default="scope">
               <div style="display: flex;justify-content: center">
                 <img :src="getImgUrl('occ_logo',occChosen)" alt="occ" style="height: 24px;width: 24px;margin-right: 5px">
-                <div :class="color(scope.row.score)">{{ scope.row.score === 100 ? scope.row.score.toFixed(1) : scope.row.score.toFixed(2) }}</div>
+                <div>{{ scope.row.id }}</div>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="服务器" width="100" prop="server" />
+          <el-table-column align="center" label="排名" width="100">
+            <template #default="scope">
+              <div style="display: flex;justify-content: center">
+                <div v-if="displayData === '表现分'">
+                  <div :class="color(scope.row.scoreRank)">{{ scope.row.scoreRank + '%' }}</div>
+                </div>
+                <div v-else-if="displayData === 'rHPS'">
+                  <div :class="color(scope.row.rhpsRank)">{{ scope.row.rhpsRank + '%' }}</div>
+                </div>
+                <div v-else-if="displayData === 'rDPS'">
+                  <div :class="color(scope.row.rdpsRank)">{{ scope.row.rdpsRank + '%' }}</div>
+                </div>
+                <div v-else-if="displayData === 'nDPS'">
+                  <div :class="color(scope.row.ndpsRank)">{{ scope.row.ndpsRank + '%' }}</div>
+                </div>
+                <div v-else-if="displayData === 'mrDPS'">
+                  <div :class="color(scope.row.mrdpsRank)">{{ scope.row.mrdpsRank + '%' }}</div>
+                </div>
+                <div v-else-if="displayData === 'mnDPS'">
+                  <div :class="color(scope.row.mndpsRank)">{{ scope.row.mndpsRank + '%' }}</div>
+                </div>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column align="center" :label="displayData" width="100">
+            <template #default="scope">
+              <div style="display: flex;justify-content: center">
+                <div v-if="displayData === '表现分'">{{ (scope.row.score / 100).toFixed(2) }}</div>
+                <div v-else-if="displayData === 'rHPS'">{{ scope.row.rhps }}</div>
+                <div v-else-if="displayData === 'rDPS'">{{ scope.row.rdps }}</div>
+                <div v-else-if="displayData === 'nDPS'">{{ scope.row.ndps }}</div>
+                <div v-else-if="displayData === 'mrDPS'">{{ scope.row.mrdps }}</div>
+                <div v-else-if="displayData === 'mnDPS'">{{ scope.row.mndps }}</div>
               </div>
             </template>
           </el-table-column>
@@ -87,8 +126,8 @@
             </template>
           </el-table-column>
           <el-table-column align="center" label="复盘版本" prop="edition" width="100" />
-          <el-table-column align="center" label="战斗详情"></el-table-column>
-          <el-table-column align="center" label="心法复盘">
+          <el-table-column align="center" label="战斗详情" width="100"></el-table-column>
+          <el-table-column align="center" label="心法复盘" width="100">
             <template #default="scope">
               <el-button @click="toReplay(occChosen, scope.row.shortID)" link type="primary">前往复盘</el-button>
             </template>
@@ -163,11 +202,12 @@ const getImgUrl = (folder,name) => {
 }
 
 const bossTable = computed(()=>{
-  if (instance.value === '25人英雄河阳之战' || instance.value === '25人普通河阳之战'){
+  if (instance.value === '25人英雄西津渡' || instance.value === '25人普通西津渡'){
+    return ['张景超','刘展','苏凤楼','韩敬青','藤原佑野','李重茂']
+  }else if (instance.value === '25人英雄河阳之战' || instance.value === '25人普通河阳之战'){
     return ['勒齐那', '阿阁诺', '周通忌', '周贽','常宿']
   }else if (instance.value === '25人英雄雷域大泽' || instance.value === '25人英雄雷域大泽'){
-    return ['巨型尖吻凤','桑乔','悉达罗摩','尤迦罗摩','月泉淮','乌蒙贵']
-  }
+    return ['巨型尖吻凤','桑乔','悉达罗摩','尤迦罗摩','月泉淮','乌蒙贵']}
 })
 
   // '25人英雄河阳之战':['勒齐那', '阿阁诺', '周通忌', '周贽','常宿'],
@@ -184,8 +224,12 @@ const page = ref(1)
 
 const rankData = ref()
 
+const displayData = ref('表现分')
+
 watch(()=>instance.value,(newValue)=>{
-  if (newValue ==='25人英雄河阳之战' || newValue ==='25人普通河阳之战'){
+  if (newValue ==='25人英雄西津渡' || newValue ==='25人普通西津渡'){
+    boss.value = '张景超'
+  }else if (newValue ==='25人英雄河阳之战' || newValue ==='25人普通河阳之战'){
     boss.value = '勒齐那'
   }else if (newValue === '25人英雄雷域大泽' || newValue === '25人英雄雷域大泽'){
     boss.value = '巨型尖吻凤'
